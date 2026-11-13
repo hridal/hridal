@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 import { me } from '../data/me';
+import { riddles } from '../data/riddles';
 const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
   .map(async e => ({ ...e, Content: (await render(e)).Content })));
@@ -14,6 +15,27 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     <p class="tagline">{me.tagline}</p>
     <div class="actions"><a class="btn solid" href="#contact">Get in touch</a><a class="btn" href="/cv.pdf" download>Download CV</a></div>
   </section>
+
+
+  <section class="riddle" id="riddle">
+    <div class="riddle-label">Riddle of the visit <button class="shuffle" aria-label="Another riddle" title="Another riddle">↻</button></div>
+    <p class="riddle-q"></p>
+    <button class="reveal">Reveal the answer</button>
+    <p class="riddle-a" hidden></p>
+  </section>
+  <script define:vars={{ riddles }}>
+    const box = document.getElementById('riddle');
+    const q = box.querySelector('.riddle-q'), a = box.querySelector('.riddle-a'), btn = box.querySelector('.reveal');
+    let last = -1;
+    function pick() {
+      let i; do { i = Math.floor(Math.random() * riddles.length); } while (i === last && riddles.length > 1);
+      last = i; q.textContent = riddles[i].q; a.textContent = riddles[i].a;
+      a.hidden = true; btn.hidden = false;
+    }
+    btn.addEventListener('click', () => { a.hidden = false; btn.hidden = true; });
+    box.querySelector('.shuffle').addEventListener('click', pick);
+    pick();
+  </script>
 
   <section class="block" id="about">
     <h2><span>01</span>About me</h2>
