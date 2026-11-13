@@ -15,9 +15,8 @@ export const me = {
     { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
     { label: 'Reading', icon: '❦', title: 'Book title', note: 'Author' },
     { label: 'Writing', icon: '✎', title: 'My next Substack essay', note: 'Topic coming soon' },
-    { label: 'Vibecoding', icon: '✦', title: 'This website', note: 'Built entirely by prompting Claude' },
     { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
-    { label: 'Obsessed with', icon: '♡', title: 'Padel', note: 'and bouldering, when my arms allow' },
+    { label: 'Current hobbies', icon: '♡', title: 'Padel & bouldering', note: 'plus netball and painting' },
   ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },
