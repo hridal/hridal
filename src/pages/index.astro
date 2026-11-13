@@ -25,23 +25,36 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
   </section>
 
 
-  <section class="riddle" id="riddle">
-    <div class="riddle-label">A riddle, from Hridal <button class="shuffle" aria-label="Another riddle" title="Another riddle">↻</button></div>
-    <p class="riddle-q"></p>
-    <button class="reveal">Reveal the answer</button>
-    <p class="riddle-a" hidden></p>
+  <section class="riddle-wrap" id="riddle">
+    <div class="envelope" role="button" tabindex="0" aria-label="Open the envelope for a riddle">
+      <div class="env-back"></div>
+      <div class="letter">
+        <div class="letter-top"><span>A riddle, from Hridal</span><button class="shuffle" aria-label="Another riddle" title="Another riddle">↻</button></div>
+        <p class="riddle-q"></p>
+        <button class="reveal">Reveal the answer</button>
+        <p class="riddle-a" hidden></p>
+      </div>
+      <div class="env-front"><span class="env-to">A riddle, from Hridal</span></div>
+      <div class="env-flap"></div>
+      <div class="seal" aria-hidden="true">♥</div>
+    </div>
+    <p class="env-hint">Click the envelope to open it</p>
   </section>
   <script define:vars={{ riddles }}>
-    const box = document.getElementById('riddle');
-    const q = box.querySelector('.riddle-q'), a = box.querySelector('.riddle-a'), btn = box.querySelector('.reveal');
+    const wrap = document.getElementById('riddle');
+    const env = wrap.querySelector('.envelope');
+    const q = wrap.querySelector('.riddle-q'), a = wrap.querySelector('.riddle-a'), btn = wrap.querySelector('.reveal');
     let last = -1;
     function pick() {
       let i; do { i = Math.floor(Math.random() * riddles.length); } while (i === last && riddles.length > 1);
       last = i; q.textContent = riddles[i].q; a.textContent = riddles[i].a;
       a.hidden = true; btn.hidden = false;
     }
-    btn.addEventListener('click', () => { a.hidden = false; btn.hidden = true; });
-    box.querySelector('.shuffle').addEventListener('click', pick);
+    function open() { if (!wrap.classList.contains('open')) { wrap.classList.add('open'); env.setAttribute('aria-label', 'Riddle'); } }
+    env.addEventListener('click', open);
+    env.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    btn.addEventListener('click', e => { e.stopPropagation(); a.hidden = false; btn.hidden = true; });
+    wrap.querySelector('.shuffle').addEventListener('click', e => { e.stopPropagation(); pick(); });
     pick();
   </script>
 
