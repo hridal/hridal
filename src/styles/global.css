@@ -6,7 +6,7 @@
   --muted: #9a6b6b;
   --line: #ffd3d1;
   --pink: #ffdad8;
-  --accent: #b5172f;
+  --accent: #5c1a1a;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --script: 'Pinyon Script', cursive;
   --sans: 'Jost', system-ui, sans-serif;
@@ -183,23 +183,23 @@ article h1 { font-family: var(--script); font-weight: 400; letter-spacing: 0; fo
 .riddle-wrap.open .flap-shadow { opacity: 0; }
 .riddle-wrap.open .env-flap { transform: rotateX(180deg); z-index: 1; }
 .seal { position:absolute; left: 50%; top: 58%; z-index: 6; width: 96px; height: 92px; margin: -46px 0 0 -48px;
-  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%; background: radial-gradient(circle at 38% 32%, #d13a3f, #a3171f 55%, #7e0f16);
-  display:grid; place-items:center; box-shadow: 0 5px 10px rgba(92,26,26,.35), inset -3px -4px 8px rgba(0,0,0,.25), inset 3px 3px 6px rgba(255,140,140,.25);
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%; background: radial-gradient(circle at 38% 32%, #8a3238, #5c1a1a 55%, #3e0f10);
+  display:grid; place-items:center; box-shadow: 0 5px 10px rgba(92,26,26,.35), inset -3px -4px 8px rgba(0,0,0,.25), inset 3px 3px 6px rgba(220,140,140,.2);
   transition: opacity .3s, transform .3s; }
-.seal::before { content:''; position:absolute; inset: 13px; border-radius: 50%; border: 2px solid rgba(110,10,18,.55); box-shadow: inset 0 1px 2px rgba(255,150,150,.25), 0 1px 1px rgba(255,150,150,.2); }
-.seal span { font-size: 34px; line-height: 1; color: #95141c; text-shadow: -1px -1px 1px rgba(60,0,5,.45), 1px 1px 1px rgba(255,160,160,.35); position: relative; top: 1px; }
+.seal::before { content:''; position:absolute; inset: 13px; border-radius: 50%; border: 2px solid rgba(50,8,10,.6); box-shadow: inset 0 1px 2px rgba(220,150,150,.2), 0 1px 1px rgba(220,150,150,.18); }
+.seal span { font-size: 34px; line-height: 1; color: #4a1314; text-shadow: -1px -1px 1px rgba(60,0,5,.45), 1px 1px 1px rgba(220,160,160,.3); position: relative; top: 1px; }
 .riddle-wrap.open .seal { opacity: 0; transform: scale(.6); pointer-events: none; }
 .letter { position:absolute; left: 5%; right: 5%; bottom: 14px; height: 312px; z-index: 2; background: #fbf6ee; color: #4a0d1a; border-radius: 4px;
   padding: 26px 30px; box-shadow: 0 6px 20px rgba(74,13,26,.18); transition: transform .8s cubic-bezier(.3,.8,.3,1) .45s; overflow: auto;
   background-image: repeating-linear-gradient(transparent 0 33px, rgba(181,23,47,.08) 33px 34px); }
 .riddle-wrap.open .letter { transform: translateY(-310px); }
-.letter-top { display:flex; justify-content:space-between; align-items:center; font-family: var(--script); font-size: 30px; color: #b5172f; }
-.letter .shuffle { background:none; border: 1px solid #b5172f; color: #b5172f; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: transform .4s; }
+.letter-top { display:flex; justify-content:space-between; align-items:center; font-family: var(--script); font-size: 30px; color: #5c1a1a; }
+.letter .shuffle { background:none; border: 1px solid #5c1a1a; color: #5c1a1a; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: transform .4s; }
 .letter .shuffle:hover { transform: rotate(180deg); }
 .letter .riddle-q { font-family: var(--serif); font-weight: 500; font-size: clamp(21px, 2.6vw, 27px); line-height: 1.3; margin: 14px 0 20px; color: #4a0d1a; }
-.letter .reveal { background: #b5172f; color: #fbf6ee; border: 0; padding: 10px 20px; border-radius: 999px; font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+.letter .reveal { background: #5c1a1a; color: #fbf6ee; border: 0; padding: 10px 20px; border-radius: 999px; font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
 .letter .reveal:hover { background: #5e0b1c; }
-.letter .riddle-a { font-family: var(--serif); font-style: italic; font-size: 22px; color: #b5172f; margin: 0; animation: pop .5s ease; }
+.letter .riddle-a { font-family: var(--serif); font-style: italic; font-size: 22px; color: #5c1a1a; margin: 0; animation: pop .5s ease; }
 .env-hint { margin: 22px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); transition: opacity .3s; }
 .riddle-wrap.open .env-hint { opacity: 0; height: 0; margin: 0; }
 @media (max-width: 760px) {
