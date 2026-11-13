@@ -22,5 +22,4 @@ export const riddles = [
   { q: "Bad dream of darkness and a female horse (9)", a: "Nightmare: NIGHT + MARE." },
   { q: "Ocean's boy brings in autumn, say (6)", a: "Season: SEA + SON. Autumn is one example." },
   { q: "Hear silent, mixed up (6)", a: "Listen, an anagram of \"silent\"." },
-  { q: "Conversation in a dormitory, perhaps? (7,4)", a: "Pillow talk. Gentle cryptic humour, no wordplay needed." },
 ];
