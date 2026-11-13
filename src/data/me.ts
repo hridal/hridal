@@ -3,7 +3,7 @@ export const me = {
   name: 'Hridal',
   tagline: 'Engineer, consultant, essayist.',
   about: [
-    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers in consulting at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial.",
+    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I'm on the AI Society committee and the department's EDI rep, and I like problems that sit somewhere between the technical and the commercial.",
     "Outside the degree I write essays on my Substack, play netball, padel and boulder, and sketch when I get the chance.",
   ],
   facts: [
@@ -13,18 +13,18 @@ export const me = {
   ],
   education: [
     { school: 'Imperial College London', detail: 'MEng Materials Science and Engineering', period: 'Sep 2024 — Jun 2028' },
-    { school: 'Kendrick School', detail: 'A Levels: Mathematics, Physics, Philosophy. AS Economics, AS Further Mathematics. Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
+    { school: 'Kendrick School', detail: 'A Levels: AAAA (Mathematics, Physics, Philosophy; AS Economics, AS Further Mathematics). Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
   ],
   projects: [
-    { title: 'Smart Jewellery Health Tracker (Entrepreneurship group project)', period: 'Oct 2026 — Present' },
+    { title: 'Smart Bracelet Start-up (Entrepreneurship module, team of 4)', period: 'Oct 2026 — Present' },
     { title: 'Machine Learning Classification of Materials', period: 'Oct 2025 — Dec 2025' },
-    { title: 'Monte Carlo Simulation of Polymer Brushes', period: 'Oct 2024 — Dec 2024' },
   ],
   skills: [
-    { group: 'Technical', items: ['Python', 'Machine learning', 'SQL', 'Excel (financial modelling)', 'SolidWorks', 'COMSOL Multiphysics', 'AI Fundamentals'] },
-    { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction', 'Essay writing'] },
+    { group: 'Technical', items: ['Python (data analysis, machine learning)', 'SQL', 'Excel (financial modelling)', 'PowerPoint', 'Claude'] },
+    { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction', 'Analytical essays on Substack'] },
+    { group: 'Courses', items: ['AI Safety and Practices'] },
     { group: 'Languages', items: ['English (native)', 'Hindi (fluent)', 'Gujarati (fluent)'] },
-    { group: 'Interests', items: ['Investing & markets', 'Netball', 'Padel', 'Bouldering', 'Sketching & painting', 'AI Society'] },
+    { group: 'Interests', items: ['Investing and markets', 'Netball', 'Padel', 'Bouldering', 'Painting'] },
   ],
   email: 'hridal.gujrati@gmail.com',
   links: [
