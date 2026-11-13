@@ -3,8 +3,8 @@ export const me = {
   name: 'Hridal',
   tagline: 'Engineer, consultant, essayist.',
   about: [
-    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I'm on the AI Society committee and the department's EDI rep, and I like problems that sit somewhere between the technical and the commercial.",
-    "Outside the degree I write essays on my Substack, play netball, padel and boulder, and sketch when I get the chance.",
+    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
+    "Outside the degree I write essays on my Substack, play netball, padel and boulder, and paint when I get the chance.",
   ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },
