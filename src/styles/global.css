@@ -233,3 +233,4 @@ html { color-scheme: light; }
 .now-note { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin: 0; }
 @media (max-width: 900px) { .now-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .now-grid { grid-template-columns: 1fr; } }
+.now-top i svg { display:block; }

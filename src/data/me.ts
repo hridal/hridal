@@ -13,8 +13,8 @@ export const me = {
   // The "Current favourites" section. Change these whenever you like.
   favourites: [
     { label: 'Song', icon: '♫', title: 'Song name', note: 'Artist' },
-    { label: 'Book', icon: '❦', title: 'Book title', note: 'Author' },
-    { label: 'Film', icon: '❖', title: 'Film title', note: 'Director or year' },
+    { label: 'Book', icon: 'book', title: 'Book title', note: 'Author' },
+    { label: 'Film', icon: 'film', title: 'Film title', note: 'Director or year' },
     { label: 'Topic', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
     { label: 'Hobby', icon: '♡', title: 'Padel', note: 'with bouldering a close second' },
     { label: 'Thing to write about', icon: '✎', title: 'Topic', note: 'Essays on my Substack' },

@@ -6,6 +6,10 @@ import { riddles } from '../data/riddles';
 const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
   .map(async e => ({ ...e, Content: (await render(e)).Content })));
+const icons: Record<string, string> = {
+  book: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 4 4.5v14c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-14c-4 0-6.5.5-8 2z"/><path d="M12 6.5v14"/></svg>',
+  film: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 8h4M3 12h4M3 16h4M17 8h4M17 12h4M17 16h4"/></svg>',
+};
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 ---
 <Base>
@@ -72,7 +76,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     <h2><span>02</span>Current favourites</h2>
     <div class="now-grid">{me.favourites.map(c => (
       <div class="now-card">
-        <div class="now-top"><span>{c.label}</span><i>{c.icon}</i></div>
+        <div class="now-top"><span>{c.label}</span>{icons[c.icon] ? <i set:html={icons[c.icon]} /> : <i>{c.icon}</i>}</div>
         <p class="now-title">{c.title}</p>
         <p class="now-note">{c.note}</p>
       </div>
