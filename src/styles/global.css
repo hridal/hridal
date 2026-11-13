@@ -4,8 +4,8 @@
   --paper: #f7f0e3;
   --ink: #5c1a1a;
   --muted: #9a6b6b;
-  --line: #f0cdd3;
-  --pink: #f6dde1;
+  --line: #ffd3d1;
+  --pink: #ffdad8;
   --accent: #b5172f;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --script: 'Pinyon Script', cursive;
@@ -218,6 +218,6 @@ html { color-scheme: light; }
 .facts div { border-top-color: var(--line); }
 .name-card { border-left: 2px solid var(--line); }
 .list a:hover { background: linear-gradient(90deg, var(--pink), transparent); }
-.letter { background-image: repeating-linear-gradient(transparent 0 33px, rgba(240,205,211,.6) 33px 34px) !important; }
+.letter { background-image: repeating-linear-gradient(transparent 0 33px, rgba(255,211,209,.9) 33px 34px) !important; }
 
 .name-card .note { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
