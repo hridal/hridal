@@ -1,7 +1,7 @@
 // Edit everything about you in this one file.
 export const me = {
   name: 'Hridal',
-  tagline: 'Materials engineer at Imperial, with a soft spot for consulting, markets and a good riddle.',
+  tagline: 'Engineer, consultant, essayist.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers in consulting at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial.",
     "Outside the degree I write essays on my Substack, play netball, padel and boulder, and sketch when I get the chance.",
