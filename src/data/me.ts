@@ -13,7 +13,7 @@ export const me = {
   ],
   education: [
     { school: 'Imperial College London', detail: 'MEng Materials Science and Engineering', period: 'Sep 2024 — Jun 2028' },
-    { school: 'Kendrick School', detail: 'A Levels: AAAA (Mathematics, Physics, Philosophy; AS Economics, AS Further Mathematics). Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
+    { school: 'Kendrick School', detail: 'A Levels: Mathematics, Physics, Philosophy; AS Economics, AS Further Mathematics. Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
   ],
   projects: [
     { title: 'Smart Bracelet Start-up (Entrepreneurship module, team of 4)', period: 'Oct 2026 — Present' },
