@@ -10,13 +10,14 @@ export const me = {
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
     "Outside the degree I write essays on my Substack, play netball, padel and boulder, and paint when I get the chance.",
   ],
-  // The "Currently" section. Change these whenever you like.
-  currently: [
-    { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
-    { label: 'Reading', icon: '❦', title: 'Book title', note: 'Author' },
-    { label: 'Writing', icon: '✎', title: 'My next Substack essay', note: 'Topic coming soon' },
-    { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
-    { label: 'Current hobbies', icon: '♡', title: 'Padel & bouldering', note: 'plus netball and painting' },
+  // The "Favourites" section. Change these whenever you like.
+  favourites: [
+    { label: 'Favourite song', icon: '♫', title: 'Song name', note: 'Artist' },
+    { label: 'Favourite book', icon: '❦', title: 'Book title', note: 'Author' },
+    { label: 'Favourite film', icon: '❖', title: 'Film title', note: 'Director or year' },
+    { label: 'Favourite topic', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
+    { label: 'Favourite hobby', icon: '♡', title: 'Padel', note: 'with bouldering a close second' },
+    { label: 'Favourite thing to write about', icon: '✎', title: 'Topic', note: 'Essays on my Substack' },
   ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },

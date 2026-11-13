@@ -68,9 +68,9 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     </div>
   </section>
 
-  <section class="block" id="now">
-    <h2><span>02</span>Currently</h2>
-    <div class="now-grid">{me.currently.map(c => (
+  <section class="block" id="favourites">
+    <h2><span>02</span>Favourites</h2>
+    <div class="now-grid">{me.favourites.map(c => (
       <div class="now-card">
         <div class="now-top"><span>{c.label}</span><i>{c.icon}</i></div>
         <p class="now-title">{c.title}</p>
