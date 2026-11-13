@@ -1,7 +1,8 @@
 // Edit everything about you in this one file.
 export const me = {
   name: 'Hridal',
-  pronunciation: 'said just like “riddle”',
+  pronunciation: '/ ˈrɪd.əl /',
+  soundsLike: 'the H is silent, so it’s said just like “riddle”',
   origin: 'noun · Sanskrit',
   meaning: 'Pure of heart; a heart of gold.',
   tagline: 'Engineer, consultant, essayist.',
