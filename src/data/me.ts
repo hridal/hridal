@@ -16,6 +16,7 @@ export const me = {
     { school: 'Kendrick School', detail: 'A Levels: Mathematics, Physics, Philosophy. AS Economics, AS Further Mathematics. Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
   ],
   projects: [
+    { title: 'Smart Jewellery Health Tracker (Entrepreneurship group project)', period: 'Oct 2026 — Present' },
     { title: 'Machine Learning Classification of Materials', period: 'Oct 2025 — Dec 2025' },
     { title: 'Monte Carlo Simulation of Polymer Brushes', period: 'Oct 2024 — Dec 2024' },
   ],
