@@ -1,16 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@400;500&display=swap');
 
 :root {
-  --paper: #f4efe6;
-  --ink: #1d1a17;
-  --muted: #7a7066;
-  --line: #d9cfbf;
-  --accent: #7b2d26;   /* oxblood */
-  --serif: 'Fraunces', Georgia, serif;
-  --sans: 'Inter', system-ui, sans-serif;
+  --paper: #f6eee1;     /* cream */
+  --ink: #4a0d1a;       /* deep burgundy */
+  --muted: #8a5a60;
+  --line: #e2cfc0;
+  --accent: #b5172f;    /* cherry red */
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --script: 'Pinyon Script', cursive;
+  --sans: 'Jost', system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --paper:#16130f; --ink:#ece4d6; --muted:#9a8f82; --line:#332c25; --accent:#d9826f; }
+  :root { --paper:#2a0a12; --ink:#f6eee1; --muted:#c79a9f; --line:#4d1d27; --accent:#e5485f; }
 }
 * { box-sizing: border-box; }
 html { background: var(--paper); color: var(--ink); }
@@ -137,3 +138,27 @@ h4 ~ h4 { margin-top: 40px; }
 .riddle-a { font-family: var(--serif); font-style: italic; font-size: clamp(22px, 2.6vw, 30px); margin: 0; animation: pop .5s ease; }
 @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 760px) { .riddle { padding: 30px 26px; } }
+
+/* ---------- script type + name card ---------- */
+body { font-size: 17px; }
+.mark { font-family: var(--script); font-style: normal; font-size: 34px; letter-spacing: 0; }
+.intro h1 { font-family: var(--script); font-weight: 400; letter-spacing: 0; line-height: 1; font-size: clamp(90px, 16vw, 210px); color: var(--ink); }
+.intro h1 em { color: var(--accent); }
+.name-row { display:grid; grid-template-columns: auto 1fr; gap: 50px; align-items: center; }
+.name-card { border-left: 1px solid var(--accent); padding: 6px 0 6px 28px; max-width: 320px; }
+.name-card .word { font-family: var(--serif); font-size: 30px; font-weight: 500; margin: 0; }
+.name-card .say { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 20px; margin: 2px 0 12px; }
+.name-card .pos { font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); margin: 0 0 8px; }
+.name-card .mean { font-family: var(--serif); font-size: 19px; line-height: 1.45; margin: 0; }
+.tagline { font-size: clamp(22px, 2.6vw, 30px); }
+section.block h2, .sec-title { font-family: var(--script); font-weight: 400; font-size: 46px; letter-spacing: 0; line-height: 1.1; color: var(--accent); }
+.row h3, .list .t, .facts b { font-weight: 500; }
+.row h3 em { font-style: italic; }
+.contact a.big { font-family: var(--script); font-style: normal; font-size: clamp(40px, 7vw, 88px); letter-spacing: 0; }
+.riddle { background: linear-gradient(135deg, var(--accent), #6b0f22); }
+.riddle-q { font-weight: 400; }
+.riddle::after { font-family: var(--script); }
+article h1 { font-family: var(--script); font-weight: 400; letter-spacing: 0; font-size: clamp(54px, 7vw, 84px); line-height: 1.05; }
+.prose { font-size: 21px; font-weight: 400; }
+.prose > p:first-of-type::first-letter { font-family: var(--script); font-style: normal; font-size: 90px; }
+@media (max-width: 760px) { .name-row { grid-template-columns: 1fr; gap: 20px; } }
