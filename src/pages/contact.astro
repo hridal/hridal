@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { me } from '../data/me';
+---
+<Base title="Contact">
+  <div class="tab-page">
+  <section class="contact" id="contact">
+    <p class="eyebrow">Contact</p>
+    <a class="big" href={`mailto:${me.email}`}>{me.email}</a>
+    <div class="socials">{me.links.map(l => <a href={l.href}>{l.label} ↗</a>)}</div>
+  </section>
+  </div>
+</Base>

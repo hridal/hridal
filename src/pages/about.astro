@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { me } from '../data/me';
+---
+<Base title="About">
+  <div class="tab-page">
+  <section class="block" id="about">
+    <h2>About me</h2>
+    <div>
+      <div class="lead">{me.about.map(p => <p>{p}</p>)}</div>
+      <div class="facts">{me.facts.map(f => <div><span>{f.label}</span><b>{f.value}</b></div>)}</div>
+    </div>
+  </section>
+  </div>
+</Base>

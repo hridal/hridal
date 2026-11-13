@@ -234,3 +234,10 @@ html { color-scheme: light; }
 @media (max-width: 900px) { .now-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .now-grid { grid-template-columns: 1fr; } }
 .now-top i svg { display:block; }
+
+/* ---------- tabs ---------- */
+.tab-page { min-height: 60vh; }
+.tab-page section.block { border-bottom: 0; padding-top: 70px; }
+.tab-page .contact { border-bottom: 0; padding: 140px 0; }
+nav a { padding-bottom: 4px; border-bottom: 1px solid transparent; }
+nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }

@@ -1,16 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getCollection, render } from 'astro:content';
 import { me } from '../data/me';
 import { riddles } from '../data/riddles';
-const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
-  .map(async e => ({ ...e, Content: (await render(e)).Content })));
-const icons: Record<string, string> = {
-  book: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 4 4.5v14c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-14c-4 0-6.5.5-8 2z"/><path d="M12 6.5v14"/></svg>',
-  film: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 8h4M3 12h4M3 16h4M17 8h4M17 12h4M17 16h4"/></svg>',
-};
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 ---
 <Base>
   <section class="intro">
@@ -26,7 +17,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
       </div>
     </div>
     <p class="tagline">{me.tagline}</p>
-    <div class="actions"><a class="btn solid" href="#contact">Get in touch</a><a class="btn" href="/cv.pdf" download>Download CV</a></div>
+    <div class="actions"><a class="btn solid" href="/contact">Get in touch</a><a class="btn" href="/cv.pdf" download>Download CV</a></div>
   </section>
 
 
@@ -63,55 +54,4 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     wrap.querySelector('.shuffle').addEventListener('click', e => { e.stopPropagation(); pick(); });
     pick();
   </script>
-
-  <section class="block" id="about">
-    <h2><span>01</span>About me</h2>
-    <div>
-      <div class="lead">{me.about.map(p => <p>{p}</p>)}</div>
-      <div class="facts">{me.facts.map(f => <div><span>{f.label}</span><b>{f.value}</b></div>)}</div>
-    </div>
-  </section>
-
-  <section class="block" id="favourites">
-    <h2><span>02</span>Current favourites</h2>
-    <div class="now-grid">{me.favourites.map(c => (
-      <div class="now-card">
-        <div class="now-top"><span>{c.label}</span>{icons[c.icon] ? <i set:html={icons[c.icon]} /> : <i>{c.icon}</i>}</div>
-        <p class="now-title">{c.title}</p>
-        <p class="now-note">{c.note}</p>
-      </div>
-    ))}</div>
-  </section>
-
-  <section class="block" id="experience">
-    <h2><span>03</span>Experience</h2>
-    <div>
-      <h4>Work &amp; leadership</h4>
-      {exp.map(({ data, Content }) => (
-      <div class="row">
-        <div class="when">{data.period}</div>
-        <div><h3>{data.role}, <em>{data.org}</em></h3><div class="body"><Content /></div></div>
-      </div>
-    ))}
-
-      <h4>Education</h4>
-      {me.education.map(e => <div class="row"><div class="when">{e.period}</div><div><h3>{e.school}</h3><div class="body">{e.detail}</div></div></div>)}
-      <h4>Projects</h4>
-      {me.projects.map(p => <div class="row"><div class="when">{p.period}</div><div><h3>{p.title}</h3></div></div>)}
-      <h4>Skills</h4>
-      <div class="skills">{me.skills.map(s => <div><span>{s.group}</span><div class="tags">{s.items.map(i => <em>{i}</em>)}</div></div>)}</div>
-      <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>
-    </div>
-  </section>
-
-  <section class="block" id="essays">
-    <h2><span>04</span>Essays</h2>
-    <ul class="list">{essays.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
-  </section>
-
-  <section class="contact" id="contact">
-    <p class="eyebrow"><span>05</span> Contact</p>
-    <a class="big" href={`mailto:${me.email}`}>{me.email}</a>
-    <div class="socials">{me.links.map(l => <a href={l.href}>{l.label} ↗</a>)}</div>
-  </section>
 </Base>

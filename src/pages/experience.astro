@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import { me } from '../data/me';
+import { getCollection, render } from 'astro:content';
+const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
+  .map(async e => ({ ...e, Content: (await render(e)).Content })));
+---
+<Base title="Experience">
+  <div class="tab-page">
+  <section class="block" id="experience">
+    <h2>Experience</h2>
+    <div>
+      <h4>Work &amp; leadership</h4>
+      {exp.map(({ data, Content }) => (
+      <div class="row">
+        <div class="when">{data.period}</div>
+        <div><h3>{data.role}, <em>{data.org}</em></h3><div class="body"><Content /></div></div>
+      </div>
+    ))}
+
+      <h4>Education</h4>
+      {me.education.map(e => <div class="row"><div class="when">{e.period}</div><div><h3>{e.school}</h3><div class="body">{e.detail}</div></div></div>)}
+      <h4>Projects</h4>
+      {me.projects.map(p => <div class="row"><div class="when">{p.period}</div><div><h3>{p.title}</h3></div></div>)}
+      <h4>Skills</h4>
+      <div class="skills">{me.skills.map(s => <div><span>{s.group}</span><div class="tags">{s.items.map(i => <em>{i}</em>)}</div></div>)}</div>
+      <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>
+    </div>
+  </section>
+  </div>
+</Base>

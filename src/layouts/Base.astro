@@ -2,7 +2,8 @@
 import '../styles/global.css';
 import { me } from '../data/me';
 const { title, description = me.tagline } = Astro.props;
-const links = [['about','About'],['favourites','Favourites'],['experience','Experience'],['essays','Essays'],['contact','Contact']];
+const links = [['/','Home'],['/about','About'],['/favourites','Favourites'],['/experience','Experience'],['/essays','Essays'],['/contact','Contact']];
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <!doctype html>
 <html lang="en">
@@ -17,7 +18,7 @@ const links = [['about','About'],['favourites','Favourites'],['experience','Expe
   <div class="wrap">
     <header class="top">
       <a class="mark" href="/">hridal<span>.</span></a>
-      <nav>{links.map(([id, label]) => <a href={`/#${id}`}>{label}</a>)}</nav>
+      <nav>{links.map(([href, label]) => <a href={href} aria-current={(href === '/' ? here === '/' : here.startsWith(href)) ? 'page' : undefined}>{label}</a>)}</nav>
     </header>
     <main><slot /></main>
     <footer>
