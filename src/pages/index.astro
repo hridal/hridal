@@ -70,22 +70,15 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
 
   <section class="block" id="experience">
     <h2><span>02</span>Experience</h2>
-    <div>{exp.map(({ data, Content }) => (
+    <div>
+      <h4>Work &amp; leadership</h4>
+      {exp.map(({ data, Content }) => (
       <div class="row">
         <div class="when">{data.period}</div>
         <div><h3>{data.role}, <em>{data.org}</em></h3><div class="body"><Content /></div></div>
       </div>
-    ))}</div>
-  </section>
+    ))}
 
-  <section class="block" id="essays">
-    <h2><span>03</span>Essays</h2>
-    <ul class="list">{essays.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
-  </section>
-
-  <section class="block" id="cv">
-    <h2><span>04</span>CV</h2>
-    <div>
       <h4>Education</h4>
       {me.education.map(e => <div class="row"><div class="when">{e.period}</div><div><h3>{e.school}</h3><div class="body">{e.detail}</div></div></div>)}
       <h4>Projects</h4>
@@ -96,8 +89,13 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     </div>
   </section>
 
+  <section class="block" id="essays">
+    <h2><span>03</span>Essays</h2>
+    <ul class="list">{essays.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
+  </section>
+
   <section class="contact" id="contact">
-    <p class="eyebrow"><span>05</span> Contact</p>
+    <p class="eyebrow"><span>04</span> Contact</p>
     <a class="big" href={`mailto:${me.email}`}>{me.email}</a>
     <div class="socials">{me.links.map(l => <a href={l.href}>{l.label} ↗</a>)}</div>
   </section>
