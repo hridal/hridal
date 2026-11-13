@@ -1,6 +1,6 @@
 // Edit everything about you in this one file.
 export const me = {
-  name: 'Hemant',
+  name: 'Hridal',
   tagline: 'Engineering student, consultant-in-training and occasional essayist.',
   about: [
     "Write two or three short paragraphs about yourself here. Who you are, what you're studying, and what you care about.",
