@@ -68,8 +68,19 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
     </div>
   </section>
 
+  <section class="block" id="now">
+    <h2><span>02</span>Currently</h2>
+    <div class="now-grid">{me.currently.map(c => (
+      <div class="now-card">
+        <div class="now-top"><span>{c.label}</span><i>{c.icon}</i></div>
+        <p class="now-title">{c.title}</p>
+        <p class="now-note">{c.note}</p>
+      </div>
+    ))}</div>
+  </section>
+
   <section class="block" id="experience">
-    <h2><span>02</span>Experience</h2>
+    <h2><span>03</span>Experience</h2>
     <div>
       <h4>Work &amp; leadership</h4>
       {exp.map(({ data, Content }) => (
@@ -90,12 +101,12 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
   </section>
 
   <section class="block" id="essays">
-    <h2><span>03</span>Essays</h2>
+    <h2><span>04</span>Essays</h2>
     <ul class="list">{essays.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
   </section>
 
   <section class="contact" id="contact">
-    <p class="eyebrow"><span>04</span> Contact</p>
+    <p class="eyebrow"><span>05</span> Contact</p>
     <a class="big" href={`mailto:${me.email}`}>{me.email}</a>
     <div class="socials">{me.links.map(l => <a href={l.href}>{l.label} ↗</a>)}</div>
   </section>

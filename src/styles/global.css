@@ -221,3 +221,15 @@ html { color-scheme: light; }
 .letter { background-image: repeating-linear-gradient(transparent 0 33px, rgba(253,219,211,1) 33px 34px) !important; }
 
 .name-card .note { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
+
+/* ---------- currently ---------- */
+.now-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.now-card { background: var(--pink); border-radius: 14px; padding: 20px 22px 22px; transition: transform .25s, box-shadow .25s; }
+.now-card:hover { transform: translateY(-4px) rotate(-.6deg); box-shadow: 0 14px 30px -18px rgba(108,32,45,.5); }
+.now-card:nth-child(even):hover { transform: translateY(-4px) rotate(.6deg); }
+.now-top { display:flex; justify-content:space-between; align-items:center; font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); }
+.now-top i { font-style: normal; font-size: 18px; color: var(--ink); }
+.now-title { font-family: var(--serif); font-weight: 500; font-size: 24px; line-height: 1.15; margin: 16px 0 4px; }
+.now-note { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin: 0; }
+@media (max-width: 900px) { .now-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .now-grid { grid-template-columns: 1fr; } }

@@ -10,6 +10,15 @@ export const me = {
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
     "Outside the degree I write essays on my Substack, play netball, padel and boulder, and paint when I get the chance.",
   ],
+  // The "Currently" section. Change these whenever you like.
+  currently: [
+    { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
+    { label: 'Reading', icon: '❦', title: 'Book title', note: 'Author' },
+    { label: 'Writing', icon: '✎', title: 'My next Substack essay', note: 'Topic coming soon' },
+    { label: 'Vibecoding', icon: '✦', title: 'This website', note: 'Built entirely by prompting Claude' },
+    { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
+    { label: 'Obsessed with', icon: '♡', title: 'Padel', note: 'and bouldering, when my arms allow' },
+  ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },
     { label: 'Based in', value: 'London' },
