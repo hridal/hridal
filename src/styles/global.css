@@ -221,4 +221,3 @@ html { color-scheme: light; }
 .letter { background-image: repeating-linear-gradient(transparent 0 33px, rgba(255,211,209,.9) 33px 34px) !important; }
 
 .name-card .note { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
-.letter .clue-hint { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: #9a6b6b; margin: -10px 0 18px; }
