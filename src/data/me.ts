@@ -1,9 +1,9 @@
 // Edit everything about you in this one file.
 export const me = {
   name: 'Hridal',
-  pronunciation: '/ hri · dhul /',
+  pronunciation: 'said just like “riddle”',
   origin: 'noun · Sanskrit',
-  meaning: 'From hṛdaya, the heart. Of the heart; heartfelt.',
+  meaning: 'Pure of heart; a heart of gold.',
   tagline: 'Engineer, consultant, essayist.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",

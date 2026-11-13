@@ -1,17 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@400;500&display=swap');
 
 :root {
-  --paper: #f6eee1;     /* cream */
-  --ink: #4a0d1a;       /* deep burgundy */
-  --muted: #8a5a60;
-  --line: #e2cfc0;
-  --accent: #b5172f;    /* cherry red */
+  --paper: #f7f0e3;
+  --ink: #5c1a1a;
+  --muted: #9a6b6b;
+  --line: #f0cdd3;
+  --pink: #f6dde1;
+  --accent: #b5172f;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --script: 'Pinyon Script', cursive;
   --sans: 'Jost', system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --paper:#2a0a12; --ink:#f6eee1; --muted:#c79a9f; --line:#4d1d27; --accent:#e5485f; }
+  --tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .08' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 * { box-sizing: border-box; }
 html { background: var(--paper); color: var(--ink); }
@@ -169,16 +168,26 @@ article h1 { font-family: var(--script); font-weight: 400; letter-spacing: 0; fo
 .riddle-wrap:not(.open) .envelope:hover { transform: translateY(-4px) rotate(-1deg); }
 .envelope:focus-visible { box-shadow: 0 0 0 3px var(--accent); }
 .riddle-wrap.open .envelope { cursor: default; }
-.env-back { position:absolute; inset:0; background: #e4d3bd; border-radius: 6px; box-shadow: 0 24px 50px -20px rgba(74,13,26,.55); }
-.env-front { position:absolute; inset:0; z-index: 3; border-radius: 6px; background: linear-gradient(160deg, #f8efe2, #ecdcc6); filter: drop-shadow(0 -1px 0 rgba(94,11,28,.12));
-  clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%); display:flex; align-items:flex-end; justify-content:center; padding-bottom: 34px; }
-.env-to { font-family: var(--script); font-size: 34px; color: #7a1427; }
-.env-flap { position:absolute; inset: 0 0 auto 0; height: 62%; z-index: 4; background: linear-gradient(180deg, #f3e7d6, #e3d0b8); filter: drop-shadow(0 2px 2px rgba(94,11,28,.18));
-  clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top center; transition: transform .7s cubic-bezier(.4,.1,.2,1), z-index 0s .35s; border-radius: 6px 6px 0 0; }
+.env-back { position:absolute; inset:0; background: var(--tex), #e9dfcb; border-radius: 4px; box-shadow: 0 26px 50px -24px rgba(92,26,26,.45), 0 2px 6px rgba(92,26,26,.08); }
+.env-front { position:absolute; inset:0; z-index: 3; pointer-events:none; }
+.env-front i { position:absolute; inset:0; border-radius: 4px; background: var(--tex), var(--c); }
+.env-front .fl { --c: #efe6d4; clip-path: polygon(0 0, 50% 54%, 0 100%); }
+.env-front .fr { --c: #ece2cf; clip-path: polygon(100% 0, 50% 54%, 100% 100%); }
+.env-front .fb { --c: #f2eadb; clip-path: polygon(0 100%, 50% 47%, 100% 100%); }
+.env-front .edge { display:none; background:
+   linear-gradient(to top right, transparent calc(50% - 1px), rgba(92,26,26,.13) 50%, transparent calc(50% + 1px)) left bottom / 50% 53% no-repeat,
+   linear-gradient(to top left, transparent calc(50% - 1px), rgba(92,26,26,.13) 50%, transparent calc(50% + 1px)) right bottom / 50% 53% no-repeat; }
+.env-flap { position:absolute; inset: 0 0 auto 0; height: 60%; z-index: 5; background: var(--tex), #f4ecdd;
+  clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top center; transition: transform .7s cubic-bezier(.4,.1,.2,1), z-index 0s .35s; border-radius: 4px 4px 0 0; }
+.envelope .flap-shadow { position:absolute; inset: 0 0 auto 0; height: 61.5%; z-index: 4; background: rgba(92,26,26,.16); clip-path: polygon(0 0, 100% 0, 50% 100%); filter: blur(2px); transition: opacity .3s; }
+.riddle-wrap.open .flap-shadow { opacity: 0; }
 .riddle-wrap.open .env-flap { transform: rotateX(180deg); z-index: 1; }
-.seal { position:absolute; left: 50%; top: 56%; z-index: 5; width: 74px; height: 74px; margin: -37px 0 0 -37px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e0384f, #9c1029 72%); color: #fbf6ee; display:grid; place-items:center;
-  font-size: 32px; line-height: 1; box-shadow: 0 4px 10px rgba(74,13,26,.35), inset 0 0 0 5px rgba(255,255,255,.12), inset 0 0 0 7px rgba(94,11,28,.25); transition: opacity .3s, transform .3s; }
+.seal { position:absolute; left: 50%; top: 58%; z-index: 6; width: 96px; height: 92px; margin: -46px 0 0 -48px;
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%; background: radial-gradient(circle at 38% 32%, #d13a3f, #a3171f 55%, #7e0f16);
+  display:grid; place-items:center; box-shadow: 0 5px 10px rgba(92,26,26,.35), inset -3px -4px 8px rgba(0,0,0,.25), inset 3px 3px 6px rgba(255,140,140,.25);
+  transition: opacity .3s, transform .3s; }
+.seal::before { content:''; position:absolute; inset: 13px; border-radius: 50%; border: 2px solid rgba(110,10,18,.55); box-shadow: inset 0 1px 2px rgba(255,150,150,.25), 0 1px 1px rgba(255,150,150,.2); }
+.seal span { font-size: 34px; line-height: 1; color: #95141c; text-shadow: -1px -1px 1px rgba(60,0,5,.45), 1px 1px 1px rgba(255,160,160,.35); position: relative; top: 1px; }
 .riddle-wrap.open .seal { opacity: 0; transform: scale(.6); pointer-events: none; }
 .letter { position:absolute; left: 5%; right: 5%; bottom: 14px; height: 312px; z-index: 2; background: #fbf6ee; color: #4a0d1a; border-radius: 4px;
   padding: 26px 30px; box-shadow: 0 6px 20px rgba(74,13,26,.18); transition: transform .8s cubic-bezier(.3,.8,.3,1) .45s; overflow: auto;
@@ -199,3 +208,14 @@ article h1 { font-family: var(--script); font-weight: 400; letter-spacing: 0; fo
   .riddle-wrap.open { padding-top: 320px; }
   .riddle-wrap.open .letter { transform: translateY(-300px); }
 }
+
+/* ---------- light pink accents ---------- */
+html { color-scheme: light; }
+::selection { background: var(--pink); color: var(--ink); }
+.tags em, .tags span { background: var(--pink); border-color: var(--pink); color: var(--ink); }
+.btn:not(.solid):hover { background: var(--pink); color: var(--ink); border-color: var(--pink); }
+.btn.solid:hover { background: var(--accent); border-color: var(--accent); }
+.facts div { border-top-color: var(--line); }
+.name-card { border-left: 2px solid var(--line); }
+.list a:hover { background: linear-gradient(90deg, var(--pink), transparent); }
+.letter { background-image: repeating-linear-gradient(transparent 0 33px, rgba(240,205,211,.6) 33px 34px) !important; }
