@@ -284,3 +284,9 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
   .top { padding: 20px 0; gap: 10px; }
   nav { gap: 6px 18px; }
 }
+
+.name-card ol.mean { margin: 0; padding-left: 18px; }
+.name-card ol.mean li { margin-bottom: 3px; }
+.name-card ol.mean li::marker { font-family: var(--sans); font-size: 11px; color: var(--muted); }
+.name-card .ety { font-family: var(--serif); font-size: 14px; color: var(--muted); margin: 6px 0 0; }
+@media (max-width: 760px) { .name-card .ety { font-size: 13px; } }

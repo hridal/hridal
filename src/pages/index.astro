@@ -12,7 +12,8 @@ import { riddles } from '../data/riddles';
         <p class="word">Hridal</p>
         <p class="say">{me.pronunciation}</p>
         <p class="pos">{me.origin}</p>
-        <p class="mean">{me.meaning}</p>
+        <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
+        <p class="ety">{me.etymology}</p>
         <p class="note">{me.soundsLike}</p>
       </div>
     </div>

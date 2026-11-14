@@ -3,8 +3,12 @@ export const me = {
   name: 'Hridal',
   pronunciation: '/ hri · dhul /',
   soundsLike: 'the H is silent',
-  origin: 'noun · Sanskrit',
-  meaning: 'Pure of heart; a heart of gold.',
+  origin: 'name · Sanskrit',
+  meaning: [
+    'One who is pure of heart.',
+    'A person with a heart of gold; kind, sincere and warm.',
+  ],
+  etymology: 'From Sanskrit hṛd / hṛdaya, “heart”.',
   tagline: 'Engineer, consultant, essayist.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
