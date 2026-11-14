@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 export const collections = {
   essays: defineCollection({
     loader: glob({ pattern: '**/*.md', base: './src/content/essays' }),
-    schema: z.object({ title: z.string(), date: z.coerce.date(), summary: z.string().optional(), draft: z.boolean().default(false) }),
+    schema: z.object({ title: z.string(), date: z.coerce.date(), summary: z.string().optional(), category: z.string().default('other'), draft: z.boolean().default(false) }),
   }),
   experience: defineCollection({
     loader: glob({ pattern: '**/*.md', base: './src/content/experience' }),

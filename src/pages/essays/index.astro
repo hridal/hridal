@@ -1,14 +1,65 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { me } from '../../data/me';
+import { categories, currentlyWriting, topics } from '../../data/essays';
 const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.category === c.id) })).filter(g => g.items.length);
 ---
 <Base title="Essays">
   <div class="tab-page">
-  <section class="block" id="essays">
-    <h2>Essays</h2>
-    <ul class="list">{essays.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
-  </section>
+    <section class="block">
+      <h2>Essays</h2>
+      <div>
+        <div class="essay-top">
+          <div class="topic-gen" id="topic-gen">
+            <p class="eyebrow">Need something to write about?</p>
+            <p class="topic" aria-live="polite">Click below for a topic.</p>
+            <div class="topic-actions">
+              <button class="btn solid" id="new-topic">Give me a topic</button>
+              <a class="btn" id="send-topic" href={`mailto:${me.email}`}>I wrote about it</a>
+              <button class="btn ghost" id="share-topic">Share this topic</button>
+            </div>
+            <p class="topic-note">Write something on it, send it my way, and I'll share my favourites here.</p>
+          </div>
+          <div class="writing-card">
+            <p class="eyebrow">Currently writing</p>
+            <p class="w-title">{currentlyWriting.title}</p>
+            <p class="w-note">{currentlyWriting.note}</p>
+            <span class="w-pen">✎</span>
+          </div>
+        </div>
+
+        {groups.map(g => (
+          <div class="essay-group">
+            <h4>{g.name}</h4>
+            <p class="group-blurb">{g.blurb}</p>
+            <ul class="list">{g.items.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </section>
   </div>
+  <script define:vars={{ topics, email: me.email }}>
+    const el = document.querySelector('#topic-gen .topic');
+    const send = document.getElementById('send-topic');
+    const share = document.getElementById('share-topic');
+    let current = '', last = -1;
+    function pick() {
+      let i; do { i = Math.floor(Math.random() * topics.length); } while (i === last && topics.length > 1);
+      last = i; current = topics[i];
+      el.textContent = current; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+      send.href = `mailto:${email}?subject=${encodeURIComponent('Essay: ' + current)}`;
+    }
+    document.getElementById('new-topic').addEventListener('click', pick);
+    share.addEventListener('click', async () => {
+      if (!current) pick();
+      const text = `Essay topic from Hridal: "${current}". Fancy writing about it?`;
+      try {
+        if (navigator.share) await navigator.share({ text, url: location.href });
+        else { await navigator.clipboard.writeText(text + ' ' + location.href); share.textContent = 'Copied!'; setTimeout(() => share.textContent = 'Share this topic', 1500); }
+      } catch (e) {}
+    });
+  </script>
 </Base>
