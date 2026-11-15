@@ -20,17 +20,29 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
           </button>
         ))}</div>
 
-        <div class="picker" id="picker">
-          <p class="eyebrow">What should I make tonight?</p>
-          <p class="pk-q">What are you in the mood for?</p>
-          <div class="chips" id="moods">{moods.map(m => <button class="chip" data-mood={m.id}>{m.label}</button>)}</div>
-          <p class="pk-q">How much time have you got?</p>
-          <div class="chips" id="times">
-            <button class="chip on" data-time="999">Any</button>
-            <button class="chip" data-time="20">20 min or less</button>
-            <button class="chip" data-time="30">30 min or less</button>
+        <div class="cupboard" id="picker">
+          <div class="cb-cornice"></div>
+          <div class="cb-body">
+            <div class="cb-inner">
+              <div class="cb-shelf">
+                <p class="shelf-label">What are you in the mood for?</p>
+                <div class="chips jars" id="moods">{moods.map(m => <button class="chip jar" data-mood={m.id}><span>{m.label}</span></button>)}</div>
+              </div>
+              <div class="cb-shelf">
+                <p class="shelf-label">How much time have you got?</p>
+                <div class="chips jars" id="times">
+                  <button class="chip jar on" data-time="999"><span>Any</span></button>
+                  <button class="chip jar" data-time="20"><span>20 min or less</span></button>
+                  <button class="chip jar" data-time="30"><span>30 min or less</span></button>
+                </div>
+              </div>
+              <div class="cb-shelf last pk-actions"><button class="btn solid" id="suggest">Suggest something</button><span class="pk-count" id="count"></span></div>
+            </div>
+            <button class="cb-door left" aria-label="Open the cupboard"><span class="door-panel"><span class="door-label">What should I<br/>make tonight?</span></span><span class="knob"></span></button>
+            <button class="cb-door right" aria-label="Open the cupboard"><span class="door-panel"></span><span class="knob"></span></button>
           </div>
-          <div class="pk-actions"><button class="btn solid" id="suggest">Suggest something</button><span class="pk-count" id="count"></span></div>
+          <div class="cb-plinth"></div>
+          <p class="env-hint cb-hint">Open the cupboard</p>
         </div>
 
         <div id="recipe-out" class="recipe" hidden></div>
@@ -84,6 +96,8 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
     }));
     document.getElementById('suggest').addEventListener('click', suggest);
     document.querySelectorAll('.meal-card').forEach(c => c.addEventListener('click', () => show(recipes.find(r => r.id === c.dataset.id), 1)));
+    const cb = document.getElementById('picker');
+    cb.querySelectorAll('.cb-door').forEach(d => d.addEventListener('click', () => cb.classList.add('open')));
     updateCount();
   </script>
 </Base>
