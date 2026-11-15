@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { me } from '../data/me';
 const { title, description = me.tagline } = Astro.props;
-const links = [['/','Home'],['/about','About'],['/favourites','Favourites'],['/experience','Experience'],['/essays','Essays'],['/contact','Contact']];
+const links = [['/','Home'],['/about','About'],['/favourites','Favourites'],['/experience','Experience'],['/essays','Essays'],['/kitchen','Kitchen'],['/contact','Contact']];
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <!doctype html>

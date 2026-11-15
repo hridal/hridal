@@ -290,3 +290,35 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
 .name-card ol.mean li::marker { font-family: var(--sans); font-size: 11px; color: var(--muted); }
 .name-card .ety { font-family: var(--serif); font-size: 14px; color: var(--muted); margin: 6px 0 0; }
 @media (max-width: 760px) { .name-card .ety { font-size: 13px; } }
+
+/* ---------- kitchen ---------- */
+.lead-small { font-family: var(--serif); font-size: 21px; line-height: 1.5; margin: 0 0 44px; max-width: 640px; }
+.fav-meals { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 56px; }
+.meal-card { text-align:left; font: inherit; color: inherit; cursor: pointer; background: var(--pink); border: 0; border-radius: 14px; padding: 20px 22px; display:flex; flex-direction:column; gap: 4px; transition: transform .25s, box-shadow .25s; }
+.meal-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -18px rgba(108,32,45,.5); }
+.mc-time { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); }
+.mc-name { font-family: var(--serif); font-weight: 500; font-size: 24px; line-height: 1.15; margin-top: 6px; }
+.mc-blurb { font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 17px; }
+.mc-link { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; margin-top: 10px; }
+.picker { border: 1px solid var(--line); border-radius: 14px; padding: 28px 30px; background: #fffaf3; }
+.pk-q { font-family: var(--serif); font-size: 22px; font-weight: 500; margin: 16px 0 12px; }
+.chips { display:flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 14px var(--sans); color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: background .2s, border-color .2s; }
+.chip:hover { border-color: var(--ink); }
+.chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.pk-actions { display:flex; align-items:center; gap: 16px; margin-top: 26px; flex-wrap: wrap; }
+.pk-actions .btn { cursor: pointer; font-family: var(--sans); }
+.pk-count { font-size: 13px; color: var(--muted); }
+.recipe { margin-top: 26px; border-radius: 14px; background: #fffaf3; border: 1px solid var(--line); padding: 30px; scroll-margin-top: 110px; animation: pop .45s ease; }
+.rc-head { display:flex; justify-content:space-between; gap: 20px; align-items:flex-start; border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 22px; }
+.rc-head h3 { font-family: var(--script); font-weight: 400; font-size: 46px; line-height: 1.1; margin: 4px 0; }
+.rc-head .btn { cursor: pointer; font: 12px var(--sans); letter-spacing: .12em; text-transform: uppercase; background: none; color: var(--ink); white-space: nowrap; }
+.rc-blurb { font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 18px; margin: 0; }
+.rc-body { display:grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.rc-body h5 { font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); font-weight: 500; margin: 0 0 10px; }
+.rc-body ul, .rc-body ol { margin: 0; padding-left: 18px; font-family: var(--serif); font-size: 18px; line-height: 1.5; }
+.rc-body li { margin-bottom: 5px; }
+.rc-where { font-family: var(--serif); font-size: 17px; margin: 0 0 10px; line-height: 1.45; }
+.rc-where b { display:block; font-family: var(--sans); font-weight: 500; font-size: 12px; letter-spacing: .06em; color: var(--ink); }
+.rc-steps { grid-column: 1 / -1; }
+@media (max-width: 760px) { .fav-meals, .rc-body { grid-template-columns: 1fr; } .rc-head { flex-direction: column; } .picker, .recipe { padding: 22px; } }

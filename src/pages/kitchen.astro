@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import { recipes, favourites, moods, whereLabels } from '../data/kitchen';
+const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean);
+---
+<Base title="Kitchen">
+  <div class="tab-page">
+    <section class="block">
+      <h2>Kitchen</h2>
+      <div>
+        <p class="lead-small">Easy, healthy vegetarian food for busy weeknights. These are the meals I keep going back to, plus a little helper for when you can't decide what's for dinner.</p>
+
+        <h4>My favourite weeknight meals</h4>
+        <div class="fav-meals">{favs.map(r => (
+          <button class="meal-card" data-id={r!.id}>
+            <span class="mc-time">{r!.minutes} min · serves {r!.serves}</span>
+            <span class="mc-name">{r!.name}</span>
+            <span class="mc-blurb">{r!.blurb}</span>
+            <span class="mc-link">See recipe →</span>
+          </button>
+        ))}</div>
+
+        <div class="picker" id="picker">
+          <p class="eyebrow">What should I make tonight?</p>
+          <p class="pk-q">What are you in the mood for?</p>
+          <div class="chips" id="moods">{moods.map(m => <button class="chip" data-mood={m.id}>{m.label}</button>)}</div>
+          <p class="pk-q">How much time have you got?</p>
+          <div class="chips" id="times">
+            <button class="chip on" data-time="999">Any</button>
+            <button class="chip" data-time="20">20 min or less</button>
+            <button class="chip" data-time="30">30 min or less</button>
+          </div>
+          <div class="pk-actions"><button class="btn solid" id="suggest">Suggest something</button><span class="pk-count" id="count"></span></div>
+        </div>
+
+        <div id="recipe-out" class="recipe" hidden></div>
+      </div>
+    </section>
+  </div>
+
+  <script define:vars={{ recipes, whereLabels }}>
+    const out = document.getElementById('recipe-out');
+    const count = document.getElementById('count');
+    let mood = null, time = 999, lastId = null;
+    const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    function show(r, matches) {
+      const groups = {};
+      r.ingredients.forEach(i => (groups[i.where] = groups[i.where] || []).push(i.item));
+      out.innerHTML = `
+        <div class="rc-head">
+          <div><p class="eyebrow">${r.minutes} min · serves ${r.serves} · protein: ${esc(r.protein)}</p>
+          <h3>${esc(r.name)}</h3><p class="rc-blurb">${esc(r.blurb)}</p></div>
+          ${matches > 1 ? '<button class="btn" id="another">Try another</button>' : ''}
+        </div>
+        <div class="rc-body">
+          <div><h5>Ingredients</h5><ul>${r.ingredients.map(i => `<li>${esc(i.item)}</li>`).join('')}</ul></div>
+          <div><h5>Where to get it</h5>${Object.entries(groups).map(([w, items]) => `<p class="rc-where"><b>${esc(whereLabels[w] || w)}</b>${items.map(esc).join(', ')}</p>`).join('')}</div>
+          <div class="rc-steps"><h5>Method</h5><ol>${r.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>
+        </div>`;
+      out.hidden = false; lastId = r.id;
+      const again = document.getElementById('another');
+      if (again) again.addEventListener('click', suggest);
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function matching() { return recipes.filter(r => (!mood || r.mood.includes(mood)) && r.minutes <= time); }
+    function suggest() {
+      const list = matching();
+      if (!list.length) { out.hidden = false; out.innerHTML = '<p class="rc-blurb">Nothing matches that combination yet. Try more time or a different mood.</p>'; return; }
+      const pool = list.length > 1 ? list.filter(r => r.id !== lastId) : list;
+      show(pool[Math.floor(Math.random() * pool.length)], list.length);
+    }
+    function updateCount() { const n = matching().length; count.textContent = `${n} recipe${n === 1 ? '' : 's'} match`; }
+
+    document.querySelectorAll('#moods .chip').forEach(b => b.addEventListener('click', () => {
+      const on = b.classList.contains('on');
+      document.querySelectorAll('#moods .chip').forEach(x => x.classList.remove('on'));
+      if (!on) b.classList.add('on'); mood = on ? null : b.dataset.mood; updateCount();
+    }));
+    document.querySelectorAll('#times .chip').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#times .chip').forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); time = +b.dataset.time; updateCount();
+    }));
+    document.getElementById('suggest').addEventListener('click', suggest);
+    document.querySelectorAll('.meal-card').forEach(c => c.addEventListener('click', () => show(recipes.find(r => r.id === c.dataset.id), 1)));
+    updateCount();
+  </script>
+</Base>
