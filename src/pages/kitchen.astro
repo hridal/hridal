@@ -20,6 +20,7 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
           </button>
         ))}</div>
 
+        <h3 class="cb-title">What should I make tonight?</h3>
         <div class="cupboard" id="picker">
           <div class="cb-cornice"></div>
           <div class="cb-body">
@@ -38,7 +39,7 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
               </div>
               <div class="cb-shelf last pk-actions"><button class="btn solid" id="suggest">Suggest something</button><span class="pk-count" id="count"></span></div>
             </div>
-            <button class="cb-door left" aria-label="Open the cupboard"><span class="door-panel"><span class="door-label">What should I<br/>make tonight?</span></span><span class="knob"></span></button>
+            <button class="cb-door left" aria-label="Open the cupboard"><span class="door-panel"></span><span class="knob"></span></button>
             <button class="cb-door right" aria-label="Open the cupboard"><span class="door-panel"></span><span class="knob"></span></button>
           </div>
           <div class="cb-plinth"></div>

@@ -367,3 +367,6 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
   .cupboard.open .cb-door.left { transform: rotateY(-100deg) scaleX(.6); }
   .cupboard.open .cb-door.right { transform: rotateY(100deg) scaleX(.6); }
 }
+.cb-title { font-family: var(--script); font-weight: 400; font-size: clamp(40px, 5vw, 54px); color: var(--ink); text-align: center; margin: 10px 0 24px; line-height: 1.1; }
+.home-now { border-bottom: 1px solid var(--line); }
+.now-top { height: 22px; } .now-top i { display:flex; align-items:center; height: 22px; line-height: 1; }

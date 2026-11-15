@@ -14,14 +14,14 @@ export const me = {
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
     "Outside the degree I write essays on my Substack, play netball, padel and boulder, and paint when I get the chance.",
   ],
-  // The "Current favourites" section. Change these whenever you like.
-  favourites: [
-    { label: 'Song', icon: '♫', title: 'Song name', note: 'Artist' },
-    { label: 'Book', icon: 'book', title: 'Book title', note: 'Author' },
-    { label: 'Film', icon: 'film', title: 'Film title', note: 'Director or year' },
-    { label: 'Topic', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
-    { label: 'Hobby', icon: '♡', title: 'Padel', note: 'with bouldering a close second' },
-    { label: 'Thing to write about', icon: '✎', title: 'Topic', note: 'Essays on my Substack' },
+  // The "Currently" section on the homepage. Change these whenever you like.
+  currently: [
+    { label: 'Reading', icon: 'book', title: 'Book title', note: 'Author' },
+    { label: 'Writing', icon: '✎', title: 'My next essay', note: 'See the Essays tab' },
+    { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
+    { label: 'Watching', icon: 'film', title: 'Film or show', note: 'Where I’m watching it' },
+    { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
+    { label: 'Playing', icon: '♡', title: 'Padel', note: 'with bouldering a close second' },
   ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },
