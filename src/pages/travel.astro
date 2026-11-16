@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import { places } from '../data/travel';
 const countries = new Set(places.map(p => p.country)).size;
+const byCountry: Record<string, { p: typeof places[number]; i: number }[]> = {};
+places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
 ---
 <Base title="Travel" description="A globe of the places I've been.">
   <div class="tab-page travel">
@@ -18,7 +20,9 @@ const countries = new Set(places.map(p => p.country)).size;
           </aside>
           <p class="globe-hint" id="globe-hint">Loading the globe…</p>
         </div>
-        <div class="place-list">{places.map((p, i) => <button class="place-chip" data-i={i}>{p.name}<span>{p.country}</span></button>)}</div>
+        <div class="place-groups">{Object.entries(byCountry).map(([c, list]) => (
+          <div class="place-group"><h5>{c}</h5><div class="place-list">{list.map(({ p, i }) => <button class="place-chip" data-i={i}>{p.name}</button>)}</div></div>
+        ))}</div>
       </div>
     </section>
   </div>
