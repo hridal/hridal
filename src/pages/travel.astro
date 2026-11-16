@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { places } from '../data/travel';
+const countries = new Set(places.map(p => p.country)).size;
+---
+<Base title="Travel" description="A globe of the places I've been.">
+  <div class="tab-page travel">
+    <section class="block">
+      <h2>Travel</h2>
+      <div>
+        <p class="lead-small">Every place I've been, pinned on a globe. Drag to spin it, scroll to zoom, and click a pin to see photos.</p>
+        <div class="travel-stats"><span><b>{places.length}</b> places</span><span><b>{countries}</b> {countries === 1 ? 'country' : 'countries'}</span></div>
+        <div class="globe-wrap">
+          <div id="globe" aria-label="Interactive globe of places visited"></div>
+          <aside class="place-panel" id="place-panel" hidden>
+            <button class="pp-close" id="pp-close" aria-label="Close">×</button>
+            <div id="pp-body"></div>
+          </aside>
+          <p class="globe-hint" id="globe-hint">Loading the globe…</p>
+        </div>
+        <div class="place-list">{places.map((p, i) => <button class="place-chip" data-i={i}>{p.name}<span>{p.country}</span></button>)}</div>
+      </div>
+    </section>
+  </div>
+  <script>
+    import Globe from 'globe.gl';
+    import { feature } from 'topojson-client';
+    import world from 'world-atlas/countries-110m.json';
+    import { places } from '../data/travel';
+
+    const el = document.getElementById('globe')!;
+    const panel = document.getElementById('place-panel')!;
+    const body = document.getElementById('pp-body')!;
+    const hint = document.getElementById('globe-hint')!;
+    const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]);
+    const visited = new Set(places.map(p => p.country));
+    const countries = (feature(world as any, (world as any).objects.countries) as any).features;
+    const nameMap: Record<string, string> = { 'United Kingdom': 'United Kingdom', 'United States': 'United States of America' };
+
+    const isVisited = (f: any) => [...visited].some(v => (nameMap[v] || v) === f.properties.name);
+    function size() { return { w: el.clientWidth, h: Math.min(620, Math.max(380, el.clientWidth * 0.8)) }; }
+
+    try {
+      const { w, h } = size();
+      const globe = new Globe(el)
+        .width(w).height(h)
+        .backgroundColor('rgba(0,0,0,0)')
+        .showAtmosphere(true).atmosphereColor('#fddbd3').atmosphereAltitude(0.18)
+        .hexPolygonsData(countries.filter((f: any) => f.properties.name !== 'North Korea')) // its 110m outline trips the hex grid library
+        .hexPolygonResolution(3).hexPolygonMargin(0.35).hexPolygonUseDots(true)
+        .hexPolygonColor(() => '#d9b3ae')
+        .polygonsData(countries.filter((f: any) => isVisited(f)))
+        .polygonCapColor(() => 'rgba(108,32,45,0.85)').polygonSideColor(() => 'rgba(108,32,45,0.4)')
+        .polygonStrokeColor(() => '#6c202d').polygonAltitude(0.008)
+        .htmlElementsData(places.map((p, i) => ({ ...p, i })))
+        .htmlLat((d: any) => d.lat).htmlLng((d: any) => d.lng).htmlAltitude(0.01)
+        .htmlElement((d: any) => {
+          const pin = document.createElement('button');
+          pin.className = 'pin'; pin.title = d.name; pin.setAttribute('aria-label', d.name);
+          pin.innerHTML = '<svg viewBox="0 0 24 32" width="22" height="30"><path d="M12 0C5.4 0 0 5.2 0 11.7 0 20.4 12 32 12 32s12-11.6 12-20.3C24 5.2 18.6 0 12 0z" fill="#6c202d"/><circle cx="12" cy="11.5" r="4.5" fill="#fddbd3"/></svg>';
+          pin.style.pointerEvents = 'auto'; pin.style.cursor = 'pointer';
+          pin.onclick = (e) => { e.stopPropagation(); open(d.i); };
+          return pin;
+        });
+      const mat: any = globe.globeMaterial(); mat.color.set('#f7f0e3'); mat.emissive?.set('#f3e6d6'); mat.emissiveIntensity = 0.35;
+      const ctl: any = globe.controls(); ctl.autoRotate = true; ctl.autoRotateSpeed = 0.6; ctl.enableZoom = true;
+      const first = places[0]; if (first) globe.pointOfView({ lat: first.lat - 10, lng: first.lng, altitude: 2.2 }, 0);
+      hint.textContent = 'Drag to spin · scroll to zoom · click a pin';
+      window.addEventListener('resize', () => { const s = size(); globe.width(s.w).height(s.h); });
+
+      function open(i: number) {
+        const p = places[i];
+        ctl.autoRotate = false;
+        globe.pointOfView({ lat: p.lat, lng: p.lng, altitude: 1.4 }, 1200);
+        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ' · ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}
+          ${p.photos.length ? `<div class="pp-photos">${p.photos.map(f => `<a href="/travel/${encodeURIComponent(f)}" target="_blank" rel="noopener"><img src="/travel/${encodeURIComponent(f)}" alt="${esc(p.name)}" loading="lazy"/></a>`).join('')}</div>` : '<p class="pp-empty">Photos coming soon.</p>'}`;
+        panel.hidden = false;
+      }
+      document.getElementById('pp-close')!.onclick = () => { panel.hidden = true; ctl.autoRotate = true; };
+      document.querySelectorAll<HTMLButtonElement>('.place-chip').forEach(b => b.onclick = () => open(+b.dataset.i!));
+    } catch (err) {
+      hint.textContent = 'Your browser couldn’t load the 3D globe, but the list of places is below.';
+    }
+  </script>
+</Base>

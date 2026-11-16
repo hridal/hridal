@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Focus" description="A study and work timer with a calendar and to-do list.">
+  <div class="tab-page focus">
+    <section class="block">
+      <h2>Focus</h2>
+      <div>
+        <p class="lead-small">A study and work timer. Pick what you're working on, start the clock, and every session is added to your calendar so you can see how much you're really doing. Everything is saved privately in your own browser.</p>
+
+        <div class="f-grid">
+          <!-- Timer -->
+          <div class="f-card timer-card">
+            <p class="eyebrow">What are you working on?</p>
+            <div class="cat-row">
+              <select id="cat-select" aria-label="Type of work"></select>
+              <button class="btn ghost small" id="cat-add-toggle">+ New type</button>
+            </div>
+            <form class="cat-new" id="cat-new" hidden>
+              <input id="cat-name" placeholder="e.g. Theory & Simulation, Essay, Applications" maxlength="40" />
+              <button class="btn solid small" type="submit">Add</button>
+            </form>
+
+            <div class="clock" id="clock">00:00:00</div>
+            <div class="chips" id="targets" aria-label="Session length">
+              <button class="chip on" data-min="0">No limit</button>
+              <button class="chip" data-min="25">25 min</button>
+              <button class="chip" data-min="50">50 min</button>
+              <button class="chip" data-min="90">90 min</button>
+            </div>
+            <div class="t-actions">
+              <button class="btn solid" id="start">Start</button>
+              <button class="btn" id="stop" disabled>Finish &amp; save</button>
+              <button class="btn ghost" id="reset" disabled>Discard</button>
+            </div>
+            <p class="t-status" id="t-status"></p>
+          </div>
+
+          <!-- Stats -->
+          <div class="f-card stats-card">
+            <p class="eyebrow">This week</p>
+            <p class="big-num" id="week-total">0h 0m</p>
+            <p class="sub" id="today-total">Today: 0m</p>
+            <div id="cat-bars" class="cat-bars"></div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="f-card cal-card">
+          <div class="cal-head">
+            <button class="btn ghost small" id="prev" aria-label="Previous month">←</button>
+            <h3 id="cal-title"></h3>
+            <button class="btn ghost small" id="next" aria-label="Next month">→</button>
+          </div>
+          <div class="cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div class="cal-key"><span><i class="k0"></i>none</span><span><i class="k1"></i>&lt;1h</span><span><i class="k2"></i>1–3h</span><span><i class="k3"></i>3h+</span><span><i class="dot"></i>to-do due</span></div>
+          <div class="day-panel" id="day-panel" hidden></div>
+        </div>
+
+        <!-- To-do -->
+        <div class="f-card todo-card">
+          <p class="eyebrow">To-do list</p>
+          <form class="todo-form" id="todo-form">
+            <input id="todo-text" placeholder="What needs doing?" required maxlength="120" />
+            <input id="todo-date" type="date" aria-label="Due date" />
+            <select id="todo-cat" aria-label="Type of work"></select>
+            <button class="btn solid small" type="submit">Add</button>
+          </form>
+          <p class="sub">Your list sorts itself by deadline, and anything with a date shows up on the calendar.</p>
+          <div id="todo-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+  (() => {
+    const K = { cats: 'hridal.focus.cats', sessions: 'hridal.focus.sessions', todos: 'hridal.focus.todos', run: 'hridal.focus.running' };
+    const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    const palette = ['#6c202d', '#c06c7a', '#a9845f', '#7d8a6a', '#5f6f8a', '#9a5a8a', '#d19a6a', '#4f7a7a'];
+
+    let cats = load(K.cats, [{ id: 'study', name: 'Study', color: palette[0] }, { id: 'work', name: 'Work', color: palette[1] }, { id: 'reading', name: 'Reading', color: palette[2] }]);
+    let sessions = load(K.sessions, []);
+    let todos = load(K.todos, []);
+    let run = load(K.run, null); // { cat, startedAt, accumulated, paused, target }
+    let target = run ? run.target || 0 : 0;
+    let viewMonth = new Date(); viewMonth.setDate(1);
+    let chimed = false;
+
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const dkey = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; };
+    const todayKey = () => dkey(new Date());
+    const fmtMin = m => { m = Math.round(m); const h = Math.floor(m / 60); return h ? `${h}h ${m % 60}m` : `${m}m`; };
+    const catOf = id => cats.find(c => c.id === id) || { name: 'Other', color: '#999' };
+
+    /* ---------- categories ---------- */
+    function renderCats() {
+      const opts = cats.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+      $('cat-select').innerHTML = opts;
+      $('todo-cat').innerHTML = '<option value="">No type</option>' + opts;
+      if (run) $('cat-select').value = run.cat;
+    }
+    $('cat-add-toggle').onclick = () => { $('cat-new').hidden = !$('cat-new').hidden; if (!$('cat-new').hidden) $('cat-name').focus(); };
+    $('cat-new').onsubmit = e => {
+      e.preventDefault();
+      const name = $('cat-name').value.trim(); if (!name) return;
+      const id = 'c' + Date.now();
+      cats.push({ id, name, color: palette[cats.length % palette.length] });
+      save(K.cats, cats); renderCats(); $('cat-select').value = id; $('cat-name').value = ''; $('cat-new').hidden = true;
+    };
+
+    /* ---------- timer ---------- */
+    const elapsedMs = () => !run ? 0 : run.accumulated + (run.paused ? 0 : Date.now() - run.startedAt);
+    function tick() {
+      const ms = elapsedMs(); const s = Math.floor(ms / 1000);
+      const shown = target ? Math.max(0, target * 60 - s) : s;
+      const h = Math.floor(shown / 3600), m = Math.floor(shown % 3600 / 60), sec = shown % 60;
+      $('clock').textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+      $('clock').classList.toggle('live', !!run && !run.paused);
+      if (run && target && s >= target * 60 && !chimed) { chimed = true; chime(); $('t-status').textContent = `Time's up! ${target} minutes done. Finish & save when you're ready.`; }
+    }
+    function chime() {
+      try { const a = new (window.AudioContext || window.webkitAudioContext)(); [0, .25, .5].forEach((t, i) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = [660, 880, 990][i]; g.gain.setValueAtTime(.15, a.currentTime + t); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + t + .4); o.connect(g).connect(a.destination); o.start(a.currentTime + t); o.stop(a.currentTime + t + .45); }); } catch (e) {}
+    }
+    function syncButtons() {
+      $('start').textContent = !run ? 'Start' : run.paused ? 'Resume' : 'Pause';
+      $('stop').disabled = !run; $('reset').disabled = !run;
+      $('cat-select').disabled = !!run;
+      document.querySelectorAll('#targets .chip').forEach(b => b.classList.toggle('on', +b.dataset.min === target));
+      if (run) $('t-status').textContent = run.paused ? 'Paused.' : `Working on ${catOf(run.cat).name}…`;
+      else if (!$('t-status').dataset.keep) $('t-status').textContent = '';
+    }
+    $('start').onclick = () => {
+      delete $('t-status').dataset.keep;
+      if (!run) { run = { cat: $('cat-select').value, startedAt: Date.now(), accumulated: 0, paused: false, target }; chimed = false; }
+      else if (run.paused) { run.startedAt = Date.now(); run.paused = false; }
+      else { run.accumulated += Date.now() - run.startedAt; run.paused = true; }
+      save(K.run, run); syncButtons(); tick();
+    };
+    $('stop').onclick = () => {
+      const mins = elapsedMs() / 60000;
+      if (mins >= 1) {
+        sessions.push({ id: Date.now(), cat: run.cat, end: new Date().toISOString(), minutes: Math.round(mins * 10) / 10 });
+        save(K.sessions, sessions);
+        $('t-status').textContent = `Saved ${fmtMin(mins)} of ${catOf(run.cat).name}. Nice work.`;
+      } else $('t-status').textContent = 'Sessions under a minute aren’t saved.';
+      $('t-status').dataset.keep = '1';
+      run = null; save(K.run, null); syncButtons(); tick(); renderAll();
+    };
+    $('reset').onclick = () => { if (confirmDiscard()) { run = null; save(K.run, null); syncButtons(); tick(); } };
+    function confirmDiscard() { const b = $('reset'); if (b.dataset.sure) { delete b.dataset.sure; b.textContent = 'Discard'; return true; } b.dataset.sure = '1'; b.textContent = 'Sure?'; setTimeout(() => { delete b.dataset.sure; b.textContent = 'Discard'; }, 2500); return false; }
+    document.querySelectorAll('#targets .chip').forEach(b => b.onclick = () => { target = +b.dataset.min; chimed = false; if (run) { run.target = target; save(K.run, run); } syncButtons(); tick(); });
+
+    /* ---------- stats ---------- */
+    function renderStats() {
+      const now = new Date(); const monday = new Date(now); monday.setHours(0, 0, 0, 0); monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      const week = sessions.filter(s => new Date(s.end) >= monday);
+      const total = week.reduce((a, s) => a + s.minutes, 0);
+      $('week-total').textContent = fmtMin(total);
+      $('today-total').textContent = 'Today: ' + fmtMin(sessions.filter(s => dkey(s.end) === todayKey()).reduce((a, s) => a + s.minutes, 0));
+      const by = {}; week.forEach(s => by[s.cat] = (by[s.cat] || 0) + s.minutes);
+      const max = Math.max(1, ...Object.values(by));
+      $('cat-bars').innerHTML = Object.keys(by).length ? Object.entries(by).sort((a, b) => b[1] - a[1]).map(([c, m]) =>
+        `<div class="bar-row"><span>${esc(catOf(c).name)}</span><div class="bar"><i style="width:${m / max * 100}%;background:${catOf(c).color}"></i></div><b>${fmtMin(m)}</b></div>`).join('')
+        : '<p class="sub">No sessions yet this week. Start the clock!</p>';
+    }
+
+    /* ---------- calendar ---------- */
+    function renderCal() {
+      const y = viewMonth.getFullYear(), m = viewMonth.getMonth();
+      $('cal-title').textContent = viewMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+      const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate(), lead = (first.getDay() + 6) % 7;
+      const mins = {}; sessions.forEach(s => { const k = dkey(s.end); mins[k] = (mins[k] || 0) + s.minutes; });
+      const due = {}; todos.filter(t => t.date && !t.done).forEach(t => (due[t.date] = due[t.date] || []).push(t));
+      let html = '';
+      for (let i = 0; i < lead; i++) html += '<span class="cal-cell empty"></span>';
+      for (let d = 1; d <= days; d++) {
+        const k = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const mm = mins[k] || 0, lvl = mm === 0 ? 0 : mm < 60 ? 1 : mm < 180 ? 2 : 3;
+        html += `<button class="cal-cell l${lvl}${k === todayKey() ? ' today' : ''}" data-day="${k}"><span class="d">${d}</span>${mm ? `<span class="m">${fmtMin(mm)}</span>` : ''}${due[k] ? `<span class="dots">${due[k].slice(0, 4).map(() => '<i></i>').join('')}</span>` : ''}</button>`;
+      }
+      $('cal-grid').innerHTML = html;
+      $('cal-grid').querySelectorAll('[data-day]').forEach(b => b.onclick = () => showDay(b.dataset.day));
+    }
+    function showDay(k) {
+      const ss = sessions.filter(s => dkey(s.end) === k), tt = todos.filter(t => t.date === k);
+      const by = {}; ss.forEach(s => by[s.cat] = (by[s.cat] || 0) + s.minutes);
+      const nice = new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      $('day-panel').innerHTML = `<h4>${nice}</h4>
+        <div class="dp-cols"><div><h5>Work done</h5>${Object.keys(by).length ? Object.entries(by).map(([c, m]) => `<p><i class="sw" style="background:${catOf(c).color}"></i>${esc(catOf(c).name)} <b>${fmtMin(m)}</b></p>`).join('') : '<p class="sub">Nothing logged.</p>'}</div>
+        <div><h5>Due</h5>${tt.length ? tt.map(t => `<p class="${t.done ? 'done' : ''}">${esc(t.text)}</p>`).join('') : '<p class="sub">Nothing due.</p>'}</div></div>`;
+      $('day-panel').hidden = false;
+    }
+    $('prev').onclick = () => { viewMonth.setMonth(viewMonth.getMonth() - 1); renderCal(); };
+    $('next').onclick = () => { viewMonth.setMonth(viewMonth.getMonth() + 1); renderCal(); };
+
+    /* ---------- to-do ---------- */
+    function bucket(t) {
+      if (t.done) return 'Done';
+      if (!t.date) return 'Whenever';
+      const today = new Date(todayKey() + 'T00:00'), d = new Date(t.date + 'T00:00'), diff = Math.round((d - today) / 864e5);
+      return diff < 0 ? 'Overdue' : diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : diff <= 7 ? 'This week' : 'Later';
+    }
+    function renderTodos() {
+      const order = ['Overdue', 'Today', 'Tomorrow', 'This week', 'Later', 'Whenever', 'Done'];
+      const sorted = [...todos].sort((a, b) => (a.date || '9999') < (b.date || '9999') ? -1 : (a.date || '9999') > (b.date || '9999') ? 1 : a.id - b.id);
+      const groups = {}; sorted.forEach(t => (groups[bucket(t)] = groups[bucket(t)] || []).push(t));
+      $('todo-list').innerHTML = todos.length ? order.filter(g => groups[g]).map(g => `
+        <div class="todo-group ${g === 'Overdue' ? 'urgent' : ''}"><h5>${g}</h5>${groups[g].map(t => `
+          <div class="todo ${t.done ? 'done' : ''}">
+            <label><input type="checkbox" data-done="${t.id}" ${t.done ? 'checked' : ''}/> <span>${esc(t.text)}</span></label>
+            ${t.cat ? `<em style="border-color:${catOf(t.cat).color}">${esc(catOf(t.cat).name)}</em>` : ''}
+            ${t.date ? `<time>${new Date(t.date + 'T12:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}</time>` : ''}
+            <button class="x" data-del="${t.id}" aria-label="Delete">×</button>
+          </div>`).join('')}</div>`).join('') : '<p class="sub">Nothing on your list yet.</p>';
+      $('todo-list').querySelectorAll('[data-done]').forEach(c => c.onchange = () => { const t = todos.find(x => x.id == c.dataset.done); t.done = c.checked; save(K.todos, todos); renderAll(); });
+      $('todo-list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { todos = todos.filter(x => x.id != b.dataset.del); save(K.todos, todos); renderAll(); });
+    }
+    $('todo-form').onsubmit = e => {
+      e.preventDefault();
+      const text = $('todo-text').value.trim(); if (!text) return;
+      todos.push({ id: Date.now(), text, date: $('todo-date').value || '', cat: $('todo-cat').value, done: false });
+      save(K.todos, todos); $('todo-text').value = ''; $('todo-date').value = ''; renderAll(); $('todo-text').focus();
+    };
+
+    function renderAll() { renderStats(); renderCal(); renderTodos(); }
+    renderCats(); syncButtons(); tick(); renderAll();
+    setInterval(tick, 500);
+  })();
+  </script>
+</Base>
