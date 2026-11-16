@@ -43,6 +43,23 @@ export const me = {
     { group: 'Languages', items: ['English (native)', 'Hindi (fluent)', 'Gujarati (fluent)'] },
     { group: 'Interests', items: ['Investing and markets', 'Netball', 'Bouldering', 'Painting'] },
   ],
+  // What shows on the laptop screen on the About page (matches my LinkedIn).
+  linkedin: {
+    fullName: 'Hridal Gujrati',
+    headline: 'Materials Engineering @ Imperial College London | Junior Consultant Intern @ Roland Berger',
+    location: 'Reading, England, United Kingdom',
+    connections: '500+ connections',
+    followers: '1,002 followers',
+    photo: '/logos/avatar.png',
+    current: { name: 'Imperial College London', logo: '/logos/imperial.png' },
+    about: [
+      'I am a third year Materials Science and Engineering student at Imperial College London.',
+      'Last summer I interned at Roland Berger as a Junior Consultant Intern. Previously, I worked at IBM as an analyst supporting an NHS HR and payroll platform, gaining experience in large-scale, high-stakes environments. Outside of my studies, I’m the External Relations Officer for Imperial’s Netball Club, one of the largest female societies at the university, developing skills in stakeholder engagement and leadership.',
+      'I’m always open to connecting with people who share an interest in consulting, tech, or entrepreneurship!',
+    ],
+    latestPost: 'I’m excited to announce that I will be joining Roland Berger in their London office this summer as a Junior Consultant!',
+    logos: { 'Roland Berger': '/logos/roland-berger.png', 'IBM': '/logos/ibm.png', 'Wood Group': '/logos/wood.png', 'Imperial': '/logos/imperial.png', 'Kendrick School': '/logos/kendrick.png' } as Record<string, string>,
+  },
   email: 'hridal.gujrati@gmail.com',
   links: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hridal' },
