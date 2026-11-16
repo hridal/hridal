@@ -497,3 +497,6 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
 .letter .riddle-a { font-size: 21px; line-height: 34px; margin: 34px 0 0; padding-top: 6px; }
 .letter-top span { padding-bottom: 0; transform: translateY(9px); }
 .letter .reveal[hidden] { display: none; }
+
+.w-sub { font-family: var(--serif); font-size: 19px; font-style: italic; margin: -4px 0 16px; }
+.w-stage { display:inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; background: var(--paper); border-radius: 99px; padding: 4px 12px; margin: 0 0 10px; }

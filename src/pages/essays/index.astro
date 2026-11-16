@@ -33,6 +33,8 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
           <div class="writing-card">
             <p class="eyebrow">Currently writing</p>
             <p class="w-title">{currentlyWriting.title}</p>
+            {currentlyWriting.subtitle && <p class="w-sub">{currentlyWriting.subtitle}</p>}
+            <p class="w-stage">Stage: research</p>
             <p class="w-note">{currentlyWriting.note}</p>
             <span class="w-pen">✎</span>
           </div>

@@ -12,16 +12,16 @@ export const me = {
   tagline: 'Engineer, consultant, essayist.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
-    "Outside the degree I write essays on my Substack, play netball, padel and boulder, and paint when I get the chance.",
+    "Outside the degree I write essays on my Substack, play netball, go bouldering, and paint when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
   currently: [
     { label: 'Reading', icon: 'book', title: 'Book title', note: 'Author' },
-    { label: 'Writing', icon: '✎', title: 'My next essay', note: 'See the Essays tab' },
+    { label: 'Writing', icon: '✎', title: 'Create More Than You Consume', note: 'An essay on individuality and doomscrolling' },
     { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
     { label: 'Watching', icon: 'film', title: 'Film or show', note: 'Where I’m watching it' },
     { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
-    { label: 'Playing', icon: '♡', title: 'Padel', note: 'with bouldering a close second' },
+    { label: 'Playing', icon: '♡', title: 'Netball', note: 'and bouldering whenever I can' },
   ],
   facts: [
     { label: 'Studying', value: 'MEng, Imperial' },
@@ -41,7 +41,7 @@ export const me = {
     { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction', 'Analytical essays on Substack'] },
     { group: 'Courses', items: ['AI Safety and Practices'] },
     { group: 'Languages', items: ['English (native)', 'Hindi (fluent)', 'Gujarati (fluent)'] },
-    { group: 'Interests', items: ['Investing and markets', 'Netball', 'Padel', 'Bouldering', 'Painting'] },
+    { group: 'Interests', items: ['Investing and markets', 'Netball', 'Bouldering', 'Painting'] },
   ],
   email: 'hridal.gujrati@gmail.com',
   links: [

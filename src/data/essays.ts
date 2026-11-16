@@ -6,8 +6,9 @@ export const categories = [
 
 // The "Currently writing" card. Update whenever you start something new.
 export const currentlyWriting = {
-  title: 'Working title goes here',
-  note: 'A line on what it is about and where you are with it.',
+  title: 'Create More Than You Consume',
+  subtitle: 'Individuality in the age of the infinite scroll',
+  note: 'Researching the neuroscience of doomscrolling and what our phones are doing to our attention.',
 };
 
 // Topics for the generator. One is shown at random each time someone clicks.
