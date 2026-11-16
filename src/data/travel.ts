@@ -33,4 +33,8 @@ export const places: Place[] = [
   { name: "Las Vegas", country: "United States", lat: 36.1699, lng: -115.1398, when: "Nevada", note: "", photos: [] },
   { name: "Sedona", country: "United States", lat: 34.8697, lng: -111.761, when: "Arizona", note: "", photos: [] },
   { name: "Dubai", country: "United Arab Emirates", lat: 25.1124, lng: 55.139, when: "Palm Jumeirah", note: "", photos: [] },
+  { name: "Rome", country: "Italy", lat: 41.9028, lng: 12.4964, when: "", note: "", photos: [] },
+  { name: "Florence", country: "Italy", lat: 43.7696, lng: 11.2558, when: "", note: "", photos: [] },
+  { name: "Pisa", country: "Italy", lat: 43.7228, lng: 10.4017, when: "", note: "", photos: [] },
+  { name: "Venice", country: "Italy", lat: 45.4408, lng: 12.3155, when: "", note: "", photos: [] },
 ];
