@@ -28,4 +28,9 @@ export const places: Place[] = [
   { name: "Gujarat", country: "India", lat: 23.0225, lng: 72.5714, when: "", note: "", photos: [] },
   { name: "Indore", country: "India", lat: 22.7196, lng: 75.8577, when: "", note: "", photos: [] },
   { name: "Bangalore", country: "India", lat: 12.9716, lng: 77.5946, when: "", note: "", photos: [] },
+  { name: "Virginia", country: "United States", lat: 37.4316, lng: -78.6569, when: "", note: "", photos: [] },
+  { name: "Los Angeles", country: "United States", lat: 34.0522, lng: -118.2437, when: "California", note: "", photos: [] },
+  { name: "Las Vegas", country: "United States", lat: 36.1699, lng: -115.1398, when: "Nevada", note: "", photos: [] },
+  { name: "Sedona", country: "United States", lat: 34.8697, lng: -111.761, when: "Arizona", note: "", photos: [] },
+  { name: "Dubai", country: "United Arab Emirates", lat: 25.1124, lng: 55.139, when: "Palm Jumeirah", note: "", photos: [] },
 ];
