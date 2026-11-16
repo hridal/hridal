@@ -13,13 +13,20 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
       <h2>Essays</h2>
       <div>
         <div class="essay-top">
-          <div class="topic-gen" id="topic-gen">
-            <p class="eyebrow">Need something to write about?</p>
-            <p class="topic" aria-live="polite">Click below for a topic.</p>
+          <div class="notepad" id="topic-gen">
+            <div class="np-rings" aria-hidden="true"></div>
+            <div class="np-page" id="np-page">
+              <p class="np-label">Need something to write about?</p>
+              <p class="topic" aria-live="polite">Scribble on the page with the pen…</p>
+              <canvas id="scribble" aria-hidden="true"></canvas>
+              <div class="np-pen" id="pen" aria-hidden="true">
+                <svg viewBox="0 0 40 160" width="22" height="88"><rect x="10" y="10" width="20" height="104" rx="4" fill="#6c202d"/><rect x="10" y="24" width="20" height="6" fill="#fddbd3"/><rect x="27" y="14" width="4" height="46" rx="2" fill="#d9b9a8"/><path d="M10 114 L30 114 L22 146 L18 146 Z" fill="#e9d6c4"/><path d="M18 146 L22 146 L20 156 Z" fill="#3a0f17"/><rect x="10" y="4" width="20" height="10" rx="4" fill="#4a1520"/></svg>
+              </div>
+            </div>
             <div class="topic-actions">
-              <button class="btn solid" id="new-topic">Give me a topic</button>
-              <a class="btn" id="send-topic" href={`mailto:${me.email}`}>I wrote about it</a>
-              <button class="btn ghost" id="share-topic">Share this topic</button>
+              <button class="btn ghost small" id="new-topic">Or just tap here</button>
+              <a class="btn small" id="send-topic" href={`mailto:${me.email}`}>I wrote about it</a>
+              <button class="btn ghost small" id="share-topic">Share this topic</button>
             </div>
             <p class="topic-note">Write something on it, send it my way, and I'll share my favourites here.</p>
           </div>
@@ -53,6 +60,29 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
       send.href = `mailto:${email}?subject=${encodeURIComponent('Essay: ' + current)}`;
     }
     document.getElementById('new-topic').addEventListener('click', pick);
+
+    // scribble-to-generate
+    const page = document.getElementById('np-page');
+    const cv = document.getElementById('scribble');
+    const pen = document.getElementById('pen');
+    const ctx = cv.getContext('2d');
+    let drawing = false, lastPt = null, ink = 0;
+    function fit() { const r = page.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+    fit(); window.addEventListener('resize', fit);
+    const pos = e => { const r = page.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    function movePen(p) { pen.style.transform = `translate(${p.x - 4}px, ${p.y - 86}px) rotate(18deg)`; pen.classList.add('held'); }
+    cv.addEventListener('pointerdown', e => { drawing = true; lastPt = pos(e); cv.setPointerCapture(e.pointerId); movePen(lastPt); cv.classList.remove('fade'); });
+    cv.addEventListener('pointermove', e => {
+      const p = pos(e); movePen(p);
+      if (!drawing) return;
+      ctx.strokeStyle = 'rgba(108,32,45,.75)'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(lastPt.x, lastPt.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      ink += Math.hypot(p.x - lastPt.x, p.y - lastPt.y); lastPt = p;
+      if (ink > 450) { ink = 0; drawing = false; pick(); cv.classList.add('fade'); setTimeout(() => { ctx.clearRect(0, 0, cv.width, cv.height); cv.classList.remove('fade'); }, 700); }
+    });
+    const stop = () => { drawing = false; };
+    cv.addEventListener('pointerup', stop); cv.addEventListener('pointercancel', stop);
+    cv.addEventListener('pointerleave', () => { pen.classList.remove('held'); pen.style.transform = ''; });
     share.addEventListener('click', async () => {
       if (!current) pick();
       const text = `Essay topic from Hridal: "${current}". Fancy writing about it?`;
