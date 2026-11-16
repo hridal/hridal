@@ -447,8 +447,11 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
 .globe-wrap { position: relative; border-radius: 18px; background: radial-gradient(circle at 50% 45%, #fffaf3, var(--paper) 70%); overflow: hidden; }
 #globe { width: 100%; cursor: grab; }
 #globe:active { cursor: grabbing; }
-.pin { background: none; border: 0; padding: 0; transform: translate(-50%, -100%); filter: drop-shadow(0 3px 3px rgba(108,32,45,.35)); transition: transform .2s; }
-.pin:hover { transform: translate(-50%, -100%) scale(1.25); }
+.pin { position: relative; width: 22px; height: 22px; background: none; border: 0; padding: 0; transform: translate(-50%, -50%); transition: transform .2s; }
+.pin .core { position:absolute; inset: 7px; border-radius: 50%; background: #fff4f2; box-shadow: 0 0 0 2px #6c202d, 0 0 6px 2px rgba(253,219,211,.95), 0 0 14px 4px rgba(108,32,45,.45); }
+.pin .glow { position:absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(253,219,211,.9), rgba(253,219,211,0) 70%); animation: glow 2.4s ease-in-out infinite; }
+.pin:hover { transform: translate(-50%, -50%) scale(1.5); }
+@keyframes glow { 0%,100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.6); opacity: 1; } }
 .globe-hint { position:absolute; left: 0; right: 0; bottom: 12px; text-align:center; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); margin: 0; pointer-events: none; }
 .place-panel { position:absolute; top: 16px; right: 16px; width: min(320px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow:auto; background: #fffaf3; border: 1px solid var(--line); border-radius: 14px; padding: 22px; box-shadow: 0 20px 40px -20px rgba(108,32,45,.45); animation: pop .35s ease; z-index: 5; }
 .place-panel h3 { font-family: var(--script); font-weight: 400; font-size: 44px; margin: 4px 0 6px; line-height: 1.05; }
