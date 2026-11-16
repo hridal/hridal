@@ -1,6 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import { me } from '../data/me';
+import { getCollection } from 'astro:content';
+const exp = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+const linkedin = me.links.find(l => l.label === 'LinkedIn')?.href ?? '#';
+const initials = me.name.slice(0, 1);
 ---
 <Base title="About">
   <div class="tab-page">
@@ -10,6 +14,40 @@ import { me } from '../data/me';
       <div class="lead">{me.about.map(p => <p>{p}</p>)}</div>
       <div class="facts">{me.facts.map(f => <div><span>{f.label}</span><b>{f.value}</b></div>)}</div>
     </div>
+  </section>
+
+  <section class="laptop-section" aria-label="My professional profile">
+    <div class="laptop">
+      <div class="lid">
+        <div class="bezel">
+          <span class="cam" aria-hidden="true"></span>
+          <div class="screen" tabindex="0">
+            <div class="pf">
+              <div class="pf-banner"></div>
+              <div class="pf-head">
+                <div class="pf-avatar">{initials}</div>
+                <h3>{me.name} Gujrati</h3>
+                <p class="pf-headline">MEng Materials Science &amp; Engineering at Imperial College London · Consulting · AI Society · EDI Rep</p>
+                <p class="pf-loc">London, United Kingdom</p>
+                <a class="pf-btn" href={linkedin} target="_blank" rel="noopener">View on LinkedIn ↗</a>
+              </div>
+              <div class="pf-sec"><h4>About</h4>{me.about.map(p => <p>{p}</p>)}</div>
+              <div class="pf-sec"><h4>Experience</h4>
+                {exp.map(e => <div class="pf-item"><span class="pf-logo">{e.data.org.slice(0, 1)}</span><div><b>{e.data.role}</b><span>{e.data.org}</span><em>{e.data.period}</em></div></div>)}
+              </div>
+              <div class="pf-sec"><h4>Education</h4>
+                {me.education.map(e => <div class="pf-item"><span class="pf-logo">{e.school.slice(0, 1)}</span><div><b>{e.school}</b><span>{e.detail.split('.')[0]}</span><em>{e.period}</em></div></div>)}
+              </div>
+              <div class="pf-sec"><h4>Skills</h4><div class="pf-skills">{me.skills.flatMap(s => s.items).slice(0, 14).map(i => <span>{i}</span>)}</div></div>
+              <div class="pf-end"><a class="pf-btn" href={linkedin} target="_blank" rel="noopener">See the full profile on LinkedIn ↗</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="base"><span class="notch"></span></div>
+      <div class="shadow"></div>
+    </div>
+    <p class="env-hint">Scroll the screen</p>
   </section>
   </div>
 </Base>

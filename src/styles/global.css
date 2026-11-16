@@ -500,3 +500,42 @@ nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
 
 .w-sub { font-family: var(--serif); font-size: 19px; font-style: italic; margin: -4px 0 16px; }
 .w-stage { display:inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; background: var(--paper); border-radius: 99px; padding: 4px 12px; margin: 0 0 10px; }
+
+/* ---------- laptop ---------- */
+.laptop-section { padding: 30px 0 90px; display:flex; flex-direction:column; align-items:center; }
+.laptop { position: relative; width: min(760px, 100%); }
+.lid { position: relative; margin: 0 6.5%; padding: 1.4%; border-radius: 18px 18px 6px 6px;
+  background: linear-gradient(160deg, #f3dccb, #e3c3ad 45%, #d6b29a); box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), inset 0 -2px 3px rgba(120,80,60,.25); }
+.bezel { position: relative; background: #111; border-radius: 12px 12px 3px 3px; padding: 3.2% 2.2% 3.4%; }
+.cam { position:absolute; top: 1.2%; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #2a2a2a; box-shadow: inset 0 0 0 1.5px #3c3c3c; }
+.screen { position: relative; aspect-ratio: 16 / 10; overflow-y: auto; background: #f3f2ef; border-radius: 2px; scrollbar-width: thin; scrollbar-color: #c9b8b8 transparent; outline: none; }
+.screen::-webkit-scrollbar { width: 6px; } .screen::-webkit-scrollbar-thumb { background: #c9b8b8; border-radius: 3px; }
+.base { position: relative; height: 18px; margin: 0; border-radius: 2px 2px 14px 14px;
+  background: linear-gradient(#efd5c3, #dbbaa3 55%, #b9967f); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.base::before { content:''; position:absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, #c9a58d, #f2dccc 20%, #f2dccc 80%, #c9a58d); border-radius: 2px; }
+.notch { position:absolute; top: 0; left: 50%; width: 15%; height: 7px; margin-left: -7.5%; border-radius: 0 0 8px 8px; background: linear-gradient(#c9a58d, #e2c4af); }
+.shadow { height: 18px; margin: 0 4%; background: radial-gradient(ellipse at 50% 0, rgba(92,26,26,.28), transparent 70%); }
+/* profile on the screen */
+.pf { font-family: var(--sans); color: #222; font-size: 13px; line-height: 1.45; padding-bottom: 20px; }
+.pf-banner { height: 90px; background: linear-gradient(120deg, #6c202d, #b0606c 60%, #fddbd3); }
+.pf-head, .pf-sec, .pf-end { background: #fff; margin: 0 14px 10px; border-radius: 8px; padding: 14px 18px; }
+.pf-head { margin-top: -40px; position: relative; padding-top: 52px; }
+.pf-avatar { position:absolute; top: -36px; left: 18px; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; background: var(--pink); color: var(--ink); display:grid; place-items:center; font-family: var(--script); font-size: 46px; }
+.pf-head h3 { font-family: var(--sans); font-size: 20px; font-weight: 500; margin: 0 0 2px; color: #111; }
+.pf-headline { margin: 0 0 4px; font-size: 13px; }
+.pf-loc { margin: 0 0 10px; color: #777; font-size: 12px; }
+.pf-btn { display:inline-block; background: var(--ink); color: #fff !important; text-decoration: none; border-radius: 99px; padding: 6px 14px; font-size: 12px; font-weight: 500; }
+.pf-btn:hover { background: #8a2c3c; }
+.pf-sec h4 { font-family: var(--sans); font-size: 15px; font-weight: 500; margin: 0 0 8px; color: #111; text-transform: none; letter-spacing: 0; }
+.pf-sec p { margin: 0 0 8px; }
+.pf-item { display:flex; gap: 10px; padding: 8px 0; border-top: 1px solid #eee; }
+.pf-item:first-of-type { border-top: 0; }
+.pf-logo { flex: none; width: 34px; height: 34px; border-radius: 6px; background: var(--pink); color: var(--ink); display:grid; place-items:center; font-weight: 500; }
+.pf-item b { display:block; font-weight: 500; }
+.pf-item span, .pf-item em { display:block; font-size: 12px; color: #555; font-style: normal; }
+.pf-item em { color: #888; }
+.pf-skills { display:flex; flex-wrap: wrap; gap: 6px; }
+.pf-skills span { font-size: 12px; border: 1px solid #ddd; border-radius: 99px; padding: 3px 10px; }
+.pf-end { text-align:center; }
+@media (max-width: 600px) { .lid { border-radius: 12px 12px 4px 4px; } .bezel { border-radius: 8px 8px 2px 2px; } .base { height: 12px; } .pf { font-size: 12px; } .pf-banner { height: 60px; } }
+.pf-item .pf-logo { display:grid; place-items:center; font-size: 14px; color: var(--ink); }
