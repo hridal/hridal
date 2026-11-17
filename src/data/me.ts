@@ -9,17 +9,17 @@ export const me = {
     'One who is pure of heart.',
   ],
   etymology: 'From hriday (Sanskrit hṛdaya), “heart”.',
-  tagline: 'I study Materials Science and Engineering at Imperial, write essays, and spend too much time bouldering. I\u2019m also on the AI Society committee, because I care a lot about where AI research is going.',
+  tagline: 'I study Materials Science and Engineering at Imperial, write essays, and spend too much time bouldering. I\u2019m also on the AI Society committee, because I care a lot about AI research and its applications.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
     "Outside the degree I write essays on my Substack, play netball, go bouldering, and paint when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
   currently: [
-    { label: 'Reading', icon: 'book', title: 'Book title', note: 'Author' },
+    { label: 'Reading', icon: 'book', title: 'Brave New World', note: 'Aldous Huxley' },
     { label: 'Writing', icon: '✎', title: 'Create More Than You Consume', note: 'An essay on individuality and doomscrolling' },
-    { label: 'Listening to', icon: '♫', title: 'Song name', note: 'Artist' },
-    { label: 'Watching', icon: 'film', title: 'Film or show', note: 'Where I’m watching it' },
+    { label: 'Listening to', icon: '♫', title: 'Rock & indie rock', note: 'On repeat at the moment' },
+    { label: 'Watching', icon: 'film', title: 'The Mentalist', note: 'On Netflix' },
     { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
     { label: 'Playing', icon: '♡', title: 'Netball', note: 'and bouldering whenever I can' },
   ],
