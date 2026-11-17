@@ -1,7 +1,7 @@
 // Edit everything about you in this one file.
 export const me = {
   name: 'Hridal',
-  pronunciation: '/ hri · dhul /',
+  pronunciation: '/ rih · dul /',
   soundsLike: 'the H is silent',
   origin: 'name · Sanskrit',
   meaning: [
