@@ -9,7 +9,7 @@ export const me = {
     'One who is pure of heart.',
   ],
   etymology: 'From hriday (Sanskrit hṛdaya), “heart”.',
-  tagline: 'Engineer, consultant, essayist.',
+  tagline: 'I study Materials Science and Engineering at Imperial, write essays, and spend too much time bouldering. I\u2019m also on the AI Society committee, because I care a lot about where AI research is going.',
   about: [
     "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
     "Outside the degree I write essays on my Substack, play netball, go bouldering, and paint when I get the chance.",
