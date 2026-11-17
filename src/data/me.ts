@@ -18,7 +18,7 @@ export const me = {
   currently: [
     { label: 'Reading', icon: 'book', title: 'Brave New World', note: 'Aldous Huxley' },
     { label: 'Writing', icon: '✎', title: 'Create More Than You Consume', note: 'An essay on individuality and doomscrolling' },
-    { label: 'Listening to', icon: '♫', title: 'Rock & indie rock', note: 'On repeat at the moment' },
+    { label: 'Listening to', icon: '♫', title: 'Depeche Mode', note: 'plus a lot of rock and indie rock' },
     { label: 'Watching', icon: 'film', title: 'The Mentalist', note: 'On Netflix' },
     { label: 'Learning', icon: '◎', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },
     { label: 'Playing', icon: '♡', title: 'Netball', note: 'and bouldering whenever I can' },
