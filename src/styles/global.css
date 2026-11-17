@@ -690,3 +690,14 @@ img.pf-logo.contain { object-fit: contain; border: 1px solid #eee; }
   .mark { font-size: 28px; }
 }
 @media (max-width: 760px) { .riddle-wrap.open { padding-top: 370px; } }
+
+/* menu button: explicit sizes so iOS Safari always draws it */
+@media (max-width: 760px) {
+  .menu-btn { -webkit-appearance: none; appearance: none; display: -webkit-box !important; display: flex !important; flex-direction: row !important; align-items: center; gap: 10px; width: auto !important; height: 44px; padding: 0 2px 0 10px !important; margin-left: auto; color: var(--ink); background: transparent; border: 0; border-radius: 0; font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
+  .mb-label { font-style: normal; display: inline-block; }
+  .mb-icon { position: relative; display: inline-block; width: 24px; height: 16px; flex: none; }
+  .mb-icon span { position: absolute; left: 0; width: 24px; height: 2px; border-radius: 2px; background-color: #6c202d; display: block; transition: transform .25s, opacity .25s; }
+  .mb-icon span:nth-child(1) { top: 0; } .mb-icon span:nth-child(2) { top: 7px; } .mb-icon span:nth-child(3) { top: 14px; }
+  .menu-open .mb-icon span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-open .mb-icon span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
