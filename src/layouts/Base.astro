@@ -26,7 +26,8 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
   <div class="wrap">
     <header class="top">
       <a class="mark" href="/">hridal<span>.</span></a>
-      <nav>{links.map(([href, label]) => <a href={href} aria-current={(href === '/' ? here === '/' : here.startsWith(href)) ? 'page' : undefined}>{label}</a>)}</nav>
+      <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
+      <nav id="site-nav">{links.map(([href, label]) => <a href={href} aria-current={(href === '/' ? here === '/' : here.startsWith(href)) ? 'page' : undefined}>{label}</a>)}</nav>
     </header>
     <main><slot /></main>
     <footer>
@@ -34,5 +35,11 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       <span>{me.links.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</span>
     </footer>
   </div>
+  <script is:inline>
+    (() => { const b = document.getElementById('menu-btn'), h = b && b.closest('.top');
+      if (!b) return;
+      b.addEventListener('click', () => { const open = h.classList.toggle('menu-open'); b.setAttribute('aria-expanded', open); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); });
+    })();
+  </script>
 </body>
 </html>
