@@ -3,20 +3,35 @@ import Base from '../layouts/Base.astro';
 import { me } from '../data/me';
 import { getCollection, render } from 'astro:content';
 const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
-  .map(async e => ({ ...e, Content: (await render(e)).Content })));
+  .map(async e => ({ ...e, Content: (await render(e)).Content, empty: !e.body?.trim() })));
+const logos = me.linkedin.logos;
+const logoFor = (org: string) => logos[org] ?? (/Imperial/.test(org) ? logos['Imperial'] : undefined);
 ---
 <Base title="Experience">
   <div class="tab-page">
   <section class="block" id="experience">
     <h2>Experience</h2>
     <div>
-      <h4>Work &amp; leadership</h4>
-      {exp.map(({ data, Content }) => (
-      <div class="row">
-        <div class="when">{data.period}</div>
-        <div><h3>{data.role}, <em>{data.org}</em></h3><div class="body"><Content /></div></div>
+      <div class="tl" id="timeline">
+        <div class="tl-rail" aria-hidden="true"><div class="tl-beam"></div></div>
+        {exp.map(({ data, Content, empty }) => (
+          <article class="tl-item">
+            <div class="tl-side">
+              <div class="tl-sticky">
+                <span class="tl-node" aria-hidden="true"></span>
+                {logoFor(data.org) ? <img class="tl-logo" src={logoFor(data.org)} alt={`${data.org} logo`} loading="lazy" /> : <span class="tl-logo tl-initial">{data.org.slice(0, 1)}</span>}
+                <p class="tl-when">{data.period}</p>
+              </div>
+            </div>
+            <div class="tl-main">
+              <p class="tl-when-m">{data.period}</p>
+              <h3 class="tl-role">{data.role}</h3>
+              <p class="tl-org">{data.org}</p>
+              <div class="tl-body">{empty ? <p class="tl-empty">More on this role soon.</p> : <Content />}</div>
+            </div>
+          </article>
+        ))}
       </div>
-    ))}
 
       <h4>Education</h4>
       {me.education.map(e => <div class="row"><div class="when">{e.period}</div><div><h3>{e.school}</h3><div class="body">{e.detail}</div></div></div>)}
@@ -28,4 +43,21 @@ const exp = await Promise.all((await getCollection('experience')).sort((a, b) =>
     </div>
   </section>
   </div>
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+    const tl = document.getElementById('timeline');
+    const beam = tl?.querySelector<HTMLElement>('.tl-beam');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (tl && beam) {
+      if (reduce) { beam.style.transform = 'scaleY(1)'; tl.querySelectorAll('.tl-item').forEach(i => i.classList.add('lit')); }
+      else {
+        gsap.fromTo(beam, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: tl, start: 'top 55%', end: 'bottom 55%', scrub: 0.4 } });
+        tl.querySelectorAll<HTMLElement>('.tl-item').forEach(item => {
+          ScrollTrigger.create({ trigger: item, start: 'top 55%', onEnter: () => item.classList.add('lit'), onLeaveBack: () => item.classList.remove('lit') });
+        });
+      }
+    }
+  </script>
 </Base>
