@@ -40,19 +40,19 @@ function homeEntrance() {
   }
   const tagline = intro.querySelector('.tagline');
   if (tagline) {
-    const lines = new SplitText(tagline, { type: 'lines', linesClass: 'ln', mask: 'lines' });
-    tl.from(lines.lines, { yPercent: 105, duration: 0.8, stagger: 0.08 }, '-=0.4');
+    const lines = new SplitText(tagline, { type: 'lines', linesClass: 'ln' });
+    tl.from(lines.lines, { y: 18, opacity: 0, duration: 0.8, stagger: 0.08 }, '-=0.4');
   }
   const actions = intro.querySelector('.actions');
   if (actions) tl.from(actions.children, { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4');
 }
 
 function headingReveals() {
-  // Section titles rise out of a mask once, as you reach them. Nothing else fades in.
+  // Section titles rise into place once, as you reach them. Nothing else fades in.
   document.querySelectorAll<HTMLElement>('section.block > h2, .cb-title, article h1').forEach(h => {
-    const split = new SplitText(h, { type: 'lines', mask: 'lines' });
+    const split = new SplitText(h, { type: 'lines' });
     gsap.from(split.lines, {
-      yPercent: 110, duration: 0.9, ease: 'power3.out', stagger: 0.08,
+      y: 28, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08,
       scrollTrigger: { trigger: h, start: 'top 88%', once: true },
     });
   });

@@ -1,42 +1,59 @@
 ---
 import Base from '../layouts/Base.astro';
+import Timeline from '../components/Timeline.astro';
 import { me } from '../data/me';
-import { getCollection, render } from 'astro:content';
-const exp = await Promise.all((await getCollection('experience')).sort((a, b) => a.data.order - b.data.order)
-  .map(async e => ({ ...e, Content: (await render(e)).Content, empty: !e.body?.trim() })));
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
 const logos = me.linkedin.logos;
 const logoFor = (org: string) => logos[org] ?? (/Imperial/.test(org) ? logos['Imperial'] : undefined);
+
+const work = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order).map(e => ({
+  when: e.data.period, big: e.data.org, small: e.data.role, logo: logoFor(e.data.org),
+  html: e.body?.trim() ? (marked.parse(e.body) as string) : '',
+}));
+const education = me.education.map(e => {
+  const [first, ...rest] = e.detail.split('. ');
+  return { when: e.period, big: e.school, small: first.replace(/:.*/, ''), logo: logoFor(e.school),
+    html: `<p>${(first.includes(':') ? first : '') + (rest.length ? (first.includes(':') ? '. ' : '') + rest.join('. ') : '')}</p>`.replace('<p></p>', '') };
+});
+const projects = me.projects.map(p => {
+  const m = p.title.match(/^(.*?)\s*\((.*)\)$/);
+  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: undefined, html: '' };
+});
+const groups = [
+  { id: 'tl-work', title: 'Work & leadership', items: work },
+  { id: 'tl-edu', title: 'Education', items: education },
+  { id: 'tl-proj', title: 'Projects', items: projects },
+];
 ---
 <Base title="Experience">
   <div class="tab-page">
   <section class="block" id="experience">
     <h2>Experience</h2>
     <div>
-      <div class="tl" id="timeline">
-        <div class="tl-rail" aria-hidden="true"><div class="tl-beam"></div></div>
-        {exp.map(({ data, Content, empty }) => (
-          <article class="tl-item">
-            <div class="tl-side">
-              <div class="tl-sticky">
-                <span class="tl-node" aria-hidden="true"></span>
-                {logoFor(data.org) ? <img class="tl-logo" src={logoFor(data.org)} alt={`${data.org} logo`} loading="lazy" /> : <span class="tl-logo tl-initial">{data.org.slice(0, 1)}</span>}
-                <p class="tl-when">{data.period}</p>
-              </div>
-            </div>
-            <div class="tl-main">
-              <p class="tl-when-m">{data.period}</p>
-              <h3 class="tl-role">{data.role}</h3>
-              <p class="tl-org">{data.org}</p>
-              <div class="tl-body">{empty ? <p class="tl-empty">More on this role soon.</p> : <Content />}</div>
-            </div>
-          </article>
-        ))}
-      </div>
+      {groups.map(g => (
+        <div class="tl-group">
+          <h4>{g.title}</h4>
+          <div class="tl" id={g.id}>
+            <div class="tl-rail" aria-hidden="true"><div class="tl-beam"></div></div>
+            {g.items.map(it => (
+              <article class="tl-item">
+                <div class="tl-date"><p class="tl-when">{it.when}</p></div>
+                <div class="tl-side"><div class="tl-sticky">
+                  {it.logo ? <img class="tl-logo" src={it.logo} alt="" loading="lazy" /> : <span class="tl-logo tl-initial">{it.big.slice(0, 1)}</span>}
+                </div></div>
+                <div class="tl-main">
+                  <p class="tl-when-m">{it.when}</p>
+                  <h3 class="tl-big">{it.big}</h3>
+                  {it.small && <p class="tl-small">{it.small}</p>}
+                  <div class="tl-body">{it.html ? <Fragment set:html={it.html} /> : (g.id === 'tl-work' ? <p class="tl-empty">More on this role soon.</p> : null)}</div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
 
-      <h4>Education</h4>
-      {me.education.map(e => <div class="row"><div class="when">{e.period}</div><div><h3>{e.school}</h3><div class="body">{e.detail}</div></div></div>)}
-      <h4>Projects</h4>
-      {me.projects.map(p => <div class="row"><div class="when">{p.period}</div><div><h3>{p.title}</h3></div></div>)}
       <h4>Skills</h4>
       <div class="skills">{me.skills.map(s => <div><span>{s.group}</span><div class="tags">{s.items.map(i => <em>{i}</em>)}</div></div>)}</div>
       <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>
@@ -47,17 +64,13 @@ const logoFor = (org: string) => logos[org] ?? (/Imperial/.test(org) ? logos['Im
     import { gsap } from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
     gsap.registerPlugin(ScrollTrigger);
-    const tl = document.getElementById('timeline');
-    const beam = tl?.querySelector<HTMLElement>('.tl-beam');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (tl && beam) {
-      if (reduce) { beam.style.transform = 'scaleY(1)'; tl.querySelectorAll('.tl-item').forEach(i => i.classList.add('lit')); }
-      else {
-        gsap.fromTo(beam, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: tl, start: 'top 55%', end: 'bottom 55%', scrub: 0.4 } });
-        tl.querySelectorAll<HTMLElement>('.tl-item').forEach(item => {
-          ScrollTrigger.create({ trigger: item, start: 'top 55%', onEnter: () => item.classList.add('lit'), onLeaveBack: () => item.classList.remove('lit') });
-        });
-      }
-    }
+    document.querySelectorAll<HTMLElement>('.tl').forEach(tl => {
+      const beam = tl.querySelector<HTMLElement>('.tl-beam');
+      if (!beam) return;
+      if (reduce) { beam.style.transform = 'scaleY(1)'; tl.querySelectorAll('.tl-item').forEach(i => i.classList.add('lit')); return; }
+      gsap.fromTo(beam, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: tl, start: 'top 55%', end: 'bottom 55%', scrub: 0.4 } });
+      tl.querySelectorAll<HTMLElement>('.tl-item').forEach(item => ScrollTrigger.create({ trigger: item, start: 'top 55%', onEnter: () => item.classList.add('lit'), onLeaveBack: () => item.classList.remove('lit') }));
+    });
   </script>
 </Base>

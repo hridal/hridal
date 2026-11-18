@@ -854,3 +854,26 @@ html.lenis, html.lenis body { height: auto; }
 }
 .tl-when-m { display: none; }
 @media (max-width: 760px) { .tl-when-m { display: block; margin: 0 0 4px; font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); } }
+
+/* ---------- timeline v2: date | line | details ---------- */
+.tl-group { margin-bottom: 30px; }
+.tl-group h4 { margin-bottom: 26px; }
+.tl { margin: 0 0 40px; }
+.tl-item { grid-template-columns: 140px 56px 1fr !important; gap: 0 26px !important; padding-bottom: 80px; }
+.tl-rail { left: calc(140px + 26px + 27px) !important; }
+.tl-date { text-align: right; padding-top: 14px; }
+.tl-date .tl-when { position: sticky; top: 124px; font-size: 17px; }
+.tl-sticky { display: block !important; top: 110px; }
+.tl-when-m { display: none; }
+.tl-big { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; margin: 4px 0 2px; color: var(--muted); transition: color .4s; }
+.tl-item.lit .tl-big { color: var(--ink); }
+.tl-small { font-family: var(--script); font-size: 30px; line-height: 1.35; margin: 0 0 14px; color: var(--ink); padding-bottom: 4px; }
+@media (max-width: 760px) {
+  .tl-item { grid-template-columns: 1fr !important; padding: 0 0 52px 64px !important; }
+  .tl-rail { left: 21px !important; }
+  .tl-date { display: none; }
+  .tl-sticky { top: 90px; }
+  .tl-when-m { display: block; margin: 0 0 4px; font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); }
+  .tl-big { font-size: 28px; }
+  .tl-small { font-size: 24px; margin-bottom: 8px; }
+}
