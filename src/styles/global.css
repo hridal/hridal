@@ -881,3 +881,8 @@ html.lenis, html.lenis body { height: auto; }
 article.tl-item { max-width: none; margin: 0; padding-top: 0; }
 @media (max-width: 760px) { article.tl-item { padding-top: 0 !important; } }
 .pin { transition: transform .2s, opacity .25s; }
+/* smaller, softer place lights: no ring, just a glow */
+.pin { width: 12px !important; height: 12px !important; }
+.pin .core { inset: 3.5px !important; background: #fffaf3 !important; box-shadow: 0 0 4px 1px rgba(255,236,230,.95), 0 0 9px 3px rgba(253,219,211,.65) !important; }
+.pin .glow { inset: -3px !important; background: radial-gradient(circle, rgba(255,228,220,.75), rgba(253,219,211,0) 68%) !important; }
+.pin:hover { transform: translate(-50%, -50%) scale(1.8) !important; }

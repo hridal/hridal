@@ -115,11 +115,21 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
       const setSun = () => { const [lng, lat] = sunPosAt(Date.now()); shader.uniforms.sunPosition.value.set(lng, lat); };
       setSun(); setInterval(setSun, 60 * 1000);
 
-      // Country names: every country, sized by how big it is.
-      const labels = countries.map((f: any) => {
+      // Country names: as many as fit. Biggest countries claim space first;
+      // a smaller name is skipped if it would overlap one already placed.
+      const all = countries.map((f: any) => {
         const [lng, lat] = geoCentroid(f); const area = geoArea(f);
-        return { name: f.properties.name, lat, lng, size: Math.max(0.28, Math.min(1.5, Math.sqrt(area) * 3.2)), visited: isVisited(f) };
-      }).filter((l: any) => l.size > 0.55 || l.visited);
+        return { name: f.properties.name, lat, lng, size: Math.max(0.5, Math.min(1.5, Math.sqrt(area) * 4.6)), visited: isVisited(f), area };
+      }).sort((x: any, y: any) => (y.visited - x.visited) || (y.area - x.area));
+      const placed: any[] = [];
+      const box = (l: any) => { const w = l.name.length * l.size * 0.85 / Math.max(0.35, Math.cos(l.lat * Math.PI / 180)) + 0.6; const h = l.size * 1.7 + 0.4; return [l.lng - w / 2, l.lng + w / 2, l.lat - h / 2, l.lat + h / 2]; };
+      for (const l of all) {
+        if (l.area < 0.00025 && !l.visited) continue; // too small to read at any zoom
+        const b1 = box(l);
+        const clash = placed.some(o => { const b2 = box(o); return b1[0] < b2[1] && b1[1] > b2[0] && b1[2] < b2[3] && b1[3] > b2[2]; });
+        if (!clash) placed.push(l);
+      }
+      const labels = placed;
 
       const globe = new Globe(el)
         .width(w).height(h)
@@ -134,7 +144,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
         .labelsData(labels)
         .labelLat((d: any) => d.lat).labelLng((d: any) => d.lng).labelText((d: any) => d.name)
         .labelSize((d: any) => d.size).labelDotRadius(0).labelAltitude(0.016).labelResolution(1)
-        .labelColor((d: any) => d.visited ? 'rgba(255,250,245,1)' : 'rgba(255,255,255,0.62)')
+        .labelColor((d: any) => d.visited ? 'rgba(255,250,245,1)' : 'rgba(255,255,255,0.58)')
         .htmlElementsData(places.map((p, i) => ({ ...p, i })))
         .htmlElementVisibilityModifier((el: HTMLElement, isVisible: boolean) => { el.style.opacity = isVisible ? '1' : '0'; el.style.pointerEvents = isVisible ? 'auto' : 'none'; })
         .htmlLat((d: any) => d.lat).htmlLng((d: any) => d.lng).htmlAltitude(0.01)
