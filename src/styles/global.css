@@ -867,7 +867,7 @@ html.lenis, html.lenis body { height: auto; }
 .tl-when-m { display: none; }
 .tl-big { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; margin: 4px 0 2px; color: var(--muted); transition: color .4s; }
 .tl-item.lit .tl-big { color: var(--ink); }
-.tl-small { font-family: var(--script); font-size: 30px; line-height: 1.35; margin: 0 0 14px; color: var(--ink); padding-bottom: 4px; }
+.tl-small { font-family: var(--serif); font-style: normal; font-size: 22px; line-height: 1.35; margin: 2px 0 14px; color: var(--ink); }
 @media (max-width: 760px) {
   .tl-item { grid-template-columns: 1fr !important; padding: 0 0 52px 64px !important; }
   .tl-rail { left: 21px !important; }
@@ -877,3 +877,6 @@ html.lenis, html.lenis body { height: auto; }
   .tl-big { font-size: 28px; }
   .tl-small { font-size: 24px; margin-bottom: 8px; }
 }
+/* timeline entries are <article>s: don't inherit the essay-page article styles */
+article.tl-item { max-width: none; margin: 0; padding-top: 0; }
+@media (max-width: 760px) { article.tl-item { padding-top: 0 !important; } }
