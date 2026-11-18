@@ -10,7 +10,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
     <section class="block">
       <h2>Travel</h2>
       <div>
-        <p class="lead-small">Every place I've been, pinned on a globe. Drag to spin it, scroll to zoom, and click a light to see photos.</p>
+        <p class="lead-small">Every place I've been, on a globe that follows the real sun: the lit side is wherever it's daytime right now. Drag to spin it, scroll to zoom, and tap a light to look closer.</p>
         <div class="travel-stats"><span><b>{places.length}</b> places</span><span><b>{countries}</b> {countries === 1 ? 'country' : 'countries'}</span></div>
         <div class="globe-wrap">
           <div id="globe" aria-label="Interactive globe of places visited"></div>
@@ -31,6 +31,9 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
     import { feature } from 'topojson-client';
     import world from 'world-atlas/countries-110m.json';
     import { places } from '../data/travel';
+    import { ShaderMaterial, TextureLoader, Vector2 } from 'three';
+    import * as solar from 'solar-calculator';
+    import { geoCentroid, geoArea } from 'd3-geo';
 
     const el = document.getElementById('globe')!;
     const panel = document.getElementById('place-panel')!;
@@ -46,17 +49,65 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
 
     try {
       const { w, h } = size();
+      // Day/night shader, adapted from globe.gl's "Day/Night Cycle" example:
+      // blends a daytime and a night-lights Earth by where the sun is right now.
+      const shader = new ShaderMaterial({
+        uniforms: {
+          dayTexture: { value: new TextureLoader().load('/globe/earth-day.jpg') },
+          nightTexture: { value: new TextureLoader().load('/globe/earth-night.jpg') },
+          sunPosition: { value: new Vector2() },
+          globeRotation: { value: new Vector2() },
+        },
+        vertexShader: `varying vec3 vNormal; varying vec2 vUv;
+          void main() { vNormal = normalize(normalMatrix * normal); vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+        fragmentShader: `#define PI 3.141592653589793
+          uniform sampler2D dayTexture; uniform sampler2D nightTexture; uniform vec2 sunPosition; uniform vec2 globeRotation;
+          varying vec3 vNormal; varying vec2 vUv;
+          float toRad(in float a) { return a * PI / 180.0; }
+          vec3 Polar2Cartesian(in vec2 c) { float theta = toRad(90.0 - c.x); float phi = toRad(90.0 - c.y); return vec3(sin(phi) * cos(theta), cos(phi), sin(phi) * sin(theta)); }
+          void main() {
+            float invLon = toRad(globeRotation.x); float invLat = -toRad(globeRotation.y);
+            mat3 rotX = mat3(1, 0, 0, 0, cos(invLat), -sin(invLat), 0, sin(invLat), cos(invLat));
+            mat3 rotY = mat3(cos(invLon), 0, sin(invLon), 0, 1, 0, -sin(invLon), 0, cos(invLon));
+            vec3 sunDir = rotX * rotY * Polar2Cartesian(sunPosition);
+            float intensity = dot(normalize(vNormal), normalize(sunDir));
+            vec4 dayColor = texture2D(dayTexture, vUv);
+            vec4 nightColor = texture2D(nightTexture, vUv);
+            float blend = smoothstep(-0.12, 0.12, intensity);
+            gl_FragColor = mix(nightColor, dayColor, blend);
+          }`,
+      });
+      const sunPosAt = (dt: number) => {
+        const day = new Date(dt).setUTCHours(0, 0, 0, 0);
+        const t = solar.century(new Date(dt));
+        const longitude = (day - dt) / 864e5 * 360 - 180;
+        return [longitude - solar.equationOfTime(t) / 4, solar.declination(t)];
+      };
+      const setSun = () => { const [lng, lat] = sunPosAt(Date.now()); shader.uniforms.sunPosition.value.set(lng, lat); };
+      setSun(); setInterval(setSun, 60 * 1000);
+
+      // Country names: every country, sized by how big it is.
+      const labels = countries.map((f: any) => {
+        const [lng, lat] = geoCentroid(f); const area = geoArea(f);
+        return { name: f.properties.name, lat, lng, size: Math.max(0.28, Math.min(1.5, Math.sqrt(area) * 3.2)), visited: isVisited(f) };
+      }).filter((l: any) => l.size > 0.55 || l.visited);
+
       const globe = new Globe(el)
         .width(w).height(h)
         .backgroundColor('rgba(0,0,0,0)')
-        .showAtmosphere(true).atmosphereColor('#fddbd3').atmosphereAltitude(0.18)
-        .hexPolygonsData(countries.filter((f: any) => f.properties.name !== 'North Korea')) // its 110m outline trips the hex grid library
-        .hexPolygonResolution(3).hexPolygonMargin(0.35).hexPolygonUseDots(true)
-        .hexPolygonColor(() => '#d9b3ae')
-        .polygonsData(countries.filter((f: any) => isVisited(f)))
-        .polygonCapColor(() => 'rgba(108,32,45,0.85)').polygonSideColor(() => 'rgba(108,32,45,0.4)')
-        .polygonStrokeColor(() => '#6c202d').polygonAltitude(0.008)
+        .globeMaterial(shader)
+        .showAtmosphere(true).atmosphereColor('#fddbd3').atmosphereAltitude(0.16)
+        .polygonsData(countries)
+        .polygonCapColor((f: any) => isVisited(f) ? 'rgba(253,219,211,0.38)' : 'rgba(0,0,0,0)')
+        .polygonSideColor(() => 'rgba(0,0,0,0)')
+        .polygonStrokeColor((f: any) => isVisited(f) ? 'rgba(255,244,242,0.95)' : 'rgba(255,244,242,0.45)')
+        .polygonAltitude(0.004)
+        .labelsData(labels)
+        .labelLat((d: any) => d.lat).labelLng((d: any) => d.lng).labelText((d: any) => d.name)
+        .labelSize((d: any) => d.size).labelDotRadius(0).labelAltitude(0.006).labelResolution(1)
+        .labelColor((d: any) => d.visited ? 'rgba(255,244,242,1)' : 'rgba(255,244,242,0.7)')
         .htmlElementsData(places.map((p, i) => ({ ...p, i })))
+        .htmlElementVisibilityModifier((el: HTMLElement, isVisible: boolean) => { el.style.opacity = isVisible ? '1' : '0'; el.style.pointerEvents = isVisible ? 'auto' : 'none'; })
         .htmlLat((d: any) => d.lat).htmlLng((d: any) => d.lng).htmlAltitude(0.01)
         .htmlElement((d: any) => {
           const pin = document.createElement('button');
@@ -66,7 +117,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
           pin.onclick = (e) => { e.stopPropagation(); open(d.i); };
           return pin;
         });
-      const mat: any = globe.globeMaterial(); mat.color.set('#f7f0e3'); mat.emissive?.set('#f3e6d6'); mat.emissiveIntensity = 0.35;
+      globe.onZoom?.((pov: any) => shader.uniforms.globeRotation.value.set(pov.lng, pov.lat));
       const ctl: any = globe.controls(); ctl.autoRotate = true; ctl.autoRotateSpeed = 0.6; ctl.enableZoom = true;
       const first = places[0]; if (first) globe.pointOfView({ lat: first.lat - 10, lng: first.lng, altitude: 2.2 }, 0);
       hint.textContent = 'Drag to spin it, scroll to zoom, tap a light to look closer.';
