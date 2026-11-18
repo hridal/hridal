@@ -37,13 +37,26 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
                   <button class="chip jar" data-time="30"><span>30 min or less</span></button>
                 </div>
               </div>
-              <div class="cb-shelf last pk-actions"><button class="btn solid" id="suggest">Suggest something</button><span class="pk-count" id="count"></span></div>
             </div>
             <button class="cb-door left" aria-label="Open the cupboard"><span class="door-panel"></span><span class="knob"></span></button>
             <button class="cb-door right" aria-label="Open the cupboard"><span class="door-panel"></span><span class="knob"></span></button>
           </div>
           <div class="cb-plinth"></div>
           <p class="env-hint cb-hint">Open the cupboard</p>
+        </div>
+
+        <div class="stove" id="stove">
+          <div class="pan-wrap" aria-hidden="true">
+            <div class="steam"><i></i><i></i><i></i></div>
+            <div class="pan">
+              <div class="pan-handle"></div>
+              <div class="pan-body"></div>
+              <div class="pan-rim"><div class="pan-broth"><div class="pan-letters" id="pan-letters"></div></div></div>
+            </div>
+            <div class="hob"></div>
+          </div>
+          <p class="pan-note" id="pan-note">Pick a jar and its letters go in the pan.</p>
+          <div class="pk-actions"><button class="btn solid" id="suggest">Cook something up</button><span class="pk-count" id="count"></span></div>
         </div>
 
         <div id="recipe-out" class="recipe" hidden></div>
@@ -90,15 +103,80 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
       const on = b.classList.contains('on');
       document.querySelectorAll('#moods .chip').forEach(x => x.classList.remove('on'));
       if (!on) b.classList.add('on'); mood = on ? null : b.dataset.mood; updateCount();
+      window.pour && window.pour(b, !on, 'mood');
     }));
     document.querySelectorAll('#times .chip').forEach(b => b.addEventListener('click', () => {
+      const was = b.classList.contains('on');
       document.querySelectorAll('#times .chip').forEach(x => x.classList.remove('on'));
       b.classList.add('on'); time = +b.dataset.time; updateCount();
+      if (!was) window.pour && window.pour(b, b.dataset.time !== '999', 'time');
     }));
-    document.getElementById('suggest').addEventListener('click', suggest);
+    document.getElementById('suggest').addEventListener('click', () => window.cookUp ? window.cookUp(suggest) : suggest());
     document.querySelectorAll('.meal-card').forEach(c => c.addEventListener('click', () => show(recipes.find(r => r.id === c.dataset.id), 1)));
     const cb = document.getElementById('picker');
     cb.querySelectorAll('.cb-door').forEach(d => d.addEventListener('click', () => cb.classList.add('open')));
     updateCount();
+  </script>
+  <script>
+    import { gsap } from 'gsap';
+    const pan = document.getElementById('pan-letters')!;
+    const note = document.getElementById('pan-note')!;
+    const stove = document.getElementById('stove')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function scoopOut(group: string) {
+      const old = [...pan.querySelectorAll<HTMLElement>(`[data-group="${group}"]`)];
+      if (!old.length) return;
+      gsap.to(old, { y: -18, opacity: 0, duration: 0.35, stagger: 0.01, onComplete: () => old.forEach(o => o.remove()) });
+    }
+
+    function refreshNote() {
+      const n = pan.children.length;
+      stove.classList.toggle('simmering', n > 0);
+      note.textContent = n ? 'Ready when you are.' : 'Pick a jar and its letters go in the pan.';
+    }
+
+    (window as any).pour = (jar: HTMLElement, adding: boolean, group: string) => {
+      scoopOut(group);
+      if (!adding) { setTimeout(refreshNote, 400); return; }
+      const label = (jar.querySelector('span')?.textContent || '').replace(/\s+/g, '');
+      const from = jar.getBoundingClientRect();
+      const mouth = pan.getBoundingClientRect();
+      if (!reduce) gsap.timeline().to(jar, { rotate: -38, y: -6, transformOrigin: '50% 100%', duration: 0.3, ease: 'power2.out' })
+        .to(jar, { rotate: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' }, '+=0.35');
+      [...label].forEach((ch, k) => {
+        const land = () => {
+          const l = document.createElement('span');
+          l.className = 'pan-letter'; l.dataset.group = group; l.textContent = ch;
+          l.style.left = (8 + Math.random() * 84) + '%'; l.style.top = (18 + Math.random() * 52) + '%';
+          l.style.setProperty('--r', (Math.random() * 60 - 30) + 'deg');
+          pan.appendChild(l);
+          gsap.from(l, { scale: 1.6, y: -8, duration: 0.35, ease: 'back.out(3)' });
+          refreshNote();
+        };
+        if (reduce) { land(); return; }
+        const f = document.createElement('span');
+        f.className = 'fly-letter'; f.textContent = ch;
+        document.body.appendChild(f);
+        const sx = from.left + from.width * (0.3 + Math.random() * 0.2), sy = from.top + 4;
+        const tx = mouth.left + mouth.width * (0.2 + Math.random() * 0.6), ty = mouth.top + mouth.height * 0.45;
+        gsap.set(f, { x: sx, y: sy });
+        gsap.timeline({ delay: 0.22 + k * 0.045, onComplete: () => { f.remove(); land(); } })
+          .to(f, { x: sx - 14 - Math.random() * 18, y: sy - 10 - Math.random() * 10, rotate: -40, duration: 0.18, ease: 'power1.out' })
+          .to(f, { x: tx, duration: 0.75, ease: 'none' }, '>')
+          .to(f, { y: ty, rotate: Math.random() * 360, duration: 0.75, ease: 'power2.in' }, '<');
+      });
+    };
+
+    (window as any).cookUp = (serve: () => void) => {
+      const letters = [...pan.querySelectorAll<HTMLElement>('.pan-letter')];
+      if (reduce || !letters.length) { serve(); return; }
+      stove.classList.add('cooking');
+      note.textContent = 'Cooking\u2026';
+      const tl = gsap.timeline({ onComplete: () => { letters.forEach(l => l.remove()); stove.classList.remove('cooking'); refreshNote(); serve(); } });
+      tl.to('.pan', { x: 3, duration: 0.06, repeat: 13, yoyo: true, ease: 'sine.inOut' }, 0)
+        .to(letters, { y: () => -6 - Math.random() * 10, duration: 0.18, repeat: 5, yoyo: true, stagger: { each: 0.02, from: 'random' }, ease: 'sine.inOut' }, 0)
+        .to(letters, { scale: 0, opacity: 0, rotate: '+=180', duration: 0.4, stagger: { each: 0.015, from: 'random' }, ease: 'power2.in' }, 0.95);
+    };
   </script>
 </Base>

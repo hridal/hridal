@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+const sections = [
+  { id: 'kitchen', title: 'Kitchen', href: '/kitchen', cta: 'Open the kitchen',
+    left: 'Easy, healthy vegetarian food for busy weeknights.',
+    right: 'The meals I keep going back to, plus a cupboard that helps you decide what to cook tonight.' },
+  { id: 'travel', title: 'Travel', href: '/travel', cta: 'Spin the globe',
+    left: 'Every place I’ve been, on a globe that follows the real sun.',
+    right: 'Tap a light to see where I went, with photos as I add them.' },
+  { id: 'focus', title: 'Focus', href: '/focus', cta: 'Start the clock',
+    left: 'A study timer, a calendar and a to-do list in one.',
+    right: 'Track the hours you put into each module or project and see your week fill up.' },
+];
+---
+<Base title="My life" description="A journal of the things I do outside work: cooking, travel and how I study.">
+  <div class="tab-page life">
+    <section class="block life-block">
+      <h2>My life</h2>
+      <div>
+        <p class="lead-small">The things I do outside work, kept in a journal. Open it to have a look.</p>
+
+        <div class="journal-stage" id="stage">
+          <div class="journal" id="journal" data-spread="-1">
+            <!-- back board, always under the right-hand page -->
+            <div class="j-board"></div>
+            <div class="j-edges" aria-hidden="true"></div>
+
+            <!-- leaf 0: the cover -->
+            <div class="leaf cover" data-i="0">
+              <button class="face face-front cover-front" id="open-journal" aria-label="Open the journal">
+                <span class="stitch"></span>
+                <span class="strap" aria-hidden="true"></span>
+                <span class="initials">H.G.</span>
+                <span class="cover-sub">journal</span>
+              </button>
+              <div class="face face-back endpaper">
+                <div class="belongs"><p>This journal belongs to</p><p class="hand">Hridal Gujrati</p></div>
+              </div>
+            </div>
+
+            <!-- leaf 1: contents | first section's left page -->
+            <div class="leaf" data-i="1">
+              <div class="face face-front page">
+                <p class="pg-kicker">Contents</p>
+                <ol class="toc">
+                  {sections.map((s, i) => <li><button class="toc-link" data-go={i + 1}><span>{s.title}</span><i>{i + 1}</i></button></li>)}
+                </ol>
+                <p class="pg-foot">Tap a page, or a ribbon on the side.</p>
+              </div>
+              <div class="face face-back page left-page">
+                <p class="pg-num">1</p>
+                <h3 class="pg-title">{sections[0].title}</h3>
+                <svg class="doodle" viewBox="0 0 120 80" aria-hidden="true"><path d="M14 40h92M22 40v14a12 12 0 0 0 12 12h52a12 12 0 0 0 12-12V40M98 44h14M40 30c0-6 6-6 6-12M58 30c0-6 6-6 6-12M76 30c0-6 6-6 6-12"/></svg>
+                <p class="pg-text">{sections[0].left}</p>
+              </div>
+            </div>
+
+            {sections.map((s, i) => (
+              <div class="leaf" data-i={i + 2}>
+                <div class="face face-front page">
+                  <p class="pg-text big">{s.right}</p>
+                  <a class="btn solid" href={s.href}>{s.cta}</a>
+                  <button class="back-toc" data-go="0">Back to contents</button>
+                </div>
+                <div class="face face-back page left-page">
+                  {i + 1 < sections.length ? (
+                    <>
+                      <p class="pg-num">{i + 2}</p>
+                      <h3 class="pg-title">{sections[i + 1].title}</h3>
+                      {sections[i + 1].id === 'travel'
+                        ? <svg class="doodle" viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="28"/><path d="M32 40h56M60 12c-12 14-12 42 0 56M60 12c12 14 12 42 0 56M36 26h48M36 54h48"/></svg>
+                        : <svg class="doodle" viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="42" r="26"/><path d="M60 26v16l10 8M52 12h16M60 12v4"/></svg>}
+                      <p class="pg-text">{sections[i + 1].left}</p>
+                    </>
+                  ) : (
+                    <div class="belongs end"><p class="hand">more pages soon</p></div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <!-- ribbon bookmarks -->
+            <div class="ribbons" aria-label="Jump to a section">
+              {sections.map((s, i) => <button class="ribbon" data-go={i + 1} style={`--n:${i}`}>{s.title}</button>)}
+            </div>
+          </div>
+          <p class="env-hint j-hint" id="j-hint">Tap the journal to open it</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    import { gsap } from 'gsap';
+    const journal = document.getElementById('journal')!;
+    const leaves = [...journal.querySelectorAll<HTMLElement>('.leaf')];
+    const hint = document.getElementById('j-hint')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const N = leaves.length;
+    gsap.set(journal, { xPercent: -25 });
+    let turned = 0; // how many leaves are turned to the left
+    let busy = false;
+
+    // Unturned leaves stack first-on-top; turned leaves stack last-turned-on-top.
+    const restack = () => leaves.forEach((l, i) => { l.style.zIndex = String(i < turned ? 10 + i : 100 + (N - i)); });
+    restack();
+
+    function turnTo(target: number) {
+      // target = number of leaves that should be turned (1 = open at contents)
+      if (busy || target === turned) return;
+      busy = true;
+      const forward = target > turned;
+      const order = forward ? leaves.slice(turned, target) : leaves.slice(target, turned).reverse();
+      const tl = gsap.timeline({ onComplete: () => { busy = false; } });
+      const per = reduce ? 0.01 : (order.length > 1 ? 0.55 : 0.9);
+      order.forEach((leaf, k) => {
+        const idx = leaves.indexOf(leaf);
+        tl.add(() => { leaf.style.zIndex = '300'; }, k * per * 0.45);
+        tl.to(leaf, { rotateY: forward ? -180 : 0, duration: per, ease: 'power2.inOut',
+          onComplete: () => { turned = forward ? idx + 1 : idx; restack(); } }, k * per * 0.45);
+        // a little curl as the page lifts
+        tl.to(leaf, { '--curl': 1, duration: per / 2, yoyo: true, repeat: 1, ease: 'sine.inOut' }, k * per * 0.45);
+      });
+      journal.dataset.spread = String(target - 1);
+    }
+
+    function open() {
+      if (journal.classList.contains('open') || busy) return;
+      journal.classList.add('open');
+      hint.textContent = '';
+      if (reduce) { gsap.set(journal, { xPercent: 0 }); turnTo(1); return; }
+      gsap.timeline()
+        .to(journal.querySelector('.strap'), { xPercent: 140, opacity: 0, duration: 0.45, ease: 'power2.in' })
+        .to(journal, { y: -6, scale: 1.02, duration: 0.3, ease: 'power2.out' }, 0)
+        .to(journal, { xPercent: 0, y: 0, scale: 1, duration: 1.0, ease: 'power3.inOut' }, 0.3)
+        .add(() => turnTo(1), 0.35);
+    }
+
+    document.getElementById('open-journal')!.addEventListener('click', open);
+    journal.querySelectorAll<HTMLElement>('[data-go]').forEach(b => b.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!journal.classList.contains('open')) { open(); return; }
+      const go = +b.dataset.go!;
+      turnTo(go === 0 ? 1 : go + 1);
+    }));
+  </script>
+</Base>
