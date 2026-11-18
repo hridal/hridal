@@ -993,3 +993,7 @@ article.tl-item { max-width: none; margin: 0; padding-top: 0; }
 @media (prefers-reduced-motion: reduce) { .steam i, .stove.cooking .hob { animation: none; } }
 .top { z-index: 200 !important; }
 @media (max-width: 760px) { .top nav > a:last-of-type { border-bottom: 0 !important; } }
+
+/* iOS Safari clips glyphs to each split letter's box: give every letter generous room */
+.intro h1 .ch { will-change: auto !important; padding: .32em .06em .18em; margin: -.32em -.06em -.18em; }
+.mark .mk { padding: .3em .04em .15em; margin: -.3em -.04em -.15em; }
