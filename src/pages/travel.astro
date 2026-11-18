@@ -69,14 +69,14 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
       const mat: any = globe.globeMaterial(); mat.color.set('#f7f0e3'); mat.emissive?.set('#f3e6d6'); mat.emissiveIntensity = 0.35;
       const ctl: any = globe.controls(); ctl.autoRotate = true; ctl.autoRotateSpeed = 0.6; ctl.enableZoom = true;
       const first = places[0]; if (first) globe.pointOfView({ lat: first.lat - 10, lng: first.lng, altitude: 2.2 }, 0);
-      hint.textContent = 'Drag to spin · scroll to zoom · click a light';
+      hint.textContent = 'Drag to spin it, scroll to zoom, tap a light to look closer.';
       window.addEventListener('resize', () => { const s = size(); globe.width(s.w).height(s.h); });
 
       function open(i: number) {
         const p = places[i];
         ctl.autoRotate = false;
         globe.pointOfView({ lat: p.lat, lng: p.lng, altitude: 1.4 }, 1200);
-        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ' · ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}
+        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ', ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}
           ${p.photos.length ? `<div class="pp-photos">${p.photos.map(f => `<a href="/travel/${encodeURIComponent(f)}" target="_blank" rel="noopener"><img src="/travel/${encodeURIComponent(f)}" alt="${esc(p.name)}" loading="lazy"/></a>`).join('')}</div>` : '<p class="pp-empty">Photos coming soon.</p>'}`;
         panel.hidden = false;
       }

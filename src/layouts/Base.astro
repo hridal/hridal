@@ -19,9 +19,10 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title ? `${title} · hridal` : `hridal — ${me.name}`}</title>
+  <title>{title ? `${title} | Hridal` : `Hridal Gujrati`}</title>
   <meta name="description" content={description} />
   <link rel="icon" href="/favicon.svg" />
+  <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500);</script>
 </head>
 <body>
   <div class="wrap">
@@ -39,7 +40,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
     <main><slot /></main>
     <footer>
       <span>© {new Date().getFullYear()} {me.name}</span>
-      <span>{me.links.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</span>
+      <span>{me.links.map((l, i) => <>{i > 0 && ', '}<a href={l.href}>{l.label}</a></>)}</span>
     </footer>
   </div>
   <script is:inline>
@@ -54,5 +55,6 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       b.addEventListener('click', () => { const open = h.classList.toggle('menu-open'); b.setAttribute('aria-expanded', open); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); });
     })();
   </script>
+  <script>import '../scripts/motion.ts';</script>
 </body>
 </html>

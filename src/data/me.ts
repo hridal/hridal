@@ -3,7 +3,7 @@ export const me = {
   name: 'Hridal',
   pronunciation: '/ rih · dul /',
   soundsLike: 'the H is silent',
-  origin: 'name · Sanskrit',
+  origin: 'Sanskrit name',
   meaning: [
     'Of the heart.',
     'One who is pure of heart.',

@@ -36,7 +36,7 @@ const logoFor = (org: string) => li.logos[org] ?? (/Imperial/.test(org) ? li.log
                   </div>
                   <div class="pf-current"><img src={li.current.logo} alt="" /><span>{li.current.name}</span></div>
                 </div>
-                <a class="pf-btn" href={linkedin} target="_blank" rel="noopener">View on LinkedIn ↗</a>
+                <a class="pf-btn" href={linkedin} target="_blank" rel="noopener">View on LinkedIn</a>
               </div>
               <div class="pf-sec"><h4>About</h4>{li.about.map(p => <p>{p}</p>)}</div>
               <div class="pf-sec"><h4>Activity</h4><p class="pf-muted">{li.followers}</p>
@@ -49,7 +49,7 @@ const logoFor = (org: string) => li.logos[org] ?? (/Imperial/.test(org) ? li.log
                 {me.education.map(e => <div class="pf-item">{logoFor(e.school) ? <img class="pf-logo contain" src={logoFor(e.school)} alt="" /> : <span class="pf-logo">{e.school.slice(0, 1)}</span>}<div><b>{e.school}</b><span>{e.detail.split('.')[0]}</span><em>{e.period}</em></div></div>)}
               </div>
               <div class="pf-sec"><h4>Skills</h4><div class="pf-skills">{me.skills.flatMap(s => s.items).slice(0, 14).map(i => <span>{i}</span>)}</div></div>
-              <div class="pf-end"><a class="pf-btn" href={linkedin} target="_blank" rel="noopener">See the full profile on LinkedIn ↗</a></div>
+              <div class="pf-end"><a class="pf-btn" href={linkedin} target="_blank" rel="noopener">See the full profile on LinkedIn</a></div>
             </div>
           </div>
         </div>

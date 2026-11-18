@@ -764,3 +764,57 @@ nav { align-items: center; }
 .dd-btn { line-height: inherit; }
 @media (max-width: 760px) { .top nav { align-items: stretch !important; } .dd-menu a { padding-left: 2px !important; } .dd-menu { padding-left: 16px; } }
 @media (min-width: 761px) { .top nav { align-items: baseline; } .dd-btn { vertical-align: baseline; } }
+
+/* =========================================================
+   TYPE SYSTEM: no tracked-out capitals.
+   Labels are small italic serif; sub-headings are quiet serif;
+   UI controls are sentence-case sans.
+   ========================================================= */
+nav a, .dd-btn, .eyebrow, .btn, .facts span, .skills span, h4, .socials, .reveal, .letter .reveal,
+.name-card .pos, .env-hint, .now-top, .mc-time, .mc-link, .rc-head .btn, .rc-body h5, .cal-dow span,
+.dp-cols h5, .todo-group h5, .travel-stats, .globe-hint, .place-group h5, .np-label, .w-stage, .menu-btn, .letter-top {
+  text-transform: none !important; letter-spacing: 0 !important;
+}
+/* small labels */
+.eyebrow, .facts span, .skills span, .name-card .pos, .now-top span, .mc-time, .np-label, .env-hint, .globe-hint, .travel-stats {
+  font-family: var(--serif) !important; font-style: italic; font-size: 16px !important; color: var(--muted);
+}
+.np-label { font-size: 15px !important; line-height: 44px; }
+.now-top span { font-size: 15px !important; }
+.mc-time { font-size: 15px !important; }
+/* sub-headings */
+h4, .rc-body h5, .dp-cols h5, .todo-group h5, .place-group h5 {
+  font-family: var(--serif) !important; font-style: normal; font-weight: 500 !important; font-size: 21px !important; color: var(--ink) !important; margin-bottom: 12px;
+}
+.place-group h5 { font-size: 18px !important; margin-bottom: 8px; }
+.todo-group.urgent h5 { color: var(--ink) !important; } .todo-group h5 { font-size: 18px !important; }
+/* UI controls */
+nav a, .dd-btn { font-size: 15px !important; }
+.btn, .reveal, .letter .reveal, .rc-head .btn, .mc-link, .socials, .w-stage, .menu-btn { font-family: var(--sans); font-size: 14px !important; font-weight: 500; }
+.mc-link { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(108,32,45,.35); }
+.socials a { color: var(--ink) !important; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); }
+.cal-dow span { font-size: 12px !important; }
+.travel-stats b { font-family: var(--script); font-style: normal; }
+/* one radius language: soft for paper/cards, pill only for controls */
+.now-card, .meal-card, .writing-card, .f-card, .picker, .recipe, .topic-gen { border-radius: 4px !important; }
+
+/* paper grain over everything, very faint */
+body::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .35; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .25 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* keyboard focus that is actually visible */
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+
+/* page-to-page cross-fade (supported browsers, no JavaScript) */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .35s; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* motion helpers */
+.js:not(.motion-ready) .intro h1, .js:not(.motion-ready) .intro .name-card, .js:not(.motion-ready) .intro .tagline { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .js .intro h1, .js .intro .name-card, .js .intro .tagline { opacity: 1 !important; } }
+.intro h1 .ch { display: inline-block; will-change: transform; }
+.mark .mk { display: inline-block; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }

@@ -13,10 +13,10 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
         <h4>My favourite weeknight meals</h4>
         <div class="fav-meals">{favs.map(r => (
           <button class="meal-card" data-id={r!.id}>
-            <span class="mc-time">{r!.minutes} min · serves {r!.serves}</span>
+            <span class="mc-time">{r!.minutes} minutes, serves {r!.serves}</span>
             <span class="mc-name">{r!.name}</span>
             <span class="mc-blurb">{r!.blurb}</span>
-            <span class="mc-link">See recipe →</span>
+            <span class="mc-link">See the recipe</span>
           </button>
         ))}</div>
 
@@ -62,7 +62,7 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
       r.ingredients.forEach(i => (groups[i.where] = groups[i.where] || []).push(i.item));
       out.innerHTML = `
         <div class="rc-head">
-          <div><p class="eyebrow">${r.minutes} min · serves ${r.serves} · protein: ${esc(r.protein)}</p>
+          <div><p class="eyebrow">${r.minutes} minutes, serves ${r.serves}. Protein from ${esc(r.protein.toLowerCase())}.</p>
           <h3>${esc(r.name)}</h3><p class="rc-blurb">${esc(r.blurb)}</p></div>
           ${matches > 1 ? '<button class="btn" id="another">Try another</button>' : ''}
         </div>
