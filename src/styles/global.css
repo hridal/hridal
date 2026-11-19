@@ -1089,3 +1089,6 @@ a, button { touch-action: manipulation; }
 .why-write p { font-family: var(--serif); font-size: 20px; line-height: 1.6; margin: 0 0 16px; color: var(--ink); }
 .why-write p:first-of-type::first-line { font-variant: small-caps; letter-spacing: .02em; }
 @media (max-width: 760px) { .why-write p { font-size: 18px; } .why-write { margin-bottom: 40px; } }
+/* why I write: heading in the small-caps serif, paragraphs all plain */
+.why-write h3 { font-family: var(--serif) !important; font-variant: small-caps; font-weight: 500; font-size: clamp(30px, 3.2vw, 38px) !important; letter-spacing: .03em; line-height: 1.2; }
+.why-write p:first-of-type::first-line { font-variant: normal; letter-spacing: 0; }
