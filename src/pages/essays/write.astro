@@ -45,7 +45,7 @@ import Base from '../../layouts/Base.astro';
     if (topic) { const p = document.getElementById('pf-topic')!; p.hidden = false; p.querySelector('span')!.textContent = topic; t.value = topic; }
     if (d) { t.value = d.title || t.value; n.value = d.name || ''; if (d.body) renderEssay(d.body, body); }
     const words = () => ((body.innerText || '').match(/\S+/g) || []).length;
-    const grow = () => { t.style.height = 'auto'; t.style.height = Math.ceil(t.scrollHeight / 68) * 68 + 'px'; body.classList.toggle('empty', !(body.innerText || '').trim()); };
+    const grow = () => { t.style.height = 'auto'; t.style.height = Math.ceil(t.scrollHeight / 34) * 34 + 'px'; body.classList.toggle('empty', !(body.innerText || '').trim()); };
     const update = () => { const w = words(); count.textContent = w < 150 ? `${w} words, at least 150 needed` : `${w} words`; count.classList.toggle('ok', w >= 150); };
     let timer;
     const store = () => { clearTimeout(timer); timer = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ title: t.value, name: n.value, body: text() })); saved.textContent = 'Draft saved on this device'; } catch (e) {} }, 500); };

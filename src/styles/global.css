@@ -1156,3 +1156,6 @@ a, button { touch-action: manipulation; }
   .paper-form .pf-title { font-size: 26px; } .paper-form .pf-body { font-size: 18px; }
   .pf-body h3 { font-size: 21px; }
 }
+/* title sits on the ruled line like the body text */
+.paper-form .pf-title { font-size: 30px; line-height: 34px; min-height: 34px; padding: 0; margin: 34px 0 0; }
+@media (max-width: 760px) { .paper-form .pf-title { font-size: 24px; } }
