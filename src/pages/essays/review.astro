@@ -14,6 +14,7 @@ import Base from '../../layouts/Base.astro';
         </form>
         <p class="pf-msg" id="rv-msg" role="status"></p>
         <div id="rv-list"></div>
+        <div id="rv-pub" hidden><h3 class="rv-head">Published</h3><div id="rv-pub-list"></div></div>
       </div>
     </section>
   </div>
@@ -27,7 +28,7 @@ import Base from '../../layouts/Base.astro';
       const r = await fetch('/api/essays?pending=1', { headers: { 'x-admin-password': pw } }); const d = await r.json();
       if (!d.enabled && !d.error) { msg.textContent = 'The database isn’t connected yet.'; return; }
       if (d.error) { msg.textContent = d.error; return; }
-      sessionStorage.setItem('hridal.rv', pw); document.getElementById('rv-login').hidden = true;
+      sessionStorage.setItem('hridal.rv', pw); document.getElementById('rv-login').hidden = true; loadPublished();
       msg.textContent = d.essays.length ? `${d.essays.length} waiting for you.` : 'Nothing waiting. All caught up.';
       list.innerHTML = d.essays.map(e => `<article class="rv-item" data-id="${esc(e.id)}"><h3>${esc(e.title)}</h3><p class="rv-meta">By ${esc(e.name)}${e.topic ? ', on ' + esc(e.topic) : ''}</p>
         <div class="rv-body"></div>
@@ -36,7 +37,20 @@ import Base from '../../layouts/Base.astro';
       list.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async () => {
         const item = b.closest('.rv-item'); b.disabled = true;
         await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json', 'x-admin-password': pw }, body: JSON.stringify({ action: b.dataset.act, id: item.dataset.id }) });
-        item.remove(); msg.textContent = b.dataset.act === 'publish' ? 'Published.' : 'Removed.';
+        item.remove(); msg.textContent = b.dataset.act === 'publish' ? 'Published.' : 'Removed.'; loadPublished();
+      }));
+    }
+    async function loadPublished() {
+      const d = await (await fetch('/api/essays')).json();
+      const wrap = document.getElementById('rv-pub'), box = document.getElementById('rv-pub-list');
+      box.innerHTML = (d.essays || []).map(e => `<article class="rv-item rv-small" data-id="${esc(e.id)}"><h3><a href="/essays/read?id=${encodeURIComponent(e.id)}" target="_blank">${esc(e.title)}</a></h3><p class="rv-meta">By ${esc(e.name)}</p><div class="rv-actions"><button class="btn" data-del>Delete</button></div></article>`).join('');
+      wrap.hidden = !(d.essays || []).length;
+      box.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
+        const item = b.closest('.rv-item');
+        if (!confirm('Delete this essay from the site? This can’t be undone.')) return;
+        b.disabled = true;
+        await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json', 'x-admin-password': pw }, body: JSON.stringify({ action: 'remove', id: item.dataset.id }) });
+        item.remove(); msg.textContent = 'Deleted.'; if (!box.children.length) wrap.hidden = true;
       }));
     }
     document.getElementById('rv-login').addEventListener('submit', e => { e.preventDefault(); pw = document.getElementById('rv-pw').value; load(); });
