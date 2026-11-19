@@ -10,7 +10,7 @@ import '@fontsource/jost/500.css';
 import '../styles/global.css';
 import { me } from '../data/me';
 const { title, description = me.tagline } = Astro.props;
-const links = [['/about','About'],['/experience','Experience'],['/essays','Essays'],['/contact','Contact']];
+const links = [['/about','About'],['/experience','Experience'],['/essays','Essays']];
 const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/shelf','Shelf'],['/focus','Focus']];
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
@@ -33,6 +33,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       <nav id="site-nav">
         {links.map(([href, label]) => <a href={href} aria-current={here.startsWith(href) ? 'page' : undefined}>{label}</a>)}
         <a href="/life" aria-current={['/life', ...lifeLinks.map(([h]) => h)].some(h => here.startsWith(h)) ? 'page' : undefined}>My life</a>
+        <a href="/contact" aria-current={here.startsWith('/contact') ? 'page' : undefined}>Contact</a>
       </nav>
     </header>
     <main><slot /></main>
