@@ -10,11 +10,16 @@ import Base from '../../layouts/Base.astro';
         <form class="paper-form" id="essay-form" novalidate>
           <p class="pf-topic" id="pf-topic" hidden>Topic: <span></span></p>
           <label class="sr" for="e-title">Title</label>
-          <input id="e-title" name="title" class="pf-title" placeholder="Your title" maxlength="140" required />
+          <textarea id="e-title" name="title" class="pf-title" placeholder="Your title" maxlength="140" rows="1" required></textarea>
           <label class="sr" for="e-name">Your name</label>
           <input id="e-name" name="name" class="pf-name" placeholder="Your name, or leave blank to stay anonymous" maxlength="60" />
-          <label class="sr" for="e-body">Your essay</label>
-          <textarea id="e-body" name="body" class="pf-body" placeholder="Start writing…" required></textarea>
+          <div class="pf-tools" role="toolbar" aria-label="Formatting">
+            <button type="button" data-cmd="bold" aria-label="Bold" title="Bold (Ctrl+B)"><b>B</b></button>
+            <button type="button" data-cmd="italic" aria-label="Italic" title="Italic (Ctrl+I)"><i>I</i></button>
+            <button type="button" data-block="h3" aria-label="Subheading" title="Subheading">Subheading</button>
+            <button type="button" data-block="blockquote" aria-label="Quote" title="Quote">Quote</button>
+          </div>
+          <div id="e-body" class="pf-body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Your essay" data-placeholder="Start writing…"></div>
           <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="pf-foot">
             <span class="pf-count" id="pf-count">0 words, at least 150 needed</span>
@@ -26,21 +31,38 @@ import Base from '../../layouts/Base.astro';
       </div>
     </section>
   </div>
-  <script is:inline>
-  (() => {
+  <script>
+  import { serialise, renderEssay } from '../../scripts/essay-format';
+  {
     const q = new URLSearchParams(location.search), topic = (q.get('topic') || '').slice(0, 200);
-    const f = document.getElementById('essay-form'), t = document.getElementById('e-title'), n = document.getElementById('e-name'), body = document.getElementById('e-body');
-    const count = document.getElementById('pf-count'), saved = document.getElementById('pf-saved'), msg = document.getElementById('pf-msg'), send = document.getElementById('pf-send');
+    const f = document.getElementById('essay-form') as HTMLFormElement, t = document.getElementById('e-title') as HTMLTextAreaElement, n = document.getElementById('e-name') as HTMLInputElement, body = document.getElementById('e-body') as HTMLElement;
+    document.execCommand('defaultParagraphSeparator', false, 'p');
+    const count = document.getElementById('pf-count')!, saved = document.getElementById('pf-saved')!, msg = document.getElementById('pf-msg')!, send = document.getElementById('pf-send') as HTMLButtonElement;
+    const text = () => serialise(body);
     const KEY = 'hridal.draft.' + (topic || 'free');
     const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
     const d = load();
-    if (topic) { const p = document.getElementById('pf-topic'); p.hidden = false; p.querySelector('span').textContent = topic; t.value = topic; }
-    if (d) { t.value = d.title || t.value; n.value = d.name || ''; body.value = d.body || ''; }
-    const words = () => (body.value.match(/\S+/g) || []).length;
-    const grow = () => { body.style.height = 'auto'; body.style.height = Math.max(420, body.scrollHeight) + 'px'; };
+    if (topic) { const p = document.getElementById('pf-topic')!; p.hidden = false; p.querySelector('span')!.textContent = topic; t.value = topic; }
+    if (d) { t.value = d.title || t.value; n.value = d.name || ''; if (d.body) renderEssay(d.body, body); }
+    const words = () => ((body.innerText || '').match(/\S+/g) || []).length;
+    const grow = () => { t.style.height = 'auto'; t.style.height = Math.ceil(t.scrollHeight / 68) * 68 + 'px'; body.classList.toggle('empty', !(body.innerText || '').trim()); };
     const update = () => { const w = words(); count.textContent = w < 150 ? `${w} words, at least 150 needed` : `${w} words`; count.classList.toggle('ok', w >= 150); };
     let timer;
-    const store = () => { clearTimeout(timer); timer = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ title: t.value, name: n.value, body: body.value })); saved.textContent = 'Draft saved on this device'; } catch (e) {} }, 500); };
+    const store = () => { clearTimeout(timer); timer = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ title: t.value, name: n.value, body: text() })); saved.textContent = 'Draft saved on this device'; } catch (e) {} }, 500); };
+    document.querySelectorAll<HTMLButtonElement>('.pf-tools button').forEach(btn => btn.addEventListener('mousedown', e => {
+      e.preventDefault(); body.focus();
+      if (btn.dataset.cmd) document.execCommand(btn.dataset.cmd);
+      else { const cur = (document.queryCommandValue('formatBlock') || '').toLowerCase(); document.execCommand('formatBlock', false, cur === btn.dataset.block ? 'p' : btn.dataset.block!); }
+      update(); grow(); store(); tools();
+    }));
+    const tools = () => document.querySelectorAll<HTMLButtonElement>('.pf-tools button').forEach(b => {
+      const on = b.dataset.cmd ? document.queryCommandState(b.dataset.cmd) : (document.queryCommandValue('formatBlock') || '').toLowerCase() === b.dataset.block;
+      b.setAttribute('aria-pressed', String(on));
+    });
+    document.addEventListener('selectionchange', () => { if (body.contains(document.getSelection()?.anchorNode || null)) tools(); });
+    body.addEventListener('paste', e => { e.preventDefault(); const txt = e.clipboardData?.getData('text/plain') || ''; document.execCommand('insertText', false, txt); });
+    const seed = () => { if (!body.firstElementChild) { body.innerHTML = '<p><br></p>'; const r = document.createRange(); r.setStart(body.firstChild!, 0); const sel = getSelection()!; sel.removeAllRanges(); sel.addRange(r); } };
+    body.addEventListener('focus', seed);
     [t, n, body].forEach(el => el.addEventListener('input', () => { update(); grow(); store(); }));
     update(); grow();
     fetch('/api/essays').then(r => r.json()).then(r => { if (!r.enabled) { msg.textContent = 'Sending isn’t switched on yet. Your draft is saved here, so you won’t lose it.'; send.disabled = true; } }).catch(() => {});
@@ -50,14 +72,14 @@ import Base from '../../layouts/Base.astro';
       if (words() < 150) { msg.textContent = `Essays need at least 150 words. You have ${words()}.`; body.focus(); return; }
       send.disabled = true; send.textContent = 'Sending…';
       try {
-        const r = await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: t.value, name: n.value, topic, body: body.value, website: f.website.value }) });
+        const r = await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: t.value, name: n.value, topic, body: text(), website: (f.elements.namedItem('website') as HTMLInputElement).value }) });
         const res = await r.json();
         if (!r.ok || res.error) throw new Error(res.error || 'Something went wrong.');
         try { localStorage.removeItem(KEY); } catch (e) {}
         f.classList.add('sent');
         f.innerHTML = '<p class="pf-done">Sent. Thank you for writing it.</p><p class="pf-done-sub">I’ll read it soon. If I publish it, it’ll appear under From readers on the <a href="/essays">Essays page</a>.</p>';
-      } catch (err) { msg.textContent = err.message; send.disabled = false; send.textContent = 'Send it to Hridal'; }
+      } catch (err: any) { msg.textContent = err.message; send.disabled = false; send.textContent = 'Send it to Hridal'; }
     });
-  })();
+  }
   </script>
 </Base>

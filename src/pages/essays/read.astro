@@ -7,8 +7,9 @@ import Base from '../../layouts/Base.astro';
     <div class="prose" id="re-body"></div>
     <p class="back-link"><a href="/essays#from-readers">All essays</a></p>
   </article>
-  <script is:inline>
-  (() => {
+  <script>
+    import { renderEssay } from '../../scripts/essay-format';
+  {
     const id = new URLSearchParams(location.search).get('id') || '';
     const $ = i => document.getElementById(i);
     fetch('/api/essays?id=' + encodeURIComponent(id)).then(r => r.json()).then(r => {
@@ -17,8 +18,8 @@ import Base from '../../layouts/Base.astro';
       $('re-title').textContent = e.title;
       $('re-meta').textContent = 'By ' + e.name + ', ' + new Date(+e.created).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + (e.topic ? '. On: ' + e.topic : '');
       const body = $('re-body');
-      e.body.split(/\n{2,}/).forEach(par => { const p = document.createElement('p'); p.textContent = par.replace(/\n/g, ' '); body.appendChild(p); });
+      renderEssay(e.body, body);
     }).catch(() => { $('re-title').textContent = 'This essay couldn’t be loaded.'; });
-  })();
+  }
   </script>
 </Base>

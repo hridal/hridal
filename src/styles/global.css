@@ -1132,3 +1132,27 @@ a, button { touch-action: manipulation; }
   .paper-form { padding: 28px 18px 22px 48px; background-image: linear-gradient(90deg, transparent 34px, rgba(108,32,45,.4) 34px 35.5px, transparent 35.5px), repeating-linear-gradient(#fffdf8 0 33px, #f2d9d5 33px 34px); }
   .paper-form .pf-title { font-size: 22px; } .paper-form .pf-body { font-size: 18px; }
 }
+
+/* reader essay editor: everything on a 34px rhythm */
+.paper-form { padding-top: 34px; background-image: linear-gradient(90deg, transparent 54px, rgba(108,32,45,.4) 54px 55.5px, transparent 55.5px), repeating-linear-gradient(transparent 0 33px, #f2d9d5 33px 34px); background-color: #fffdf8; background-position: 0 34px; background-repeat: no-repeat, repeat; }
+.pf-topic { line-height: 34px; margin: 0; }
+.paper-form .pf-title { font-family: var(--script) !important; font-size: 34px; line-height: 68px; min-height: 68px; resize: none; overflow: hidden; white-space: pre-wrap; text-overflow: clip; }
+.paper-form .pf-title::placeholder { font-family: var(--script); font-style: normal; }
+.paper-form .pf-name { line-height: 34px; margin: 0; }
+.pf-tools { display: flex; gap: 4px; height: 34px; align-items: center; margin: 0; }
+.pf-tools button { all: unset; cursor: pointer; height: 26px; min-width: 26px; padding: 0 8px; box-sizing: border-box; border-radius: 4px; font-family: var(--serif); font-size: 16px; line-height: 26px; text-align: center; color: var(--muted); }
+.pf-tools button:hover, .pf-tools button:focus-visible { background: #f6e6e3; color: var(--ink); }
+.pf-tools button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.paper-form .pf-body { outline: none; min-height: 408px; padding-top: 34px; font-family: var(--serif); font-size: 20px; line-height: 34px; color: var(--ink); white-space: normal; overflow: visible; }
+.pf-body p, .pf-body div, .pf-body h3, .pf-body blockquote { margin: 0 0 34px; line-height: 34px; }
+.pf-body h3 { font-family: var(--serif); font-weight: 600; font-size: 24px; }
+.pf-body blockquote { font-style: italic; border-left: 2px solid var(--pink, #e8b4bc); padding-left: 16px; margin-left: 0; }
+.pf-body.empty::before { content: attr(data-placeholder); color: #b89a9a; font-style: italic; pointer-events: none; position: absolute; }
+.pf-foot { margin-top: 0; padding-top: 16px; }
+#re-body h3, .rv-body h3 { font-family: var(--serif); font-weight: 600; font-size: 1.3em; margin: 1.4em 0 .4em; }
+#re-body blockquote, .rv-body blockquote { font-style: italic; border-left: 2px solid var(--line); margin: 1em 0; padding-left: 18px; }
+@media (max-width: 760px) {
+  .paper-form { background-image: linear-gradient(90deg, transparent 34px, rgba(108,32,45,.4) 34px 35.5px, transparent 35.5px), repeating-linear-gradient(transparent 0 33px, #f2d9d5 33px 34px); }
+  .paper-form .pf-title { font-size: 26px; } .paper-form .pf-body { font-size: 18px; }
+  .pf-body h3 { font-size: 21px; }
+}

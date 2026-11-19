@@ -17,8 +17,9 @@ import Base from '../../layouts/Base.astro';
       </div>
     </section>
   </div>
-  <script is:inline>
-  (() => {
+  <script>
+  import { renderEssay } from '../../scripts/essay-format';
+  {
     const list = document.getElementById('rv-list'), msg = document.getElementById('rv-msg');
     let pw = sessionStorage.getItem('hridal.rv') || '';
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -29,8 +30,9 @@ import Base from '../../layouts/Base.astro';
       sessionStorage.setItem('hridal.rv', pw); document.getElementById('rv-login').hidden = true;
       msg.textContent = d.essays.length ? `${d.essays.length} waiting for you.` : 'Nothing waiting. All caught up.';
       list.innerHTML = d.essays.map(e => `<article class="rv-item" data-id="${esc(e.id)}"><h3>${esc(e.title)}</h3><p class="rv-meta">By ${esc(e.name)}${e.topic ? ', on ' + esc(e.topic) : ''}</p>
-        <div class="rv-body">${esc(e.body).split(/\n{2,}/).map(p => '<p>' + p + '</p>').join('')}</div>
+        <div class="rv-body"></div>
         <div class="rv-actions"><button class="btn solid" data-act="publish">Publish</button><button class="btn" data-act="remove">Remove</button></div></article>`).join('');
+      list.querySelectorAll('.rv-item').forEach((el, i) => renderEssay(d.essays[i].body || '', el.querySelector('.rv-body')));
       list.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async () => {
         const item = b.closest('.rv-item'); b.disabled = true;
         await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json', 'x-admin-password': pw }, body: JSON.stringify({ action: b.dataset.act, id: item.dataset.id }) });
@@ -39,6 +41,6 @@ import Base from '../../layouts/Base.astro';
     }
     document.getElementById('rv-login').addEventListener('submit', e => { e.preventDefault(); pw = document.getElementById('rv-pw').value; load(); });
     if (pw) load();
-  })();
+  }
   </script>
 </Base>
