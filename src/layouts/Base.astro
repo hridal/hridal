@@ -11,7 +11,7 @@ import '../styles/global.css';
 import { me } from '../data/me';
 const { title, description = me.tagline } = Astro.props;
 const links = [['/about','About'],['/experience','Experience'],['/essays','Essays'],['/contact','Contact']];
-const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/focus','Focus']];
+const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/shelf','Shelf'],['/focus','Focus']];
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <!doctype html>
