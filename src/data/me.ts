@@ -11,8 +11,9 @@ export const me = {
   etymology: 'From hriday (Sanskrit hṛdaya), “heart”.',
   tagline: 'Welcome, and thanks for stopping by. This is a little window into my life and what I\u2019m up to. I study Materials Science and Engineering at Imperial and sit on the AI Society committee, because I care a lot about AI research and how it gets used. In my spare time I write essays, and when I\u2019m not doing that I\u2019m probably bouldering. Have a look around.',
   about: [
-    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. I've spent my summers at Roland Berger, IBM and Wood Group, and I like problems that sit somewhere between the technical and the commercial. At Imperial I'm on the AI Society committee and I'm the Materials department's EDI rep.",
-    "Outside the degree I write essays on my Substack, play netball, go bouldering, and paint when I get the chance.",
+    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. My work so far has been at the point where technical problems meet commercial ones. This summer I was a Junior Consulting Intern at Roland Berger, where I led a review of a client's graduate programme and worked on a commercial due diligence and an M&A pitch. Before that I supported NHS ESR at IBM, the HR and payroll system behind 1.3 million NHS staff, and worked on bridge design options at Wood Group.",
+    "At Imperial I sit on the AI Society's research team, where I organised AI Week with speakers from Anthropic and Google DeepMind, and I was elected EDI rep for around 500 students in the Department of Materials. I care about AI research and how it gets applied, and I like building things too, from a machine learning model for alloy classification to the start-up I'm working on now.",
+    "I also write essays, which I publish here on this site. Away from all that, I play netball, go bouldering and paint when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
   currently: [
@@ -63,6 +64,5 @@ export const me = {
   email: 'hridal.gujrati@gmail.com',
   links: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hridal' },
-    { label: 'Substack', href: 'https://substack.com/' },
   ],
 };
