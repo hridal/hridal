@@ -14,11 +14,11 @@ const work = (await getCollection('experience')).sort((a, b) => a.data.order - b
 const education = me.education.map(e => {
   const [first, ...rest] = e.detail.split('. ');
   return { when: e.period, big: e.school, small: first.replace(/:.*/, ''), logo: logoFor(e.school),
-    html: `<p>${(first.includes(':') ? first : '') + (rest.length ? (first.includes(':') ? '. ' : '') + rest.join('. ') : '')}</p>`.replace('<p></p>', '') };
+    html: `<p>${(first.includes(':') ? first : '') + (rest.length ? (first.includes(':') ? '. ' : '') + rest.join('. ') : '')}</p>`.replace('<p></p>', '') + ((e as any).body ? `<p>${(e as any).body}</p>` : '') };
 });
 const projects = me.projects.map(p => {
   const m = p.title.match(/^(.*?)\s*\((.*)\)$/);
-  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: undefined, html: '' };
+  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: undefined, html: (p as any).body ? `<p>${(p as any).body}</p>` : '' };
 });
 const groups = [
   { id: 'tl-work', title: 'Work & leadership', items: work },

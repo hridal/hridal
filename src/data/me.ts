@@ -29,12 +29,12 @@ export const me = {
     { label: 'Interested in', value: 'Consulting, markets, AI' },
   ],
   education: [
-    { school: 'Imperial College London', detail: 'MEng Materials Science and Engineering', period: 'Sep 2024 — Jun 2028' },
+    { school: 'Imperial College London', detail: 'MEng Materials Science and Engineering', period: 'Sep 2024 — Jun 2028', body: 'Current modules: Materials Processing, Nanomaterials, Optoelectronics, Nuclear Fusion, Maths and Quantum Mechanics, Research Techniques, Entrepreneurship, Managerial Economics, and Mathematics and Computing.' },
     { school: 'Kendrick School', detail: 'A Levels: Mathematics, Physics, Philosophy; AS Economics, AS Further Mathematics. Gold Medal, British Physics Olympiad; Gold Award, UKMT Senior Mathematical Challenge.', period: 'Sep 2017 — Jun 2024' },
   ],
   projects: [
-    { title: 'Smart Bracelet Start-up (Entrepreneurship module, team of 4)', period: 'Oct 2026 — Present' },
-    { title: 'Machine Learning Classification of Materials', period: 'Oct 2025 — Dec 2025' },
+    { title: 'Smart Bracelet Start-up (Entrepreneurship module, team of 4)', period: 'Oct 2026 — Present', body: 'The idea for the venture was mine: a luxury bracelet that quietly tracks health and safety for women, without looking like a tracker. We interviewed around 30 potential customers and 73% were interested, which told us the need was real. I built the market sizing and financial model for our pitch, and we\u2019re now testing demand with a low-cost pretotype.' },
+    { title: 'Machine Learning Classification of Materials', period: 'Oct 2025 — Dec 2025', body: 'For a client brief, I built a classification pipeline on 5,000 alloy samples. Feature importance and 5-fold cross-validation showed that band gap on its own matched the full model\u2019s 100% accuracy, which cut the lab measurements needed from 10 to 1. On a second dataset of 400 samples, I compared four classifiers and recommended a random forest, which hit 100% on held-out data. A learning curve showed that about 30 samples were enough to meet the brief\u2019s 70% target, around 90% less data than had been collected.' },
   ],
   skills: [
     { group: 'Technical', items: ['Python (data analysis, machine learning)', 'SQL', 'Excel (financial modelling)', 'PowerPoint', 'Git and GitHub', 'Claude Code'] },
