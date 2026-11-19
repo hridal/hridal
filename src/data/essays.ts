@@ -1,7 +1,7 @@
 // Essay types. Each essay's `category` (at the top of its file) must match one of these ids.
 export const categories = [
   { id: 'philosophy', name: 'Philosophy', blurb: 'Analytical essays on ethics, technology and how we decide what is right.' },
-  { id: 'other', name: 'Other writing', blurb: 'Everything else.' },
+  { id: 'other', name: 'Odds and ends', blurb: 'Shorter, looser pieces on whatever I happen to be curious about.' },
 ];
 
 // The "Currently writing" card. Update whenever you start something new.
