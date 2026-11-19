@@ -1082,3 +1082,10 @@ a, button { touch-action: manipulation; }
   .sh-film { max-width: none; }
   .sb-review { font-size: 15px; }
 }
+
+/* why I write */
+.why-write { max-width: 62ch; margin: 0 0 54px; }
+.why-write h3 { font-family: var(--script); font-weight: 400; font-size: clamp(38px, 4vw, 48px); line-height: 1.1; margin: 0 0 14px; color: var(--ink); }
+.why-write p { font-family: var(--serif); font-size: 20px; line-height: 1.6; margin: 0 0 16px; color: var(--ink); }
+.why-write p:first-of-type::first-line { font-variant: small-caps; letter-spacing: .02em; }
+@media (max-width: 760px) { .why-write p { font-size: 18px; } .why-write { margin-bottom: 40px; } }
