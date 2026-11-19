@@ -15,7 +15,7 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
 function smoothScroll() {
   // Areas that scroll on their own (laptop screen, globe zoom, recipe panel) opt out.
   document.querySelectorAll('.screen, #globe, .place-panel, .np-page').forEach(el => el.setAttribute('data-lenis-prevent', ''));
-  const lenis = new Lenis({ duration: 1.1, easing: (t: number) => 1 - Math.pow(1 - t, 3), smoothWheel: true });
+  const lenis = new Lenis({ duration: 0.9, easing: (t: number) => 1 - Math.pow(1 - t, 3), smoothWheel: true });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -97,4 +97,6 @@ function start() {
 }
 
 // Wait for the fonts, so text is split at its real width.
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+let started = false;
+const go = () => { if (!started) { started = true; start(); } };
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); setTimeout(go, 600); } else go();
