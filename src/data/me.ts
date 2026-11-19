@@ -37,11 +37,11 @@ export const me = {
     { title: 'Machine Learning Classification of Materials', period: 'Oct 2025 — Dec 2025' },
   ],
   skills: [
-    { group: 'Technical', items: ['Python (data analysis, machine learning)', 'SQL', 'Excel (financial modelling)', 'PowerPoint', 'Claude'] },
-    { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction', 'Analytical essays on Substack'] },
-    { group: 'Courses', items: ['AI Safety and Practices'] },
+    { group: 'Technical', items: ['Python (data analysis, machine learning)', 'SQL', 'Excel (financial modelling)', 'PowerPoint', 'Git and GitHub', 'Claude Code'] },
+    { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction'] },
+    { group: 'Courses', items: ['AI Safety and Practices', 'Agile Foundations', 'Project Management Fundamentals'] },
     { group: 'Languages', items: ['English (native)', 'Hindi (fluent)', 'Gujarati (fluent)'] },
-    { group: 'Interests', items: ['Investing and markets', 'Netball', 'Bouldering', 'Painting'] },
+    { group: 'Interests', items: ['Investing and markets', 'Coding with AI', 'Writing essays', 'Netball', 'Bouldering', 'Painting'] },
   ],
   // What shows on the laptop screen on the About page (matches my LinkedIn).
   linkedin: {
