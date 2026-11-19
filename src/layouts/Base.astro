@@ -23,6 +23,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
   <meta name="description" content={description} />
   <link rel="icon" href="/favicon.svg" />
   <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500);</script>
+  <slot name="head" />
 </head>
 <body>
   <div class="wrap">

@@ -31,10 +31,10 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
             </div>
             <div class="topic-actions">
               <button class="btn ghost small" id="new-topic">Or just tap here</button>
-              <a class="btn small" id="send-topic" href={`mailto:${me.email}`}>I wrote about it</a>
+              <a class="btn small solid" id="send-topic" href="/essays/write">Write about this</a>
               <button class="btn ghost small" id="share-topic">Share this topic</button>
             </div>
-            <p class="topic-note">Write something on it, send it my way, and I'll share my favourites here.</p>
+            <p class="topic-note">Write it right here on the site. I read everything that comes in and publish my favourites below.</p>
           </div>
           <div class="writing-card">
             <p class="eyebrow">Currently writing</p>
@@ -53,6 +53,11 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
             <ul class="list">{g.items.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
           </div>
         ))}
+        <div class="essay-group" id="from-readers" hidden>
+          <h4>From readers</h4>
+          <p class="group-blurb">Essays people wrote on these topics and sent in.</p>
+          <ul class="list" id="readers-list"></ul>
+        </div>
       </div>
     </section>
   </div>
@@ -65,7 +70,7 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
       let i; do { i = Math.floor(Math.random() * topics.length); } while (i === last && topics.length > 1);
       last = i; current = topics[i];
       el.textContent = current; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
-      send.href = `mailto:${email}?subject=${encodeURIComponent('Essay: ' + current)}`;
+      send.href = `/essays/write?topic=${encodeURIComponent(current)}`;
     }
     document.getElementById('new-topic').addEventListener('click', pick);
 
@@ -99,5 +104,19 @@ const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.cat
         else { await navigator.clipboard.writeText(text + ' ' + location.href); share.textContent = 'Copied!'; setTimeout(() => share.textContent = 'Share this topic', 1500); }
       } catch (e) {}
     });
+    fetch('/api/essays').then(r => r.json()).then(d => {
+      if (!d.enabled || !d.essays || !d.essays.length) return;
+      const ul = document.getElementById('readers-list');
+      d.essays.forEach(e => {
+        const li = document.createElement('li'), a = document.createElement('a');
+        a.href = '/essays/read?id=' + encodeURIComponent(e.id);
+        const t = document.createElement('span'); t.className = 't'; t.textContent = e.title;
+        const sub = document.createElement('span'); sub.className = 's'; sub.textContent = 'By ' + e.name + (e.topic ? ', on ' + e.topic : '');
+        t.appendChild(sub);
+        const tm = document.createElement('time'); tm.textContent = new Date(+e.created).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+        a.append(t, tm); li.appendChild(a); ul.appendChild(li);
+      });
+      document.getElementById('from-readers').hidden = false;
+    }).catch(() => {});
   </script>
 </Base>

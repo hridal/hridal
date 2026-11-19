@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="From readers">
+  <article class="reader-essay" id="reader-essay">
+    <header><p class="eyebrow">From readers</p><h1 id="re-title">Loading…</h1><div class="meta" id="re-meta"></div></header>
+    <div class="prose" id="re-body"></div>
+    <p class="back-link"><a href="/essays#from-readers">All essays</a></p>
+  </article>
+  <script is:inline>
+  (() => {
+    const id = new URLSearchParams(location.search).get('id') || '';
+    const $ = i => document.getElementById(i);
+    fetch('/api/essays?id=' + encodeURIComponent(id)).then(r => r.json()).then(r => {
+      if (!r.essay) { $('re-title').textContent = 'This essay isn’t available.'; return; }
+      const e = r.essay; document.title = e.title + ' | Hridal';
+      $('re-title').textContent = e.title;
+      $('re-meta').textContent = 'By ' + e.name + ', ' + new Date(+e.created).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + (e.topic ? '. On: ' + e.topic : '');
+      const body = $('re-body');
+      e.body.split(/\n{2,}/).forEach(par => { const p = document.createElement('p'); p.textContent = par.replace(/\n/g, ' '); body.appendChild(p); });
+    }).catch(() => { $('re-title').textContent = 'This essay couldn’t be loaded.'; });
+  })();
+  </script>
+</Base>

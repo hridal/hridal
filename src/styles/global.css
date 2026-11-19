@@ -1092,3 +1092,43 @@ a, button { touch-action: manipulation; }
 /* why I write: heading in the small-caps serif, paragraphs all plain */
 .why-write h3 { font-family: var(--serif) !important; font-variant: small-caps; font-weight: 500; font-size: clamp(30px, 3.2vw, 38px) !important; letter-spacing: .03em; line-height: 1.2; }
 .why-write p:first-of-type::first-line { font-variant: normal; letter-spacing: 0; }
+
+/* =========================================================
+   READER ESSAYS
+   ========================================================= */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.paper-form { position: relative; max-width: 720px; background: #fffdf8; border-radius: 4px; padding: 40px 44px 30px 76px; box-shadow: 0 1px 0 #efe4d6, 0 3px 0 #fffaf3, 0 4px 0 #efe4d6, 0 22px 40px -26px rgba(108,32,45,.45);
+  background-image: linear-gradient(90deg, transparent 54px, rgba(108,32,45,.4) 54px 55.5px, transparent 55.5px), repeating-linear-gradient(#fffdf8 0 33px, #f2d9d5 33px 34px); background-attachment: local; }
+.paper-form input, .paper-form textarea { all: unset; display: block; width: 100%; box-sizing: border-box; color: var(--ink); font-family: var(--serif); }
+.paper-form ::placeholder { color: #b89a9a; font-style: italic; }
+.pf-topic { margin: 0 0 6px; font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 16px; line-height: 34px; }
+.pf-topic span { color: var(--ink); }
+.paper-form .pf-title { font-family: var(--script) !important; font-size: 30px; text-overflow: ellipsis; line-height: 68px; min-height: 68px; }
+.paper-form .pf-name { font-style: italic; font-size: 17px; line-height: 34px; margin-bottom: 34px; color: var(--muted) !important; }
+.paper-form .pf-body { font-size: 20px; line-height: 34px; min-height: 420px; resize: none; white-space: pre-wrap; overflow: hidden; }
+.pf-foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
+.pf-count { font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 16px; }
+.pf-count.ok { color: var(--ink); }
+.pf-saved { font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 14px; margin-right: auto; }
+.pf-foot .btn { cursor: pointer; font-family: var(--sans); }
+.pf-foot .btn:disabled { opacity: .45; cursor: default; }
+.pf-msg { font-family: var(--serif); color: var(--ink); font-size: 17px; min-height: 1.4em; margin: 12px 0 0; }
+.pf-done { font-family: var(--script); font-size: 48px; line-height: 1.2; margin: 0 0 8px; color: var(--ink); }
+.pf-done-sub { font-family: var(--serif); font-size: 19px; color: var(--ink); margin: 0; }
+.reader-essay { max-width: 660px; margin: 0 auto; padding: 80px 0 100px; }
+.reader-essay .back-link { font-family: var(--sans); font-size: 15px; margin-top: 60px; }
+.rv-login { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.rv-login label { font-family: var(--serif); font-size: 18px; }
+.rv-login input { font: 15px var(--sans); border: 1px solid var(--line); border-radius: 99px; padding: 9px 14px; background: var(--paper); color: var(--ink); }
+.rv-login .btn, .rv-actions .btn { cursor: pointer; font-family: var(--sans); background: none; color: var(--ink); }
+.rv-login .btn.solid, .rv-actions .btn.solid { background: var(--ink); color: var(--paper); }
+.rv-item { border: 1px solid var(--line); border-radius: 4px; background: #fffaf3; padding: 24px 28px; margin: 18px 0; max-width: 720px; }
+.rv-item h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; margin: 0 0 4px; }
+.rv-meta { font-family: var(--serif); font-style: italic; color: var(--muted); margin: 0 0 14px; }
+.rv-body { font-family: var(--serif); font-size: 18px; line-height: 1.6; max-height: 360px; overflow: auto; padding-right: 8px; }
+.rv-actions { display: flex; gap: 10px; margin-top: 18px; }
+@media (max-width: 760px) {
+  .paper-form { padding: 28px 18px 22px 48px; background-image: linear-gradient(90deg, transparent 34px, rgba(108,32,45,.4) 34px 35.5px, transparent 35.5px), repeating-linear-gradient(#fffdf8 0 33px, #f2d9d5 33px 34px); }
+  .paper-form .pf-title { font-size: 22px; } .paper-form .pf-body { font-size: 18px; }
+}

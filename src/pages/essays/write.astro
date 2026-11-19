@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Write an essay" description="Write an essay on one of Hridal's topics and send it in.">
+  <div class="tab-page write-page">
+    <section class="block">
+      <h2>Write</h2>
+      <div>
+        <p class="lead-small">Write your essay here and send it to me. I read everything that comes in and publish my favourites on the Essays page, with your name on them.</p>
+        <form class="paper-form" id="essay-form" novalidate>
+          <p class="pf-topic" id="pf-topic" hidden>Topic: <span></span></p>
+          <label class="sr" for="e-title">Title</label>
+          <input id="e-title" name="title" class="pf-title" placeholder="Your title" maxlength="140" required />
+          <label class="sr" for="e-name">Your name</label>
+          <input id="e-name" name="name" class="pf-name" placeholder="Your name, or leave blank to stay anonymous" maxlength="60" />
+          <label class="sr" for="e-body">Your essay</label>
+          <textarea id="e-body" name="body" class="pf-body" placeholder="Start writing…" required></textarea>
+          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <div class="pf-foot">
+            <span class="pf-count" id="pf-count">0 words, at least 150 needed</span>
+            <span class="pf-saved" id="pf-saved"></span>
+            <button class="btn solid" type="submit" id="pf-send">Send it to Hridal</button>
+          </div>
+          <p class="pf-msg" id="pf-msg" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+  <script is:inline>
+  (() => {
+    const q = new URLSearchParams(location.search), topic = (q.get('topic') || '').slice(0, 200);
+    const f = document.getElementById('essay-form'), t = document.getElementById('e-title'), n = document.getElementById('e-name'), body = document.getElementById('e-body');
+    const count = document.getElementById('pf-count'), saved = document.getElementById('pf-saved'), msg = document.getElementById('pf-msg'), send = document.getElementById('pf-send');
+    const KEY = 'hridal.draft.' + (topic || 'free');
+    const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
+    const d = load();
+    if (topic) { const p = document.getElementById('pf-topic'); p.hidden = false; p.querySelector('span').textContent = topic; t.value = topic; }
+    if (d) { t.value = d.title || t.value; n.value = d.name || ''; body.value = d.body || ''; }
+    const words = () => (body.value.match(/\S+/g) || []).length;
+    const grow = () => { body.style.height = 'auto'; body.style.height = Math.max(420, body.scrollHeight) + 'px'; };
+    const update = () => { const w = words(); count.textContent = w < 150 ? `${w} words, at least 150 needed` : `${w} words`; count.classList.toggle('ok', w >= 150); };
+    let timer;
+    const store = () => { clearTimeout(timer); timer = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ title: t.value, name: n.value, body: body.value })); saved.textContent = 'Draft saved on this device'; } catch (e) {} }, 500); };
+    [t, n, body].forEach(el => el.addEventListener('input', () => { update(); grow(); store(); }));
+    update(); grow();
+    fetch('/api/essays').then(r => r.json()).then(r => { if (!r.enabled) { msg.textContent = 'Sending isn’t switched on yet. Your draft is saved here, so you won’t lose it.'; send.disabled = true; } }).catch(() => {});
+    f.addEventListener('submit', async e => {
+      e.preventDefault(); msg.textContent = '';
+      if (t.value.trim().length < 3) { msg.textContent = 'Give your essay a title.'; t.focus(); return; }
+      if (words() < 150) { msg.textContent = `Essays need at least 150 words. You have ${words()}.`; body.focus(); return; }
+      send.disabled = true; send.textContent = 'Sending…';
+      try {
+        const r = await fetch('/api/essays', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: t.value, name: n.value, topic, body: body.value, website: f.website.value }) });
+        const res = await r.json();
+        if (!r.ok || res.error) throw new Error(res.error || 'Something went wrong.');
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        f.classList.add('sent');
+        f.innerHTML = '<p class="pf-done">Sent. Thank you for writing it.</p><p class="pf-done-sub">I’ll read it soon. If I publish it, it’ll appear under From readers on the <a href="/essays">Essays page</a>.</p>';
+      } catch (err) { msg.textContent = err.message; send.disabled = false; send.textContent = 'Send it to Hridal'; }
+    });
+  })();
+  </script>
+</Base>
