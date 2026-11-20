@@ -1,6 +1,6 @@
 ---
 title: "Why Indian gold never goes out of style"
-date: "2026-11-20"
+date: "2026-06-13"
 category: "other"
 summary: "My grandma's melted-down bangles, a bit of chemistry, and why gold has never really been just a trend."
 ---
