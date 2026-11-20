@@ -31,7 +31,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
     import { feature } from 'topojson-client';
     import world from 'world-atlas/countries-110m.json';
     import { places } from '../data/travel';
-    import { ShaderMaterial, TextureLoader, Vector2, Mesh, SphereGeometry, SRGBColorSpace } from 'three';
+    import { ShaderMaterial, TextureLoader, Vector2, Mesh, SphereGeometry, Sprite, SpriteMaterial, CanvasTexture } from 'three';
     import * as solar from 'solar-calculator';
     import { geoCentroid, geoArea } from 'd3-geo';
 
@@ -52,7 +52,8 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
       // Earth shader, adapted from globe.gl's "Day/Night Cycle" example and extended:
       // blue-marble day side, city lights at night, a soft twilight band,
       // sunlight glinting off the oceans, and a rim of atmosphere.
-      const tex = (url: string, srgb = true) => { const t = new TextureLoader().load(url); t.anisotropy = 8; return t; };
+      const small = Math.min(innerWidth, innerHeight) < 700 || (navigator as any).hardwareConcurrency <= 4;
+      const tex = (url: string, srgb = true) => { const t = new TextureLoader().load(small ? url.replace(/earth-(day|night)\.jpg$/, 'earth-$1-2k.jpg') : url); t.anisotropy = 4; return t; };
       const sunCommon = `#define PI 3.141592653589793
           uniform vec2 sunPosition; uniform vec2 globeRotation;
           float toRad(in float a) { return a * PI / 180.0; }
@@ -131,7 +132,14 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
       }
       const labels = placed;
 
-      const globe = new Globe(el)
+      // One shared glowing-dot texture for every place: drawn once, rendered by the GPU.
+      const dc = document.createElement('canvas'); dc.width = dc.height = 64; const dx = dc.getContext('2d')!;
+      const g = dx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.18, 'rgba(255,240,236,1)'); g.addColorStop(0.34, 'rgba(255,150,170,.75)'); g.addColorStop(1, 'rgba(255,150,170,0)');
+      dx.fillStyle = g; dx.fillRect(0, 0, 64, 64);
+      const dotMat = new SpriteMaterial({ map: new CanvasTexture(dc), depthWrite: false, transparent: true });
+
+      const globe: any = new Globe(el, { rendererConfig: { antialias: !small, powerPreference: 'high-performance' } })
         .width(w).height(h)
         .backgroundColor('rgba(0,0,0,0)')
         .globeMaterial(shader)
@@ -145,25 +153,26 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
         .labelLat((d: any) => d.lat).labelLng((d: any) => d.lng).labelText((d: any) => d.name)
         .labelSize((d: any) => d.size).labelDotRadius(0).labelAltitude(0.016).labelResolution(1)
         .labelColor((d: any) => d.visited ? 'rgba(255,250,245,1)' : 'rgba(255,255,255,0.58)')
-        .htmlElementsData(places.map((p, i) => ({ ...p, i })))
-        .htmlElementVisibilityModifier((el: HTMLElement, isVisible: boolean) => { el.style.opacity = isVisible ? '1' : '0'; el.style.pointerEvents = isVisible ? 'auto' : 'none'; })
-        .htmlLat((d: any) => d.lat).htmlLng((d: any) => d.lng).htmlAltitude(0.01)
-        .htmlElement((d: any) => {
-          const pin = document.createElement('button');
-          pin.className = 'pin'; pin.title = d.name; pin.setAttribute('aria-label', d.name);
-          pin.innerHTML = '<span class="glow"></span><span class="core"></span>';
-          pin.style.pointerEvents = 'auto'; pin.style.cursor = 'pointer';
-          pin.onclick = (e) => { e.stopPropagation(); open(d.i); };
-          return pin;
-        });
+        .customLayerData(places.map((p, i) => ({ ...p, i })))
+        .customThreeObject(() => { const sp = new Sprite(dotMat); sp.scale.set(2.6, 2.6, 1); return sp; })
+        .customThreeObjectUpdate((obj: any, d: any) => Object.assign(obj.position, globe.getCoords(d.lat, d.lng, 0.012)))
+        .onCustomLayerClick((d: any) => open(d.i))
+        .onCustomLayerHover((d: any) => { el.style.cursor = d ? 'pointer' : ''; })
+        .polygonsTransitionDuration(0);
       globe.onZoom?.((pov: any) => shader.uniforms.globeRotation.value.set(pov.lng, pov.lat));
-      const cloudMesh = new Mesh(new SphereGeometry(globe.getGlobeRadius() * 1.009, 96, 96), cloudShader);
+      globe.renderer().setPixelRatio(Math.min(devicePixelRatio, small ? 1.5 : 2));
+      const cloudMesh = new Mesh(new SphereGeometry(globe.getGlobeRadius() * 1.009, 64, 48), cloudShader);
       globe.scene().add(cloudMesh);
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) (function drift() { cloudMesh.rotation.y += 0.00006; requestAnimationFrame(drift); })();
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { if (running) cloudMesh.rotation.y += 0.0004; }, 100);
       const ctl: any = globe.controls(); ctl.autoRotate = true; ctl.autoRotateSpeed = 0.35; ctl.enableZoom = true;
       const first = places[0]; if (first) globe.pointOfView({ lat: first.lat - 10, lng: first.lng, altitude: 2.2 }, 0);
+      // Only draw while the globe is on screen and the tab is visible.
+      let running = true, onScreen = true;
+      const sync = () => { const go = onScreen && !document.hidden; if (go !== running) { running = go; go ? globe.resumeAnimation() : globe.pauseAnimation(); } };
+      new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; sync(); }).observe(el);
+      document.addEventListener('visibilitychange', sync);
       hint.textContent = 'Drag to spin it, scroll to zoom, tap a light to look closer.';
-      window.addEventListener('resize', () => { const s = size(); globe.width(s.w).height(s.h); });
+      let rt: any; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { const s = size(); globe.width(s.w).height(s.h); }, 150); });
 
       function open(i: number) {
         const p = places[i];
