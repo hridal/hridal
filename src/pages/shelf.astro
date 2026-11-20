@@ -50,6 +50,7 @@ const items = [
                     {!it.done && <span class="sh-now">{it.now}</span>}
                     {it.done && it.rating && <span class="sh-mini" aria-label={`My rating ${it.rating} out of 5`}>{'★'.repeat(Math.round(it.rating))}</span>}
                   </span>
+                  {it.type === 'book' && <span class="bk-leaves" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}
                   <span class="sh-face sh-back">
                     <span class="sb-title">{it.title}</span>
                     <span class="sb-label">My rating</span>
@@ -123,7 +124,24 @@ const items = [
         if ((e.target as HTMLElement).closest('.rate')) return;
         flipped = !flipped;
         card.setAttribute('aria-expanded', String(flipped));
-        gsap.to(inner, { rotateY: flipped ? 180 : 0, duration: reduce ? 0 : 0.8, ease: 'power3.inOut' });
+        if (item.classList.contains('sh-book')) {
+          const cover = item.querySelector<HTMLElement>('.sh-front')!;
+          const leaves = [...item.querySelectorAll<HTMLElement>('.bk-leaves i')];
+          const page = item.querySelector<HTMLElement>('.sh-back')!;
+          gsap.killTweensOf([cover, ...leaves, page]);
+          if (reduce) { gsap.set(cover, { rotateY: flipped ? -180 : 0 }); gsap.set(leaves, { rotateY: flipped ? -180 : 0 }); gsap.set(page, { opacity: 1 }); }
+          else if (flipped) {
+            const tl = gsap.timeline();
+            tl.set(page, { opacity: 0 })
+              .to(cover, { rotateY: -180, duration: 0.9, ease: 'power2.inOut', transformPerspective: 1400 })
+              .to(leaves, { rotateY: -180, duration: 0.55, ease: 'power1.inOut', stagger: 0.09, transformPerspective: 1400 }, 0.35)
+              .to(page, { opacity: 1, duration: 0.35 }, 0.75);
+          } else {
+            const tl = gsap.timeline();
+            tl.to([...leaves].reverse(), { rotateY: 0, duration: 0.4, ease: 'power1.inOut', stagger: 0.06, transformPerspective: 1400 })
+              .to(cover, { rotateY: 0, duration: 0.8, ease: 'power2.inOut', transformPerspective: 1400 }, 0.15);
+          }
+        } else gsap.to(inner, { rotateY: flipped ? 180 : 0, duration: reduce ? 0 : 0.8, ease: 'power3.inOut' });
         if (flipped && !reduce) {
           const fill = item.querySelector<HTMLElement>('.stars.mine .stars-fill');
           if (fill) gsap.fromTo(fill, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: `inset(0 ${100 - parseFloat(getComputedStyle(fill.parentElement!).getPropertyValue('--v')) * 100}% 0 0)`, duration: 0.9, ease: 'power2.out', delay: 0.45 });

@@ -1210,3 +1210,13 @@ a, button { touch-action: manipulation; }
 .sh-film .sh-mini { bottom: 18px; right: 22px; }
 .sh-film .tk-motif { top: 18px; right: 18px; }
 .sh-film .sh-now { top: auto; bottom: 18px; right: 22px; }
+
+/* Shelf books: the cover swings open and pages flick over to the review */
+.sh-book .sh-front { z-index: 3; transform-origin: left center; }
+.sh-book .sh-back { transform: none; z-index: 1; border-radius: 3px 8px 8px 3px; padding: 22px 20px 18px 26px;
+  background: linear-gradient(90deg, rgba(108,32,45,.12), transparent 7%), #fffaf2;
+  box-shadow: inset 0 0 0 1px #efe2d4, 3px 3px 0 -1px #f3e8dc, 5px 5px 0 -2px #e9dccd, 0 22px 34px -24px rgba(90,25,35,.5); }
+.bk-leaves { position: absolute; inset: 1.5% 2% 1.5% 0; z-index: 2; pointer-events: none; transform-style: preserve-3d; }
+.bk-leaves i { position: absolute; inset: 0; transform-origin: left center; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 2px 6px 6px 2px;
+  background: linear-gradient(90deg, rgba(0,0,0,.08), transparent 12%), repeating-linear-gradient(transparent 0 17px, rgba(108,32,45,.07) 17px 18px), #fffcf6; box-shadow: inset 0 0 0 1px #efe4d6; }
+.bk-leaves i:nth-child(2) { inset: 0 .5% 0 0; } .bk-leaves i:nth-child(3) { inset: 0 1% 0 0; } .bk-leaves i:nth-child(4) { inset: 0 1.5% 0 0; }
