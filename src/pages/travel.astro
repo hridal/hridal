@@ -178,8 +178,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
         const p = places[i];
         ctl.autoRotate = false;
         globe.pointOfView({ lat: p.lat, lng: p.lng, altitude: 1.4 }, 1200);
-        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ', ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}
-          ${p.photos.length ? `<div class="pp-photos">${p.photos.map(f => `<a href="/travel/${encodeURIComponent(f)}" target="_blank" rel="noopener"><img src="/travel/${encodeURIComponent(f)}" alt="${esc(p.name)}" loading="lazy"/></a>`).join('')}</div>` : '<p class="pp-empty">Photos coming soon.</p>'}`;
+        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ', ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}`;
         panel.hidden = false;
       }
       document.getElementById('pp-close')!.onclick = () => { panel.hidden = true; ctl.autoRotate = true; };
