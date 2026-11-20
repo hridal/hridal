@@ -18,7 +18,7 @@ const education = me.education.map(e => {
 });
 const projects = me.projects.map(p => {
   const m = p.title.match(/^(.*?)\s*\((.*)\)$/);
-  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: undefined, html: (p as any).body ? `<p>${(p as any).body}</p>` : '' };
+  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: /Jewellness/.test(p.title) ? '/logos/jewellness.png' : logos['Imperial'], html: (p as any).body ? `<p>${(p as any).body}</p>` : '' };
 });
 const groups = [
   { id: 'tl-work', title: 'Work & leadership', items: work },
