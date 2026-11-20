@@ -21,6 +21,14 @@ export const books: Book[] = [
 ];
 
 export const films: Film[] = [
+  { id: 'the-prestige', title: 'The Prestige', year: '2006', kind: 'film', status: 'watched', rating: 4,
+    review: 'Endlessly rewatchable. The whole film is structured like a magic trick, hiding clues in plain sight while two rival magicians go further and further to destroy each other.' },
+  { id: 'se7en', title: 'Se7en', year: '1995', kind: 'film', status: 'watched', rating: 4,
+    review: 'One of the bleakest, most gripping thrillers I\u2019ve seen. The constant rain and sharp pacing build to an ending that stays with you long after the credits.' },
+  { id: 'zodiac', title: 'Zodiac', year: '2007', kind: 'film', status: 'watched', rating: 4,
+    review: 'I loved how it turns the usual serial-killer film on its head. It pulls you in with slow, obsessive detail and shows how chasing an unsolvable mystery slowly ruins everyone involved.' },
+  { id: 'the-shawshank-redemption', title: 'The Shawshank Redemption', year: '1994', kind: 'film', status: 'watched', rating: 4,
+    review: 'A deeply moving classic that earns every bit of its ending, turning decades of quiet friendship inside a brutal prison into a story about holding onto hope.' },
   { id: 'the-mentalist', title: 'The Mentalist', where: 'Netflix', kind: 'series', status: 'watching',
     review: 'Watching it now. Patrick Jane reading people is the whole reason to keep going.' },
 ];
