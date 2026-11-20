@@ -1186,3 +1186,27 @@ a, button { touch-action: manipulation; }
 .sh-film .tk-body { position: relative; z-index: 1; }
 .bk-motif { bottom: 15%; height: 30%; }
 .tk-motif { top: 14px; right: 14px; transform: rotate(-6deg); width: 22%; max-width: 92px; opacity: .3; }
+
+/* Shelf films: proper cinema tickets, and room for the whole review */
+.sh-film .sh-card { aspect-ratio: 5 / 4 !important; }
+.sh-film .sb-review { display: block; -webkit-line-clamp: unset; overflow: visible; font-size: 15px; line-height: 1.45; margin: 4px 0 6px; }
+.sh-film .sh-back { overflow-y: auto; justify-content: flex-start; padding: 18px 20px; gap: 4px; background: #fffaf2 radial-gradient(circle at 0 50%, transparent 0 11px, #fffaf2 12px) ; }
+.sh-film .sh-front { background: #fffaf2; overflow: hidden;
+  -webkit-mask: radial-gradient(circle 12px at 26% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 12px at 26% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+          mask: radial-gradient(circle 12px at 26% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 12px at 26% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat; }
+.sh-film .tk-stub { width: 26%; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 18px 0; box-sizing: border-box;
+  background: linear-gradient(160deg, #8a3341, #6c202d 60%, #561823); color: #fbe7e1; border-right: 2px dashed rgba(255,250,242,.7); }
+.tk-admit { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--serif); font-size: 15px; letter-spacing: .04em; margin: auto 0; }
+.tk-no { font-family: var(--serif); font-style: italic; font-size: 11px; opacity: .8; }
+.sh-film .tk-body { border-left: 0; padding: 22px 22px 18px; justify-content: flex-start; gap: 2px;
+  background: repeating-linear-gradient(0deg, transparent 0 22px, rgba(108,32,45,.035) 22px 23px); }
+.tk-house { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); order: -1; margin-bottom: auto; }
+.sh-film .tk-title { margin-top: auto; }
+.tk-seat { display: flex; gap: 18px; margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); font-family: var(--serif); font-size: 17px; color: var(--ink); }
+.tk-seat span { display: flex; flex-direction: column; line-height: 1.1; }
+.tk-seat em { font-size: 11px; color: var(--muted); }
+.tk-barcode { display: block; height: 22px; width: 46%; margin-top: 12px; opacity: .75;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px); }
+.sh-film .sh-mini { bottom: 18px; right: 22px; }
+.sh-film .tk-motif { top: 18px; right: 18px; }
+.sh-film .sh-now { top: auto; bottom: 18px; right: 22px; }

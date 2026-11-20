@@ -37,10 +37,13 @@ const items = [
                       </>
                     ) : (
                       <>
-                        <span class="tk-stub" aria-hidden="true"><span>Admit one</span></span>
+                        <span class="tk-stub" aria-hidden="true"><span class="tk-admit">Admit one</span><span class="tk-no">No. {String(1000 + films.findIndex(f => f.id === it.id) * 137).padStart(6, '0')}</span></span>
                         <span class="tk-body">
                           <span class="tk-title">{it.title}</span>
                           <span class="tk-line">{it.line}</span>
+                          <span class="tk-house" aria-hidden="true">Hridal Picturehouse</span>
+                          <span class="tk-seat" aria-hidden="true"><span><em>Screen</em>{(films.findIndex(f => f.id === it.id) % 4) + 1}</span><span><em>Row</em>{'FGHJK'[films.findIndex(f => f.id === it.id) % 5]}</span><span><em>Seat</em>{12 + films.findIndex(f => f.id === it.id) * 3}</span></span>
+                          <span class="tk-barcode" aria-hidden="true"></span>
                         </span>
                         {motifs[it.id] && <svg class="tk-motif" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
                       </>
