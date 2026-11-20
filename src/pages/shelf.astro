@@ -41,7 +41,6 @@ const items = [
                         <span class="tk-body">
                           <span class="tk-title">{it.title}</span>
                           <span class="tk-line">{it.line}</span>
-                          <span class="tk-house" aria-hidden="true">Hridal Picturehouse</span>
                           <span class="tk-seat" aria-hidden="true"><span><em>Screen</em>{(films.findIndex(f => f.id === it.id) % 4) + 1}</span><span><em>Row</em>{'FGHJK'[films.findIndex(f => f.id === it.id) % 5]}</span><span><em>Seat</em>{12 + films.findIndex(f => f.id === it.id) * 3}</span></span>
                           <span class="tk-barcode" aria-hidden="true"></span>
                         </span>
