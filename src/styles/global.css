@@ -1177,3 +1177,12 @@ a, button { touch-action: manipulation; }
   background: linear-gradient(160deg, #fff4cf 0%, #e3c27a 28%, #b8893c 55%, #f3dc9c 75%, #a8792f 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 1px 0 rgba(255,245,210,.5)) drop-shadow(0 2px 2px rgba(0,0,0,.55)); }
 .charm-heart { width: calc(var(--W) * .075); height: calc(var(--W) * .068); filter: drop-shadow(0 2px 2px rgba(0,0,0,.55)); }
+
+/* Shelf: a line drawing for every book and film */
+.bk-motif { position: absolute; left: 20%; right: 14%; bottom: 10%; width: auto; height: 34%; margin: 0 auto; fill: none; stroke: #f3d9a4; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.35)); opacity: .9; }
+.sh-book .sh-front .bk-motif { display: block; }
+.tk-motif { position: absolute; right: 16px; top: 50%; transform: translateY(-50%) rotate(-6deg); width: 38%; max-width: 150px; height: auto; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .2; pointer-events: none; }
+.sh-film .tk-body { position: relative; z-index: 1; }
+.bk-motif { bottom: 15%; height: 30%; }
+.tk-motif { top: 14px; right: 14px; transform: rotate(-6deg); width: 22%; max-width: 92px; opacity: .3; }

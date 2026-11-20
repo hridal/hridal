@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { books, films } from '../data/shelf';
+import { motifs } from '../data/motifs';
 const starPath = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z';
 const items = [
   ...books.map(b => ({ ...b, key: 'b:' + b.id, type: 'book' as const, done: b.status === 'read', line: b.author, now: 'Reading now' })),
@@ -32,6 +33,7 @@ const items = [
                         <span class="bk-title">{it.title}</span>
                         <span class="bk-rule" aria-hidden="true"></span>
                         <span class="bk-author">{it.line}</span>
+                        {motifs[it.id] && <svg class="bk-motif" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
                       </>
                     ) : (
                       <>
@@ -40,6 +42,7 @@ const items = [
                           <span class="tk-title">{it.title}</span>
                           <span class="tk-line">{it.line}</span>
                         </span>
+                        {motifs[it.id] && <svg class="tk-motif" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
                       </>
                     )}
                     {!it.done && <span class="sh-now">{it.now}</span>}
