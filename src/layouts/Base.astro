@@ -14,6 +14,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 <!doctype html>
 <html lang="en">
 <head>
+  <meta name="view-transition" content="same-origin" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title ? `${title} | Hridal` : `Hridal Gujrati`}</title>
@@ -34,6 +35,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       </nav>
     </header>
     <main><slot /></main>
+    <div class="footer-mark" aria-hidden="true">hridal.</div>
     <footer>
       <span>© {new Date().getFullYear()} {me.name}</span>
       <span>{me.links.map((l, i) => <>{i > 0 && ', '}<a href={l.href}>{l.label}</a></>)}</span>

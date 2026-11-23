@@ -99,3 +99,12 @@ function start() {
 let started = false;
 const go = () => { if (!started) { started = true; start(); } };
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); setTimeout(go, 600); } else go();
+
+// Spotlight: one passive listener, writes two CSS variables. No layout work.
+document.addEventListener('pointermove', (e) => {
+  const el = (e.target as HTMLElement)?.closest?.('.now-card') as HTMLElement | null;
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+  el.style.setProperty('--my', `${e.clientY - r.top}px`);
+}, { passive: true });

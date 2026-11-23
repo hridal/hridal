@@ -9,6 +9,7 @@ const icons: Record<string, string> = {
 ---
 <Base>
   <section class="intro">
+    <div class="hero-mesh" aria-hidden="true"><i></i><i></i><i></i></div>
     <p class="eyebrow">the work &amp; writing of</p>
     <div class="name-row">
       <h1>{me.name}<em>.</em></h1>
@@ -25,6 +26,17 @@ const icons: Record<string, string> = {
     <div class="actions"><a class="btn solid" href="/contact">Get in touch</a><a class="btn" href="/cv.pdf" download>Download CV</a></div>
   </section>
 
+
+  <section class="marquee" aria-label="Where I've worked and studied">
+    <p class="mq-label">Experience with</p>
+    <div class="mq-track">{[0,1].map(k => (
+      <div class="mq-row" aria-hidden={k === 1 ? 'true' : undefined}>
+        {[['roland-berger','Roland Berger'],['ibm','IBM'],['wood','Wood'],['imperial','Imperial College London'],['jewellness','Jewellness']].map(([f,n]) => (
+          <span class="mq-item"><img src={`/logos/${f}.png`} alt={k === 0 ? n : ''} loading="lazy" width="28" height="28" /><span>{n}</span></span>
+        ))}
+      </div>
+    ))}</div>
+  </section>
 
   <section class="block home-now">
     <h2>Currently</h2>
