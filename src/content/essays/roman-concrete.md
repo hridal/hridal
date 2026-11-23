@@ -1,5 +1,5 @@
 ---
-title: "The Archaeology of Obsolescence: Why Roman Concrete Outlives Modern Infrastructure"
+title: "Why Roman Concrete Outlives Modern Infrastructure"
 date: "2026-08-23"
 category: "other"
 summary: "Why concrete the Romans poured into the sea two thousand years ago is still standing, and what modern builders are learning from it."
