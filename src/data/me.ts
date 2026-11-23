@@ -20,12 +20,12 @@ export const me = {
   // The profile card beside the welcome text on the homepage.
   // Set `status` to '' to hide the line with the dot.
   profile: {
-    status: 'Open to summer 2027 internships',
+    status: '',
     rows: [
       { label: 'Studying', value: 'MEng Materials Science, Imperial (Year 3)' },
       { label: 'Latest role', value: 'Junior Consulting Intern, Roland Berger' },
       { label: 'Based in', value: 'London' },
-      { label: 'Interested in', value: 'Consulting, strategy and product' },
+      { label: 'At Imperial', value: 'AI Society research team, EDI rep for Materials' },
     ],
   },
   // Change this whenever you update the Currently cards below.
