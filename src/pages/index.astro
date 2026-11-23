@@ -23,17 +23,10 @@ const icons: Record<string, string> = {
     </svg>
     <div class="hero-split">
       <div class="hero-copy">
-        <div class="name-card">
-          <div class="nc-head">
-            <p class="word">Hridal</p>
-            <p class="say">{me.pronunciation}</p>
-            <p class="pos">{me.origin}</p>
-          </div>
+        <div class="name-card dict" role="group" aria-label="What my name means">
+          <p class="dict-head"><span class="word">Hridal</span> <span class="say">{me.pronunciation}</span> <span class="pos">{me.origin}</span></p>
           <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
-          <div class="nc-foot">
-            <p class="ety">{me.etymology}</p>
-            <p class="note">{me.soundsLike}</p>
-          </div>
+          <p class="dict-foot">{me.etymology} {me.soundsLike.charAt(0).toUpperCase() + me.soundsLike.slice(1)}.</p>
         </div>
         <p class="tagline">{me.tagline}</p>
         <div class="actions"><a class="btn solid" href="/contact">Get in touch</a></div>
