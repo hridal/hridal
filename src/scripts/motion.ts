@@ -2,7 +2,6 @@
 // line reveals for big headings, and motion that answers what you do
 // (logo wave on hover, magnetic buttons). Everything is skipped when the
 // visitor has asked their device for reduced motion.
-import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
@@ -13,14 +12,13 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 function smoothScroll() {
-  // Areas that scroll on their own (laptop screen, globe zoom, recipe panel) opt out.
-  document.querySelectorAll('.screen, #globe, .place-panel, .np-page').forEach(el => el.setAttribute('data-lenis-prevent', ''));
-  const lenis = new Lenis({ duration: 0.9, easing: (t: number) => 1 - Math.pow(1 - t, 3), smoothWheel: true });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add(t => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
-  // Keep in-page jumps (like the recipe scrolling into view) smooth too.
-  (window as any).__lenis = lenis;
+  // Native scrolling: smoother on phones and trackpads than a JS scroll layer.
+  document.documentElement.style.scrollBehavior = 'smooth';
+  (window as any).__lenis = { scrollTo: (t: any, o: any = {}) => {
+    const el = typeof t === 'string' ? document.querySelector(t) : t;
+    if (el && el.getBoundingClientRect) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + (o.offset || 0), behavior: 'smooth' });
+    else if (typeof t === 'number') window.scrollTo({ top: t, behavior: 'smooth' });
+  } };
 }
 
 function homeEntrance() {
