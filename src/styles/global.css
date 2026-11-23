@@ -1393,3 +1393,11 @@ body .top { position: sticky; top: 0; z-index: 200 !important; background: rgba(
 .mq-item { filter: none; transition: opacity .3s; }
 .mq-item img { filter: grayscale(1); }
 .mq-item:hover img { filter: none; }
+
+/* Frosted header runs the full width of the window, not just the content column */
+body .top { background: transparent !important; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 0 !important; isolation: isolate; }
+body .top::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 50vw); width: 100vw; z-index: -1; pointer-events: none;
+  background: rgba(251,250,248,.72); border-bottom: 1px solid rgba(0,0,0,.06);
+  -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); }
+html, body { overflow-x: clip; }
+.hero-mesh { inset: -80px -8vw -40px; -webkit-mask: radial-gradient(55% 60% at 40% 45%, #000 20%, transparent 70%); mask: radial-gradient(55% 60% at 40% 45%, #000 20%, transparent 70%); }
