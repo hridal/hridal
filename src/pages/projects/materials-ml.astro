@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+const app = 'https://materials-ml-predictor.streamlit.app/';
+---
+<Base title="Machine learning for materials" description="A machine learning model that classifies alloys from their measured properties, built by Hridal out of interest, with a live app you can try.">
+  <article class="case">
+    <a class="case-back" href="/projects">All projects</a>
+    <p class="case-kind">Personal project, October to December 2025</p>
+    <h1>Machine learning for materials</h1>
+    <p class="case-lede">A classification model that predicts what kind of alloy a sample is from its measured properties, and a live app that lets anyone try it.</p>
+
+    <figure class="case-viewer">
+      <div class="viewer-box app-box" id="appbox">
+        <div class="app-poster">
+          <p class="app-name">Materials ML predictor</p>
+          <p class="app-sub">Enter a sample's properties and the model predicts its class.</p>
+          <button class="btn solid" id="load-app">Open the app here</button>
+        </div>
+      </div>
+      <figcaption>The app runs on Streamlit and can take a few seconds to wake up the first time. <a href={app} target="_blank" rel="noopener">Open it in a new tab</a></figcaption>
+    </figure>
+
+    <dl class="case-facts">
+      <div><dt>My role</dt><dd>Everything, from cleaning the data to building and deploying the app</dd></div>
+      <div><dt>Tools</dt><dd>Python, scikit-learn, Streamlit</dd></div>
+      <div><dt>Data</dt><dd>5,000 alloy samples, plus a second set of 400</dd></div>
+      <div><dt>Result</dt><dd>100% accuracy from a single measurement</dd></div>
+    </dl>
+
+    <h2>The question</h2>
+    <p>Classifying a material usually means running several lab measurements on every sample, which takes time and money. I wanted to know how many of those measurements actually matter, and whether a model could get to the same answer with far fewer of them.</p>
+
+    <h2>What I did</h2>
+    <p>I built a classification pipeline on 5,000 alloy samples and used feature importance alongside 5-fold cross-validation to see which measurements the model really relied on. On a second dataset of 400 samples I compared four different classifiers and settled on a random forest, which reached 100% accuracy on data it had never seen.</p>
+
+    <h2>What I found</h2>
+    <p>Band gap on its own matched the accuracy of the full model, which means the number of lab measurements needed per sample could drop from ten to one. A learning curve also showed that around 30 samples were enough to reach 70% accuracy, roughly 90% less data than had been collected in the first place.</p>
+
+    <h2>Why it matters</h2>
+    <p>For a lab, measuring one property instead of ten is a large saving in time and cost, and knowing that a small dataset is enough makes it much easier to start on a new material. Building the app on top meant the result became something people could use, not just a number in a notebook.</p>
+  </article>
+  <script>
+    document.getElementById('load-app')?.addEventListener('click', () => {
+      const box = document.getElementById('appbox')!;
+      const f = document.createElement('iframe');
+      f.src = 'https://materials-ml-predictor.streamlit.app/?embed=true'; f.title = 'Materials ML predictor app';
+      box.replaceChildren(f);
+    });
+  </script>
+</Base>

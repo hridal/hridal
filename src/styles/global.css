@@ -1485,3 +1485,8 @@ body .intro h1 { letter-spacing: -0.04em !important; }
 @media (max-width: 760px) { .case { padding-top: 30px; } .case-facts { grid-template-columns: 1fr; } .viewer-box { aspect-ratio: 4 / 5; } .case-lede { font-size: 18px; } }
 .viewer-box img { object-fit: contain; background: #f6f2ea; }
 @media (min-width: 761px) { .viewer-box { aspect-ratio: 4 / 3; } }
+.app-box { background: #f3efe9; display: grid; place-items: center; }
+.app-poster { text-align: center; padding: 24px; }
+.app-name { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; }
+.app-sub { color: var(--muted); margin: 0 0 22px; }
+.app-poster .btn { position: static; transform: none; }
