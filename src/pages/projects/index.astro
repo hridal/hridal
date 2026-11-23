@@ -1,9 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
 const projects = [
-  { href: '/projects/portfolio-dashboard', title: 'Portfolio risk dashboard', kind: 'Personal project, Nov 2026 to now', img: null,
+  { href: '/projects/portfolio-dashboard', title: 'Portfolio risk dashboard', kind: 'Personal project, Oct 2026 to now', img: null,
     text: 'A dashboard I built before I started investing, to see how the portfolios I was considering behave in a crash, what fees and inflation really cost, and to keep a record of my decisions. It checks its own data and rebuilds itself every weekday.' },
-  { href: '/projects/jewellness', title: 'Jewellness', kind: 'Start-up, Oct 2026 to now', img: '/projects/jewellness/product.jpg',
+  { href: '/projects/jewellness', title: 'Jewellness', kind: 'Start-up, Oct 2026 to now', img: null,
     text: 'Fitness jewellery for women: a halo bracelet that tracks sleep, heart health and your cycle, with every sensor hidden in the clasp. I came up with the idea, ran the customer interviews and built the market sizing and financial model.' },
   { href: '/projects/materials-ml', title: 'Machine learning for materials', kind: 'Personal project, Oct to Dec 2025', img: null,
     text: 'A classification pipeline on 5,000 alloy samples, which showed that band gap alone matched the full model’s accuracy and cut the lab measurements needed from ten to one. You can try it in the live app.' },
@@ -22,7 +22,7 @@ const projects = [
               <span class="pj-kind">{p.kind}</span>
               <span class="pj-title">{p.title}</span>
               <span class="pj-text">{p.text}</span>
-              <span class="pj-more">Read the case study</span>
+              <span class="pj-more">Read more</span>
             </a>
           </li>
         ))}
