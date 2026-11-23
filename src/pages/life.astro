@@ -1,5 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import { places } from '../data/travel';
+import { books, films } from '../data/shelf';
+import { recipes } from '../data/kitchen';
+// At-a-glance counts for the left column, worked out from the site's own data so they stay current.
+const glance = [
+  { n: new Set(places.map(p => p.country)).size, label: 'countries visited', href: '/travel' },
+  { n: places.length, label: 'places on the globe', href: '/travel' },
+  { n: books.length, label: 'books on the shelf', href: '/shelf' },
+  { n: films.length, label: 'films and series rated', href: '/shelf' },
+  { n: recipes.length, label: 'recipes in the kitchen', href: '/kitchen' },
+];
 const sections = [
   { id: 'kitchen', title: 'Kitchen', href: '/kitchen', cta: 'Open the kitchen',
     left: 'Easy, healthy vegetarian food for busy weeknights.',
@@ -26,6 +37,11 @@ const doodles: Record<string, string> = {
     <section class="block">
       <div class="side">
         <h2>My life</h2>
+        <ul class="glance" aria-label="At a glance">
+          {glance.map(g => (
+            <li><a href={g.href}><b data-count={g.n}>{g.n}</b><span>{g.label}</span></a></li>
+          ))}
+        </ul>
       </div>
       <div>
         <p class="lead-small">The things I do outside work, from the food I cook to the places I have been and the books I keep going back to.</p>

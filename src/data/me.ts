@@ -16,6 +16,8 @@ export const me = {
     "I also write essays, which I publish here on this site. Away from all that, I play netball, go bouldering and paint when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
+  // Change this whenever you update the Currently cards below.
+  currentlyUpdated: 'November 2026',
   currently: [
     { label: 'Reading', icon: 'book', title: 'Brave New World', note: 'Aldous Huxley' },
     { label: 'Writing', icon: 'pen', title: 'Create More Than You Consume', note: 'An essay on individuality and doomscrolling' },

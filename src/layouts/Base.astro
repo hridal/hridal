@@ -3,11 +3,22 @@ import '@fontsource-variable/hanken-grotesk';
 import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/source-serif-4/wght-italic.css';
 import '../styles/global.css';
+import '../styles/premium.css';
+import { getCollection } from 'astro:content';
 import { me } from '../data/me';
+import { projects } from '../data/projects';
 const { title, description = me.tagline } = Astro.props;
 const links = [['/about','About'],['/experience','Experience'],['/projects','Projects'],['/essays','Essays']];
 const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/shelf','Shelf'],['/focus','Focus']];
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+// Everything the quick-jump menu (Cmd/Ctrl + K) can take you to.
+const essays = (await getCollection('essays')).filter(e => !e.data.draft).sort((a, b) => +b.data.date - +a.data.date);
+const jump = [
+  ...[['/', 'Home'], ...links, ['/life', 'My life'], ['/contact', 'Contact']].map(([href, label]) => ({ href, label, group: 'Pages' })),
+  ...lifeLinks.map(([href, label]) => ({ href, label, group: 'My life' })),
+  ...projects.map(p => ({ href: p.href, label: p.title, group: 'Projects' })),
+  ...essays.map(e => ({ href: `/essays/${e.id}`, label: e.data.title, group: 'Essays' })),
+];
 ---
 <!doctype html>
 <html lang="en">
@@ -41,6 +52,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
         {links.map(([href, label]) => <a href={href} aria-current={here.startsWith(href) ? 'page' : undefined}>{label}</a>)}
         <a href="/life" aria-current={['/life', ...lifeLinks.map(([h]) => h)].some(h => here.startsWith(h)) ? 'page' : undefined}>My life</a>
         <a href="/contact" aria-current={here.startsWith('/contact') ? 'page' : undefined}>Contact</a>
+        <button class="k-btn" type="button" data-k-open aria-label="Search the site">Search <kbd>⌘K</kbd></button>
       </nav>
     </header>
     <main><slot /></main>
@@ -62,6 +74,16 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       b.addEventListener('click', () => { const open = h.classList.toggle('menu-open'); b.setAttribute('aria-expanded', open); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); });
     })();
   </script>
-  <script>import '../scripts/motion.ts';</script>
+  <dialog class="k-menu" id="k-menu" aria-label="Search the site">
+    <form method="dialog" class="k-form" role="search">
+      <input id="k-input" type="search" placeholder="Search pages, projects and essays" autocomplete="off" aria-controls="k-list" aria-label="Search the site" />
+      <kbd class="k-esc">esc</kbd>
+    </form>
+    <ul id="k-list" class="k-list" role="listbox">
+      {jump.map(j => <li role="option" data-group={j.group}><a href={j.href}><span>{j.label}</span><em>{j.group}</em></a></li>)}
+    </ul>
+    <p class="k-empty" hidden>Nothing matches. Try a shorter word.</p>
+  </dialog>
+  <script>import '../scripts/motion.ts'; import '../scripts/premium.ts';</script>
 </body>
 </html>

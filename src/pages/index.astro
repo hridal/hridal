@@ -13,6 +13,7 @@ const icons: Record<string, string> = {
 ---
 <Base>
   <section class="intro">
+    <div class="hero-mesh" aria-hidden="true"><i></i><i></i><i></i></div>
     <p class="eyebrow">the work &amp; writing of</p>
     <div class="name-row">
       <h1>{me.name}<em>.</em></h1>
@@ -25,6 +26,9 @@ const icons: Record<string, string> = {
         <p class="note">{me.soundsLike}</p>
       </div>
     </div>
+    <svg class="pulse" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M0 30H420l14 0 12-22 18 44 14-34 10 12H1000" />
+    </svg>
     <p class="tagline">{me.tagline}</p>
     <div class="actions"><a class="btn solid" href="/contact">Get in touch</a></div>
   </section>
@@ -41,8 +45,11 @@ const icons: Record<string, string> = {
     ))}</div>
   </section>
 
-  <section class="block home-now">
-    <h2>Currently</h2>
+  <section class="block home-now stacked-full">
+    <div class="now-head">
+      <h2>Currently</h2>
+      <p class="updated"><span class="live-dot" aria-hidden="true"></span>Updated {me.currentlyUpdated}</p>
+    </div>
     <div class="now-grid">{me.currently.map(c => (
       <div class="now-card">
         <div class="now-top"><span>{c.label}</span>{icons[c.icon] ? <i set:html={icons[c.icon]} /> : <i>{c.icon}</i>}</div>

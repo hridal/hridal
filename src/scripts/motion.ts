@@ -37,8 +37,13 @@ function homeEntrance() {
     tl.from(card.children, { opacity: 0, y: 6, duration: 0.5, stagger: 0.06 }, '-=0.5');
   }
   const tagline = intro.querySelector('.tagline');
+  const pulse = intro.querySelector('.pulse');
+  if (pulse) pulse.classList.add('draw');
   if (tagline) {
-    tl.from(tagline, { y: 12, opacity: 0, duration: 0.7 }, '-=0.4');
+    // Word-by-word reveal: each word sharpens out of a soft blur in turn.
+    const words = new SplitText(tagline, { type: 'words', wordsClass: 'wd' });
+    gsap.set(tagline, { opacity: 1 });
+    tl.from(words.words, { opacity: 0, y: 8, filter: 'blur(6px)', duration: 0.6, stagger: 0.018, clearProps: 'filter,transform' }, '-=0.4');
   }
   const actions = intro.querySelector('.actions');
   if (actions) tl.from(actions.children, { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4');

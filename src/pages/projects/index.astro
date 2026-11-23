@@ -1,13 +1,22 @@
 ---
 import Base from '../../layouts/Base.astro';
-const projects = [
-  { href: '/projects/portfolio-dashboard', title: 'Portfolio risk dashboard', kind: 'Personal project, Oct 2026 to now', img: null,
-    text: 'A dashboard I built before I started investing, to see how the portfolios I was considering behave in a crash, what fees and inflation really cost, and to keep a record of my decisions. It checks its own data and rebuilds itself every weekday.' },
-  { href: '/projects/jewellness', title: 'Jewellness', kind: 'Start-up, Oct 2026 to now', img: null,
-    text: 'Fitness jewellery for women: a halo bracelet that tracks sleep, heart health and your cycle, with every sensor hidden in the clasp. I came up with the idea, ran the customer interviews and built the market sizing and financial model.' },
-  { href: '/projects/materials-ml', title: 'Materials property predictor', kind: 'Personal project, started Oct 2025', img: null,
-    text: 'A model that predicts whether a compound is a metal and estimates its band gap from the chemical formula alone, trained on nearly 5,000 real compounds. It reaches 91.9% accuracy on metal or non-metal, and you can try it in the live app.' },
-];
+import { projects } from '../../data/projects';
+
+// Halftone line art for each card. The dot field is one SVG pattern, masked by a soft gradient.
+const art: Record<string, string> = {
+  chart: '<path class="pa-line" d="M24 150 C70 140 92 118 126 122 S180 84 214 88 S270 48 316 40"/><path class="pa-fill" d="M24 150 C70 140 92 118 126 122 S180 84 214 88 S270 48 316 40 L316 190 L24 190Z"/><circle class="pa-dot" cx="316" cy="40" r="6"/><path class="pa-grid" d="M24 60H316M24 105H316M24 150H316"/>',
+  bracelet: '<ellipse class="pa-line" cx="170" cy="112" rx="96" ry="58"/>' + Array.from({ length: 16 }, (_, i) => { const a = (i / 16) * Math.PI * 2; return `<circle class="pa-gem" cx="${(170 + 96 * Math.cos(a)).toFixed(1)}" cy="${(112 + 58 * Math.sin(a)).toFixed(1)}" r="7"/>`; }).join('') + '<rect class="pa-clasp" x="146" y="44" width="48" height="16" rx="4"/><path class="pa-pulse" d="M118 112h22l8-16 12 30 10-22 6 8h46"/>',
+  lattice: '<path class="pa-grid" d="M110 60L170 95L230 60M170 95V160M110 60V125L170 160L230 125V60M110 60L170 28L230 60"/>' + [[110,60],[230,60],[110,125],[230,125],[170,28]].map(([x,y]) => `<circle class="pa-dot" cx="${x}" cy="${y}" r="8"/>`).join('') + [[170,95],[170,160]].map(([x,y]) => `<circle class="pa-ring" cx="${x}" cy="${y}" r="10"/>`).join(''),
+};
+const svg = (kind: string, i: number) => `<svg viewBox="0 0 340 200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="ht-${i}" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.4" fill="#6c202d"/></pattern>
+    <radialGradient id="hg-${i}" cx="72%" cy="28%" r="80%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <mask id="hm-${i}"><rect width="340" height="200" fill="url(#hg-${i})"/></mask>
+  </defs>
+  <rect class="pa-ht" width="340" height="200" fill="url(#ht-${i})" mask="url(#hm-${i})"/>
+  ${art[kind]}
+</svg>`;
 ---
 <Base title="Projects" description="Things Hridal has built outside her degree, from a portfolio risk dashboard and a fitness jewellery start-up to a machine learning model that predicts the properties of materials.">
   <section class="block projects-page">
@@ -19,15 +28,17 @@ const projects = [
     </div>
     <div>
       <p class="lead-small">Things I have built outside my degree, with the problem, what I did and how it turned out.</p>
-      <ul class="pj-list">
-        {projects.map(p => (
-          <li class="pj-item" id={`p-${projects.indexOf(p)}`}>
-            <a href={p.href}>
-              {p.img && <img src={p.img} alt="" loading="lazy" width="1100" height="619" />}
-              <span class="pj-kind">{p.kind}</span>
-              <span class="pj-title">{p.title}</span>
-              <span class="pj-text">{p.text}</span>
-              <span class="pj-more">Read more</span>
+      <ul class="pj-list pj-stack">
+        {projects.map((p, i) => (
+          <li class="pj-item" id={`p-${i}`} style={`--i:${i}`}>
+            <a href={p.href} class="spot">
+              <span class="pj-art" aria-hidden="true" set:html={svg(p.art, i)} />
+              <span class="pj-copy">
+                <span class="pj-kind">{p.kind}</span>
+                <span class="pj-title">{p.title}</span>
+                <span class="pj-text">{p.text}</span>
+                <span class="pj-more">Read more</span>
+              </span>
             </a>
           </li>
         ))}
