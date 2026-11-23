@@ -20,6 +20,29 @@
 @keyframes pulse-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .intro .tagline .wd { display: inline-block; }
 
+/* ---------- Full name: "Gujrati" unrolls out of the full stop ---------- */
+/* The name is ~6x as wide as its font size, so this keeps it inside the 1024px column. */
+body .intro h1.full-name { font-size: clamp(56px, calc(15.4vw - 10px), 158px) !important; }
+.full-name .sur { display: inline-block; white-space: nowrap; clip-path: inset(-0.45em 0 -0.45em 0); }
+body .intro h1.full-name .dot { display: inline-block; font-style: normal !important; }
+
+/* Definition sits under the name as one dictionary line */
+body .name-row.name-under { grid-template-columns: 1fr; gap: 30px; align-items: start; }
+.name-under .name-card {
+  max-width: none; display: grid; grid-template-columns: auto auto auto; justify-content: start; column-gap: 56px; align-items: start;
+  padding: 2px 0 2px 20px;
+}
+.name-under .name-card .mean { margin: 0; padding-top: 4px; }
+.name-under .name-card .nc-foot { max-width: 300px; padding-top: 4px; }
+.name-under .name-card .note { margin-top: 6px; }
+@media (max-width: 760px) {
+  .full-name { display: flex; flex-wrap: wrap; align-items: baseline; }
+  .full-name .first { flex-basis: 100%; }
+  .full-name .sp { display: none; }
+  .name-under .name-card { grid-template-columns: 1fr; row-gap: 10px; }
+  .name-under .name-card .nc-foot { max-width: none; }
+}
+
 /* ---------- Currently: heading above the grid (option 1) ---------- */
 body section.block.stacked-full { display: block; }
 .now-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 34px; }

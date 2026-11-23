@@ -27,9 +27,27 @@ function homeEntrance() {
   const name = intro.querySelector('h1');
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
   if (name) {
-    const split = new SplitText(name, { type: 'chars', charsClass: 'ch' });
+    const first = name.querySelector('.first') || name;
+    const sur = name.querySelector<HTMLElement>('.sur');
+    const dot = name.querySelector<HTMLElement>('.dot');
+    const split = new SplitText(first, { type: 'chars', charsClass: 'ch' });
     gsap.set(name, { opacity: 1 });
     tl.from(split.chars, { yPercent: 70, opacity: 0, rotate: -6, duration: 1.1, stagger: 0.055 });
+    if (sur) {
+      if (window.matchMedia('(min-width: 761px)').matches) {
+        // The surname unrolls out of the full stop: the dot gives a small pulse,
+        // then slides right as "Gujrati" opens up behind it.
+        const w = sur.scrollWidth;
+        gsap.set(sur, { width: 0 });
+        if (dot) tl.to(dot, { scale: 1.35, duration: 0.22, ease: 'power2.out', transformOrigin: '50% 80%' }, '-=0.25')
+                   .to(dot, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)' }, '+=0.02');
+        tl.to(sur, { width: w, duration: 1.05, ease: 'power3.inOut', clearProps: 'width' }, '<-0.1')
+          .from(sur, { opacity: 0.15, duration: 1.05, ease: 'power3.out', clearProps: 'opacity' }, '<');
+      } else {
+        // On phones the surname sits on its own line and wipes in from the left.
+        tl.from(sur, { clipPath: 'inset(-20% 100% -30% 0)', duration: 0.9, ease: 'power3.inOut', clearProps: 'clipPath' }, '-=0.3');
+      }
+    }
   }
   const card = intro.querySelector('.name-card');
   if (card) {

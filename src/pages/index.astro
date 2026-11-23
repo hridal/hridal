@@ -15,15 +15,19 @@ const icons: Record<string, string> = {
   <section class="intro">
     <div class="hero-mesh" aria-hidden="true"><i></i><i></i><i></i></div>
     <p class="eyebrow">the work &amp; writing of</p>
-    <div class="name-row">
-      <h1>{me.name}<em>.</em></h1>
+    <div class="name-row name-under">
+      <h1 class="full-name"><span class="first">{me.name}</span><span class="sur"><span class="sp">{' '}</span>{me.surname}</span><em class="dot">.</em></h1>
       <div class="name-card">
-        <p class="word">Hridal</p>
-        <p class="say">{me.pronunciation}</p>
-        <p class="pos">{me.origin}</p>
+        <div class="nc-head">
+          <p class="word">Hridal</p>
+          <p class="say">{me.pronunciation}</p>
+          <p class="pos">{me.origin}</p>
+        </div>
         <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
-        <p class="ety">{me.etymology}</p>
-        <p class="note">{me.soundsLike}</p>
+        <div class="nc-foot">
+          <p class="ety">{me.etymology}</p>
+          <p class="note">{me.soundsLike}</p>
+        </div>
       </div>
     </div>
     <svg class="pulse" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">

@@ -1,6 +1,7 @@
 // Edit everything about you in this one file.
 export const me = {
   name: 'Hridal',
+  surname: 'Gujrati',
   pronunciation: '/ rih · dul /',
   soundsLike: 'the H is silent',
   origin: 'Sanskrit name',
