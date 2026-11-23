@@ -40,8 +40,7 @@ function homeEntrance() {
   }
   const tagline = intro.querySelector('.tagline');
   if (tagline) {
-    const lines = new SplitText(tagline, { type: 'lines', linesClass: 'ln' });
-    tl.from(lines.lines, { y: 18, opacity: 0, duration: 0.8, stagger: 0.08 }, '-=0.4');
+    tl.from(tagline, { y: 12, opacity: 0, duration: 0.7 }, '-=0.4');
   }
   const actions = intro.querySelector('.actions');
   if (actions) tl.from(actions.children, { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4');
