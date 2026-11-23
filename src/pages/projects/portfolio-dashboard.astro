@@ -23,7 +23,7 @@ const marketWatch = dashboard + 'market.html';
 
     <dl class="case-facts">
       <div><dt>What it covers</dt><dd>Four portfolios of UK-listed funds, from 2012 to today</dd></div>
-      <div><dt>Tools</dt><dd>Python, pandas, matplotlib, GitHub Actions, Finnhub and the Claude API for Market Watch</dd></div>
+      <div><dt>Tools</dt><dd>Python, pandas, matplotlib, GitHub Actions, and Finnhub for Market Watch</dd></div>
       <div><dt>Data</dt><dd>Daily fund prices, cross-checked against a second source, and UK inflation from the ONS</dd></div>
       <div><dt>Runs</dt><dd>Automatically every weekday after the London and US closes, with checks before anything is published</dd></div>
     </dl>
@@ -41,7 +41,7 @@ const marketWatch = dashboard + 'market.html';
     <p>Every investing decision goes into a journal with my reasoning at the time and a date to look back at it, and the dashboard shows what has happened since. Writing the reasoning down first is the only way I know to tell a good decision from a lucky one. Once I start investing, the dashboard will track my real portfolio too, including how much my own timing helps or hurts.</p>
 
     <h2>Market Watch</h2>
-    <p>I also wanted a way to keep up with the market without reacting to every headline, so I added a second page that follows a watchlist of US stocks. It shows how each one has done over the last day to the last year next to the S&amp;P 500, and flags moves that were unusual for that stock, splitting each one into what the market and its sector explain and what looks specific to the company. It gathers the headlines around each move, with a short summary written by Claude that is told to hedge and never to say what to buy or sell.</p>
+    <p>I also wanted a way to keep up with the market without reacting to every headline, so I added a second page that follows a watchlist of US stocks. It shows how each one has done over the last day to the last year next to the S&amp;P 500, and flags moves that were unusual for that stock, splitting each one into what the market and its sector explain and what looks specific to the company. It also gathers the headlines from around each move, so I can see what was in the news at the time.</p>
     <p>For each stock it also shows separate signals, such as momentum, the trend, analyst ratings and the next earnings date, each with what it can't tell me. There's no combined score and no price prediction. Every run logs what the signals said and checks a month later whether they were right, so I can find out whether they deserve any weight.</p>
     <p><a class="btn" href={marketWatch} target="_blank" rel="noopener">Open Market Watch</a></p>
 
