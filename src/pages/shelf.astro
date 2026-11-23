@@ -3,186 +3,123 @@ import Base from '../layouts/Base.astro';
 import { books, films } from '../data/shelf';
 import { motifs } from '../data/motifs';
 const starPath = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z';
-const items = [
-  ...books.map(b => ({ ...b, key: 'b:' + b.id, type: 'book' as const, done: b.status === 'read', line: b.author, now: 'Reading now' })),
-  ...films.map(f => ({ ...f, key: 'f:' + f.id, type: 'film' as const, done: f.status === 'watched', line: [f.kind === 'series' ? 'Series' : 'Film', f.year, f.where].filter(Boolean).join(', '), now: 'Watching now' })),
-];
+// Each spine gets its own height and width so the row looks like a real shelf, not a grid.
+const H = [92, 84, 96, 88, 80, 94, 86, 90];
+const Wd = [54, 46, 60, 50, 44, 56, 48, 52];
+const bookItems = books.map((b, i) => ({ ...b, key: 'b:' + b.id, line: b.author, done: b.status === 'read', now: 'Reading now', h: H[i % H.length], w: Wd[i % Wd.length] }));
+const filmItems = films.map(f => ({ ...f, key: 'f:' + f.id, line: [f.kind === 'series' ? 'Series' : 'Film', f.year, f.where].filter(Boolean).join(', '), done: f.status === 'watched', now: 'Watching now' }));
+const all = [...bookItems, ...filmItems];
 ---
 <Base title="Shelf" description="Books I've read and films I've watched, with my ratings and yours.">
   <div class="tab-page shelf-page">
     <section class="block">
-      <h2>Shelf</h2>
+      <div class="side">
+        <h2>Shelf</h2>
+        <nav class="toc" aria-label="On this page"><a href="#books">Books</a><a href="#films">Films and series</a></nav>
+      </div>
       <div>
-        <p class="lead-small">My favourite reads of 2026, plus what I've been watching. Tap one to turn it over, read what I thought, and add your own rating.</p>
+        <p class="lead-small">My favourite reads of 2026 and what I have been watching. Pick one to read what I thought and add your own rating.</p>
 
-        <div class="shelf-tabs" role="tablist" aria-label="Books or films">
-          <button role="tab" aria-selected="true" data-tab="book">Books <span>{books.length}</span></button>
-          <button role="tab" aria-selected="false" data-tab="film">Films &amp; series <span>{films.length}</span></button>
-          <i class="tab-ink" aria-hidden="true"></i>
+        <h4 id="books">Books</h4>
+        <div class="bookcase">
+          <div class="bc-row" role="listbox" aria-label="Books">
+            {bookItems.map((b, i) => (
+              <button class="spine" role="option" aria-selected={i === 0 ? 'true' : 'false'} data-key={b.key}
+                style={`--cloth:${(b as any).cover || '#6c202d'};--h:${b.h}%;--w:${b.w}px`} aria-label={`${b.title} by ${b.line}`}>
+                <span class="sp-band" aria-hidden="true"></span>
+                <span class="sp-title">{b.title}</span>
+                <span class="sp-author">{b.line.split(' ').slice(-1)[0]}</span>
+                <span class="sp-band low" aria-hidden="true"></span>
+              </button>
+            ))}
+            <span class="bc-end" aria-hidden="true"></span>
+          </div>
+          <div class="bc-plank" aria-hidden="true"></div>
         </div>
 
-        <div class="shelf-grid" id="shelf">
-          {items.map(it => (
-            <div class={`sh-item sh-${it.type}`} data-type={it.type} data-key={it.key} hidden={it.type !== 'book'}>
-              <button class="sh-card" aria-label={`${it.title}: turn over`} aria-expanded="false">
-                <span class="sh-inner">
-                  <span class="sh-face sh-front" style={it.type === 'book' ? `--cloth:${(it as any).cover || '#6c202d'}` : ''}>
-                    {it.type === 'book' ? (
-                      <>
-                        <span class="bk-spine" aria-hidden="true"></span>
-                        <span class="bk-title">{it.title}</span>
-                        <span class="bk-rule" aria-hidden="true"></span>
-                        <span class="bk-author">{it.line}</span>
-                        {motifs[it.id] && <svg class="bk-motif" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
-                      </>
-                    ) : (
-                      <>
-                        <span class="tk-stub" aria-hidden="true"><span class="tk-admit">Admit one</span><span class="tk-no">No. {String(1000 + films.findIndex(f => f.id === it.id) * 137).padStart(6, '0')}</span></span>
-                        <span class="tk-body">
-                          <span class="tk-title">{it.title}</span>
-                          <span class="tk-line">{it.line}</span>
-                          <span class="tk-seat" aria-hidden="true"><span><em>Screen</em>{(films.findIndex(f => f.id === it.id) % 4) + 1}</span><span><em>Row</em>{'FGHJK'[films.findIndex(f => f.id === it.id) % 5]}</span><span><em>Seat</em>{12 + films.findIndex(f => f.id === it.id) * 3}</span></span>
-                          <span class="tk-barcode" aria-hidden="true"></span>
-                        </span>
-                        {motifs[it.id] && <svg class="tk-motif" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
-                      </>
-                    )}
-                    {!it.done && <span class="sh-now">{it.now}</span>}
-                    {it.done && it.rating && <span class="sh-mini" aria-label={`My rating ${it.rating} out of 5`}>{'★'.repeat(Math.round(it.rating))}</span>}
-                  </span>
-                  {it.type === 'book' && <span class="bk-leaves" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}
-                  <span class="sh-face sh-back">
-                    <span class="sb-title">{it.title}</span>
-                    <span class="sb-label">My rating</span>
-                    {it.done && it.rating ? (
-                      <span class="stars mine" style={`--v:${it.rating / 5}`} aria-label={`${it.rating} out of 5`}>
-                        {[0,1,2,3,4].map(() => <svg viewBox="0 0 24 24"><path d={starPath}/></svg>)}
-                        <span class="stars-fill">{[0,1,2,3,4].map(() => <svg viewBox="0 0 24 24"><path d={starPath}/></svg>)}</span>
-                      </span>
-                    ) : <span class="sb-pending">{it.type === 'book' ? 'Still reading' : 'Still watching'}</span>}
-                    {it.review && <span class="sb-review">{it.review}</span>}
-                    <span class="sb-label">Your rating</span>
-                    <span class="rate" role="radiogroup" aria-label={`Rate ${it.title}`}>
-                      {[1,2,3,4,5].map(n => <span class="rate-star" role="radio" tabindex="0" aria-checked="false" aria-label={`${n} star${n > 1 ? 's' : ''}`} data-n={n}><svg viewBox="0 0 24 24"><path d={starPath}/></svg></span>)}
-                    </span>
-                    <span class="sb-avg" aria-live="polite"></span>
-                  </span>
-                </span>
-              </button>
-            </div>
+        <h4 id="films">Films and series</h4>
+        <div class="tickets" role="listbox" aria-label="Films and series">
+          {filmItems.map((f, i) => (
+            <button class="ticket" role="option" aria-selected="false" data-key={f.key} aria-label={f.title}>
+              <span class="tk-l"><span>Admit one</span></span>
+              <span class="tk-r">
+                <span class="tk-t">{f.title}</span>
+                <span class="tk-m">{f.line}</span>
+              </span>
+              {motifs[f.id] && <svg class="tk-ico" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[f.id]} />}
+            </button>
           ))}
         </div>
-        <p class="shelf-empty" id="shelf-empty" hidden>Nothing here yet.</p>
+
+        <div class="detail-wrap" aria-live="polite">
+          {all.map((it, i) => (
+            <article class="detail" data-key={it.key} hidden={i !== 0}>
+              {motifs[it.id] && <svg class="dt-ico" viewBox="0 0 100 100" aria-hidden="true" set:html={motifs[it.id]} />}
+              <div class="dt-body">
+                <p class="dt-kind">{it.key.startsWith('b:') ? 'Book' : 'Film or series'}{!it.done && `, ${it.now.toLowerCase()}`}</p>
+                <h3 class="dt-title">{it.title}</h3>
+                <p class="dt-line">{it.line}</p>
+                {it.done && it.rating && (
+                  <p class="dt-mine"><span class="stars" style={`--v:${it.rating / 5}`} aria-label={`My rating ${it.rating} out of 5`}>
+                    <span class="stars-base">{[0,1,2,3,4].map(() => <svg viewBox="0 0 24 24"><path d={starPath}/></svg>)}</span>
+                    <span class="stars-fill">{[0,1,2,3,4].map(() => <svg viewBox="0 0 24 24"><path d={starPath}/></svg>)}</span>
+                  </span><span class="dt-score">{it.rating} out of 5</span></p>
+                )}
+                {it.review && <p class="dt-review">{it.review}</p>}
+                <div class="dt-rate">
+                  <span class="dt-label">Your rating</span>
+                  <span class="rate" role="radiogroup" aria-label={`Rate ${it.title}`}>
+                    {[1,2,3,4,5].map(n => <span class="rate-star" role="radio" tabindex="0" aria-checked="false" aria-label={`${n} star${n > 1 ? 's' : ''}`}><svg viewBox="0 0 24 24"><path d={starPath}/></svg></span>)}
+                  </span>
+                  <span class="sb-avg"></span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   </div>
 
   <script>
-    import { gsap } from 'gsap';
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const grid = document.getElementById('shelf')!;
     const LS = 'hridal.shelf.mine';
     const mine: Record<string, number> = (() => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch { return {}; } })();
     const saveMine = () => { try { localStorage.setItem(LS, JSON.stringify(mine)); } catch {} };
     let shared: Record<string, { sum: number; count: number }> | null = null;
+    const pickers = [...document.querySelectorAll<HTMLButtonElement>('.spine, .ticket')];
+    const details = [...document.querySelectorAll<HTMLElement>('.detail')];
+    const wrap = document.querySelector<HTMLElement>('.detail-wrap')!;
 
-    /* tabs */
-    const tabs = [...document.querySelectorAll<HTMLButtonElement>('.shelf-tabs [role=tab]')];
-    const ink = document.querySelector<HTMLElement>('.tab-ink')!;
-    const moveInk = (t: HTMLElement) => gsap.to(ink, { x: t.offsetLeft, width: t.offsetWidth, duration: reduce ? 0 : 0.45, ease: 'power3.out' });
-    function showTab(type: string) {
-      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === type)));
-      moveInk(tabs.find(t => t.dataset.tab === type)!);
-      const show = [...grid.querySelectorAll<HTMLElement>('.sh-item')];
-      show.forEach(el => el.hidden = el.dataset.type !== type);
-      const vis = show.filter(el => !el.hidden);
-      document.getElementById('shelf-empty')!.hidden = vis.length > 0;
-      if (!reduce) gsap.fromTo(vis, { y: 24, opacity: 0, rotate: -2 }, { y: 0, opacity: 1, rotate: 0, duration: 0.6, ease: 'power3.out', stagger: 0.06 });
+    function select(key: string, scroll = false) {
+      pickers.forEach(p => p.setAttribute('aria-selected', String(p.dataset.key === key)));
+      details.forEach(d => d.hidden = d.dataset.key !== key);
+      if (scroll && innerWidth < 760) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-    tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab!)));
-    requestAnimationFrame(() => moveInk(tabs[0]));
+    pickers.forEach(p => p.addEventListener('click', () => select(p.dataset.key!, true)));
 
-    /* tilted card (after React Bits' Tilted Card) + flip */
-    grid.querySelectorAll<HTMLElement>('.sh-item').forEach(item => {
-      const card = item.querySelector<HTMLButtonElement>('.sh-card')!;
-      const inner = item.querySelector<HTMLElement>('.sh-inner')!;
-      let flipped = false;
-      if (fine && !reduce) {
-        const rx = gsap.quickTo(card, 'rotateX', { duration: 0.5, ease: 'power3.out' });
-        const ry = gsap.quickTo(card, 'rotateY', { duration: 0.5, ease: 'power3.out' });
-        const sc = gsap.quickTo(card, 'scale', { duration: 0.5, ease: 'power3.out' });
-        card.addEventListener('pointermove', e => {
-          const r = card.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-          rx(-py * 12); ry(px * 12); sc(1.04);
-          card.style.setProperty('--gx', `${(px + 0.5) * 100}%`); card.style.setProperty('--gy', `${(py + 0.5) * 100}%`);
-        });
-        card.addEventListener('pointerleave', () => { rx(0); ry(0); sc(1); });
-      }
-      card.addEventListener('click', e => {
-        if ((e.target as HTMLElement).closest('.rate')) return;
-        flipped = !flipped;
-        card.setAttribute('aria-expanded', String(flipped));
-        if (item.classList.contains('sh-book')) {
-          const cover = item.querySelector<HTMLElement>('.sh-front')!;
-          const leaves = [...item.querySelectorAll<HTMLElement>('.bk-leaves i')];
-          const page = item.querySelector<HTMLElement>('.sh-back')!;
-          gsap.killTweensOf([cover, ...leaves, page]);
-          if (reduce) { gsap.set(cover, { rotateY: flipped ? -180 : 0 }); gsap.set(leaves, { rotateY: flipped ? -180 : 0 }); gsap.set(page, { opacity: 1 }); }
-          else if (flipped) {
-            const tl = gsap.timeline();
-            tl.set(page, { opacity: 0 })
-              .to(cover, { rotateY: -180, duration: 0.9, ease: 'power2.inOut', transformPerspective: 1400 })
-              .to(leaves, { rotateY: -180, duration: 0.55, ease: 'power1.inOut', stagger: 0.09, transformPerspective: 1400 }, 0.35)
-              .to(page, { opacity: 1, duration: 0.35 }, 0.75);
-          } else {
-            const tl = gsap.timeline();
-            tl.to([...leaves].reverse(), { rotateY: 0, duration: 0.4, ease: 'power1.inOut', stagger: 0.06, transformPerspective: 1400 })
-              .to(cover, { rotateY: 0, duration: 0.8, ease: 'power2.inOut', transformPerspective: 1400 }, 0.15);
-          }
-        } else gsap.to(inner, { rotateY: flipped ? 180 : 0, duration: reduce ? 0 : 0.8, ease: 'power3.inOut' });
-        if (flipped && !reduce) {
-          const fill = item.querySelector<HTMLElement>('.stars.mine .stars-fill');
-          if (fill) gsap.fromTo(fill, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: `inset(0 ${100 - parseFloat(getComputedStyle(fill.parentElement!).getPropertyValue('--v')) * 100}% 0 0)`, duration: 0.9, ease: 'power2.out', delay: 0.45 });
-        }
-      });
-      card.addEventListener('keydown', e => { if (e.key === 'Escape' && flipped) card.click(); });
-
-      /* visitor rating */
-      const stars = [...item.querySelectorAll<HTMLElement>('.rate-star')];
-      const key = item.dataset.key!;
-      const paint = (n: number, cls = 'on') => stars.forEach((s, i) => s.classList.toggle(cls, i < n));
-      paint(mine[key] || 0);
-      stars.forEach((s, i) => {
-        s.setAttribute('aria-checked', String(mine[key] === i + 1));
-        s.addEventListener('pointerenter', () => paint(i + 1, 'hover'));
-        s.addEventListener('pointerleave', () => paint(0, 'hover'));
-        const pick = async (ev: Event) => {
-          ev.stopPropagation();
-          if (mine[key]) { setAvg(item, key, 'You’ve already rated this.'); return; }
-          mine[key] = i + 1; saveMine(); paint(i + 1);
-          stars.forEach((x, j) => x.setAttribute('aria-checked', String(j === i)));
-          if (!reduce) gsap.fromTo(stars.slice(0, i + 1), { scale: 0.6 }, { scale: 1, duration: 0.5, ease: 'back.out(3)', stagger: 0.05 });
-          try {
-            const r = await fetch('/api/ratings', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: key, stars: i + 1 }) });
-            const d = await r.json(); if (d.enabled) shared = d.ratings;
-          } catch {}
-          setAvg(item, key, 'Thanks for rating.');
-        };
-        s.addEventListener('click', pick);
-        s.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(ev); } });
-      });
-    });
-
-    function setAvg(item: HTMLElement, key: string, lead = '') {
-      const el = item.querySelector<HTMLElement>('.sb-avg')!;
-      const t = shared?.[key];
+    function setAvg(d: HTMLElement, lead = '') {
+      const key = d.dataset.key!, el = d.querySelector<HTMLElement>('.sb-avg')!, t = shared?.[key];
       const avg = t && t.count ? `${(t.sum / t.count).toFixed(1)} from ${t.count} ${t.count === 1 ? 'person' : 'people'}` : '';
       el.textContent = [lead, avg].filter(Boolean).join(' ') || (mine[key] ? `You gave it ${mine[key]}.` : 'Be the first to rate it.');
     }
-    fetch('/api/ratings').then(r => r.json()).then(d => { if (d.enabled) shared = d.ratings; }).catch(() => {}).finally(() => {
-      grid.querySelectorAll<HTMLElement>('.sh-item').forEach(it => setAvg(it, it.dataset.key!));
+    details.forEach(d => {
+      const key = d.dataset.key!, stars = [...d.querySelectorAll<HTMLElement>('.rate-star')];
+      const paint = (n: number, cls = 'on') => stars.forEach((s, i) => s.classList.toggle(cls, i < n));
+      paint(mine[key] || 0);
+      stars.forEach((s, i) => {
+        s.addEventListener('pointerenter', () => paint(i + 1, 'hover'));
+        s.addEventListener('pointerleave', () => paint(0, 'hover'));
+        const pick = async () => {
+          if (mine[key]) { setAvg(d, 'You have already rated this.'); return; }
+          mine[key] = i + 1; saveMine(); paint(i + 1);
+          stars.forEach((x, j) => x.setAttribute('aria-checked', String(j === i)));
+          try { const r = await fetch('/api/ratings', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: key, stars: i + 1 }) }); const j = await r.json(); if (j.enabled) shared = j.ratings; } catch {}
+          setAvg(d, 'Thanks for rating.');
+        };
+        s.addEventListener('click', pick);
+        s.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      });
     });
+    fetch('/api/ratings').then(r => r.json()).then(j => { if (j.enabled) shared = j.ratings; }).catch(() => {}).finally(() => details.forEach(d => setAvg(d)));
   </script>
 </Base>
