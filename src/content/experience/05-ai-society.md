@@ -5,4 +5,4 @@ period: "Oct 2026 — Present"
 order: 5
 ---
 
-I'm on the AI Research Team, developing research projects, bringing in industry partners and helping projects get delivered. I organised the society's AI Week, which included talks with panellists from Anthropic and Google DeepMind. I help with logistics at every society event, and I designed the branding and merchandise for Imperial AI Hack.
+I'm on the AI Research Team, developing research projects, bringing in industry partners and helping projects get delivered. I helped with operations and logistics throughout the society's AI Week, which included talks with panellists from Anthropic and Google DeepMind and finished with Imperial AI Hack, a hackathon with 350 participants. I designed the branding and merchandise for the hackathon, and I help with logistics at every society event.
