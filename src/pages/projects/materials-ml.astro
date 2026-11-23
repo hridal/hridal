@@ -2,18 +2,18 @@
 import Base from '../../layouts/Base.astro';
 const app = 'https://materials-ml-predictor.streamlit.app/';
 ---
-<Base title="Machine learning for materials" description="A machine learning model that classifies alloys from their measured properties, built by Hridal out of interest, with a live app you can try.">
+<Base title="Materials property predictor" description="A machine learning model that predicts whether a compound is a metal and estimates its band gap from the formula alone, with a live app.">
   <article class="case">
     <a class="case-back" href="/projects">All projects</a>
-    <p class="case-kind">Personal project, October to December 2025</p>
-    <h1>Machine learning for materials</h1>
-    <p class="case-lede">A classification model that predicts what kind of alloy a sample is from its measured properties, and a live app that lets anyone try it.</p>
+    <p class="case-kind">Personal project, started October 2025</p>
+    <h1>Materials property predictor</h1>
+    <p class="case-lede">A model that takes a chemical formula and predicts whether the compound is a metal and what its band gap is, trained on nearly 5,000 real, experimentally measured compounds and available as a live app.</p>
 
     <figure class="case-viewer">
       <div class="viewer-box app-box" id="appbox">
         <div class="app-poster">
-          <p class="app-name">Materials ML predictor</p>
-          <p class="app-sub">Enter a sample's properties and the model predicts its class.</p>
+          <p class="app-name">Materials property predictor</p>
+          <p class="app-sub">Type a formula such as GaN or Fe2O3 and see the prediction.</p>
           <button class="btn solid" id="load-app">Open the app here</button>
         </div>
       </div>
@@ -21,29 +21,32 @@ const app = 'https://materials-ml-predictor.streamlit.app/';
     </figure>
 
     <dl class="case-facts">
-      <div><dt>My role</dt><dd>Everything, from cleaning the data to building and deploying the app</dd></div>
+      <div><dt>My role</dt><dd>Everything, from the data and features to the models and the app</dd></div>
       <div><dt>Tools</dt><dd>Python, scikit-learn, Streamlit</dd></div>
-      <div><dt>Data</dt><dd>5,000 alloy samples, plus a second set of 400</dd></div>
-      <div><dt>Result</dt><dd>100% accuracy from a single measurement</dd></div>
+      <div><dt>Data</dt><dd>4,921 compounds for metal or non-metal, 4,604 with measured band gaps</dd></div>
+      <div><dt>Results</dt><dd>91.9% accuracy on metal or non-metal, band gap error of 0.40 eV</dd></div>
     </dl>
 
-    <h2>The question</h2>
-    <p>Classifying a material usually means running several lab measurements on every sample, which takes time and money. I wanted to know how many of those measurements actually matter, and whether a model could get to the same answer with far fewer of them.</p>
+    <h2>How it started</h2>
+    <p>This began as a university computing challenge on a synthetic dataset, where my models scored 100%. When I looked into why, I found that a single column, the band gap, decided every label exactly while the other seven measurements were random noise, which meant the perfect score said very little about whether the approach would work on real materials.</p>
 
-    <h2>What I did</h2>
-    <p>I built a classification pipeline on 5,000 alloy samples and used feature importance alongside 5-fold cross-validation to see which measurements the model really relied on. On a second dataset of 400 samples I compared four different classifiers and settled on a random forest, which reached 100% accuracy on data it had never seen.</p>
+    <h2>Rebuilding it on real data</h2>
+    <p>I rebuilt the project on experimental data, using metal and non-metal labels for 4,921 compounds and measured band gaps for 4,604 of them, taken from Zhuo, Mansouri Tehrani and Brgoch (2018) as curated in the Matbench benchmark. The model only needs the chemical formula, so I turned each formula into 112 numbers describing its elements, such as the weighted average, range and spread of 22 properties like electronegativity and atomic radius, following the approach of Ward et al. (2016).</p>
 
-    <h2>What I found</h2>
-    <p>Band gap on its own matched the accuracy of the full model, which means the number of lab measurements needed per sample could drop from ten to one. A learning curve also showed that around 30 samples were enough to reach 70% accuracy, roughly 90% less data than had been collected in the first place.</p>
+    <h2>Choosing a model</h2>
+    <p>I compared gradient-boosted decision trees against logistic regression, a random forest and a simple baseline, and the gradient-boosted trees performed best. Every score comes from 5-fold cross-validation, so each compound is predicted by a model that never saw it during training.</p>
 
-    <h2>Why it matters</h2>
-    <p>For a lab, measuring one property instead of ten is a large saving in time and cost, and knowing that a small dataset is enough makes it much easier to start on a new material. Building the app on top meant the result became something people could use, not just a number in a notebook.</p>
+    <h2>How well it works</h2>
+    <p>The model tells metals from non-metals with 91.9% accuracy, where guessing would score 50%. For band gaps its average error is 0.40 eV compared with 1.14 eV for always guessing the average, and it reaches an R² of 0.72.</p>
+
+    <h2>Where it falls short</h2>
+    <p>Because it only sees the formula, it cannot tell apart different structures of the same compound, and it underestimates very wide band gaps, predicting about 4 eV for aluminium oxide when the measured value is closer to 8.8 eV, since few training compounds have gaps that large. It is also unreliable for pure elements, which are missing from the training data, and for unusual chemistries far from anything it has seen.</p>
   </article>
   <script>
     document.getElementById('load-app')?.addEventListener('click', () => {
       const box = document.getElementById('appbox')!;
       const f = document.createElement('iframe');
-      f.src = 'https://materials-ml-predictor.streamlit.app/?embed=true'; f.title = 'Materials ML predictor app';
+      f.src = 'https://materials-ml-predictor.streamlit.app/?embed=true'; f.title = 'Materials property predictor app';
       box.replaceChildren(f);
     });
   </script>
