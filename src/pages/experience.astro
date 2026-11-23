@@ -29,7 +29,13 @@ const groups = [
 <Base title="Experience">
   <div class="tab-page">
   <section class="block" id="experience">
-    <h2>Experience</h2>
+    <div class="side">
+      <h2>Experience</h2>
+      <nav class="toc" aria-label="On this page">
+        {groups.map(g => <a href={`#${g.id}`}>{g.title}</a>)}
+        <a href="#skills">Skills</a>
+      </nav>
+    </div>
     <div>
       {groups.map(g => (
         <div class="tl-group">
@@ -54,7 +60,7 @@ const groups = [
         </div>
       ))}
 
-      <h4>Skills</h4>
+      <h4 id="skills">Skills</h4>
       <div class="skills">{me.skills.map(s => <div><span>{s.group}</span><div class="tags">{s.items.map(i => <em>{i}</em>)}</div></div>)}</div>
       <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>
     </div>

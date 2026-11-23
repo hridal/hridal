@@ -1490,3 +1490,19 @@ body .intro h1 { letter-spacing: -0.04em !important; }
 .app-name { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; }
 .app-sub { color: var(--muted); margin: 0 0 22px; }
 .app-poster .btn { position: static; transform: none; }
+
+/* Left column: sticky "on this page" list */
+.block > .side { align-self: start; }
+@media (min-width: 761px) {
+  .block > .side { position: sticky; top: 96px; }
+  .toc { display: flex; flex-direction: column; gap: 2px; margin-top: 26px; border-left: 1px solid var(--line); }
+  .toc a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 0 6px 14px; margin-left: -1px; border-left: 2px solid transparent; transition: color .2s, border-color .2s; line-height: 1.35; }
+  .toc a:hover { color: var(--ink); }
+  .toc a.on { color: var(--ink); border-left-color: var(--accent); }
+  /* stacked: heading on top, text in one centred column */
+  body section.block.stacked { display: block; max-width: 760px; margin-left: auto; margin-right: auto; }
+  body section.block.stacked > h2 { margin-bottom: 28px; }
+}
+@media (max-width: 760px) { .toc { display: none; } }
+[id] { scroll-margin-top: 90px; }
+.toc { align-items: stretch; text-align: left; } .toc a { text-align: left; display: block; }

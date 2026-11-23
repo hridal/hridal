@@ -96,3 +96,15 @@ let started = false;
 const go = () => { if (!started) { started = true; start(); } };
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); setTimeout(go, 600); } else go();
 
+
+// Highlight the current section in the "on this page" list
+(() => {
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  if (!links.length) return;
+  const map = new Map<Element, HTMLAnchorElement>();
+  links.forEach(a => { const t = document.querySelector(a.getAttribute('href')!); if (t) map.set(t, a); });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { links.forEach(l => l.classList.remove('on')); map.get(e.target)?.classList.add('on'); } });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  map.forEach((_, t) => io.observe(t));
+})();

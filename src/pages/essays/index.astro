@@ -11,9 +11,17 @@ const serious = groups.filter(g => g.id === 'philosophy' && g.items.length), cas
 <Base title="Essays">
   <div class="tab-page">
     <section class="block">
-      <h2>Essays</h2>
+      <div class="side">
+        <h2>Essays</h2>
+        <nav class="toc" aria-label="On this page">
+          <a href="#why-write">Why I write</a>
+          <a href="#topic-gen">Find a topic</a>
+          {serious.map(g => <a href={`#g-${g.id}`}>{g.name}</a>)}
+          {casual.map(g => <a href={`#g-${g.id}`}>{g.name}</a>)}
+        </nav>
+      </div>
       <div>
-        <div class="why-write">
+        <div class="why-write" id="why-write">
           <h3>Why I write</h3>
           <p>Most of what I read in a day has already been chosen for me by an algorithm that decides what comes next, and I noticed that if I was not careful I would end up holding opinions I had borrowed from whoever&rsquo;s posts I&rsquo;d seen most recently. Writing essays became the place where I get to choose the question myself, follow it wherever it leads and arrive at a view that is properly my own.</p>
           <p>For me it works much more like a creative outlet than a piece of homework, because an essay starts as a small curiosity, whether that is why my grandma’s gold never dates or why two identical flats pay different electricity bills, and slowly turns into something I have built from scratch. I enjoy the research almost as much as the writing itself, since half the time I begin with one opinion and finish with a different one, which I think is exactly the point of doing it.</p>
@@ -49,7 +57,7 @@ const serious = groups.filter(g => g.id === 'philosophy' && g.items.length), cas
         </div>
 
         {serious.map(g => (
-          <div class="essay-group">
+          <div class="essay-group" id={`g-${g.id}`}>
             <h4>{g.name}</h4>
             <p class="group-blurb">{g.blurb}</p>
             <ul class="list">{g.items.map(e => <li><a href={`/essays/${e.id}`}><span class="t">{e.data.title}<span class="s">{e.data.summary}</span></span><time>{fmt(e.data.date)}</time></a></li>)}</ul>
@@ -59,7 +67,7 @@ const serious = groups.filter(g => g.id === 'philosophy' && g.items.length), cas
           <svg viewBox="0 0 400 24" preserveAspectRatio="none"><path d="M2 12 C 40 2, 70 22, 110 12 S 180 2, 220 12 S 290 22, 330 12 S 380 4, 398 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
         {casual.map(g => (
-          <div class="essay-group">
+          <div class="essay-group" id={`g-${g.id}`}>
             <h4>{g.name}</h4>
             <p class="group-blurb">{g.blurb}</p>
             {g.items.length

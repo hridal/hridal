@@ -11,12 +11,17 @@ const projects = [
 ---
 <Base title="Projects" description="Things Hridal has built outside her degree, from a portfolio risk dashboard and a fitness jewellery start-up to a machine learning model that predicts the properties of materials.">
   <section class="block projects-page">
-    <h2>Projects</h2>
+    <div class="side">
+      <h2>Projects</h2>
+      <nav class="toc" aria-label="On this page">
+        {projects.map((p, i) => <a href={`#p-${i}`}>{p.title}</a>)}
+      </nav>
+    </div>
     <div>
       <p class="lead-small">Things I have built outside my degree, with the problem, what I did and how it turned out.</p>
       <ul class="pj-list">
         {projects.map(p => (
-          <li class="pj-item">
+          <li class="pj-item" id={`p-${projects.indexOf(p)}`}>
             <a href={p.href}>
               {p.img && <img src={p.img} alt="" loading="lazy" width="1100" height="619" />}
               <span class="pj-kind">{p.kind}</span>
