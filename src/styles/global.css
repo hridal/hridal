@@ -1291,7 +1291,7 @@ p { line-height: 1.65; }
 #site-nav a { font-size: 14px; letter-spacing: 0; }
 
 /* Experience: dates on one line */
-.tl-item { grid-template-columns: 170px 56px 1fr !important; }
+@media (min-width: 761px) { .tl-item { grid-template-columns: 170px 56px 1fr !important; } }
 .tl-when { white-space: nowrap; font-style: normal !important; font-size: 14px !important; font-variant-numeric: tabular-nums; text-align: right; }
 body :is(h1, h2, h3.tl-co, .tl-item h3, .mark, .sb-title, .contact a.big, .essay-group h4, .why-write h3, .why-write h2, .currently h3, .wc-title):not(svg *) {
   font-family: var(--display) !important; font-weight: 400 !important; letter-spacing: -0.015em !important; }
@@ -1401,3 +1401,31 @@ body .top::before { content: ''; position: absolute; top: 0; bottom: 0; left: ca
   -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); }
 html, body { overflow-x: clip; }
 .hero-mesh { inset: -80px -8vw -40px; -webkit-mask: radial-gradient(55% 60% at 40% 45%, #000 20%, transparent 70%); mask: radial-gradient(55% 60% at 40% 45%, #000 20%, transparent 70%); }
+
+
+/* ---------- Phone pass: every page fits 320–430px ---------- */
+@media (max-width: 760px) {
+  .tl-item { grid-template-columns: 1fr !important; padding: 0 0 44px 58px !important; }
+  .tl-when-m { font-style: normal !important; font-size: 13px; font-variant-numeric: tabular-nums; }
+  body .tl-big { font-size: 24px !important; line-height: 1.15 !important; }
+  body .tl-small { font-size: 17px !important; line-height: 1.35; }
+  .tl-body, .tl-main p { font-size: 16px; }
+  body section.block h2, body .tab-page .block > h2 { font-size: 32px !important; }
+  body .intro h1 { font-size: clamp(64px, 20vw, 96px) !important; }
+  .name-card { max-width: 100%; }
+  p, li, h1, h2, h3, h4, a { overflow-wrap: break-word; }
+  .life-stage, .journal-wrap { overflow: hidden; display: flex; justify-content: center; }
+  .chips, .presets, .fc-presets { flex-wrap: wrap; gap: 8px; }
+  .presets button, .fc-presets button, .chip { white-space: nowrap; }
+  .footer-mark { margin-top: 70px; }
+  .top { padding-left: 0; padding-right: 0; }
+  img, svg, video, canvas { max-width: 100%; }
+}
+@media (max-width: 360px) {
+  body .intro h1 { font-size: 60px !important; }
+  .tl-item { padding-left: 52px !important; }
+}
+@media (max-width: 760px) {
+  .journal-stage { overflow: hidden; }
+  #targets .chip { padding: 6px 10px; font-size: 13px; }
+}
