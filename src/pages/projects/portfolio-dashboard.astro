@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 const dashboard = 'https://hridal.github.io/portfolio-risk-dashboard/';
+const marketWatch = dashboard + 'market.html';
 ---
 <Base title="Portfolio risk dashboard" description="A dashboard Hridal built to understand how investments behave before putting her own money in, which checks its own data and updates itself every weekday.">
   <article class="case">
@@ -17,14 +18,14 @@ const dashboard = 'https://hridal.github.io/portfolio-risk-dashboard/';
           <button class="btn solid" id="load-dashboard">Open the dashboard here</button>
         </div>
       </div>
-      <figcaption>The portfolios are ones I'm testing, not recommendations. <a href={dashboard} target="_blank" rel="noopener">Open it in a new tab</a></figcaption>
+      <figcaption>The portfolios are ones I'm testing, not recommendations. <a href={dashboard} target="_blank" rel="noopener">Open it in a new tab</a>, or see <a href={marketWatch} target="_blank" rel="noopener">Market Watch</a>, the page that follows US stocks.</figcaption>
     </figure>
 
     <dl class="case-facts">
       <div><dt>What it covers</dt><dd>Four portfolios of UK-listed funds, from 2012 to today</dd></div>
-      <div><dt>Tools</dt><dd>Python, pandas, matplotlib, GitHub Actions</dd></div>
+      <div><dt>Tools</dt><dd>Python, pandas, matplotlib, GitHub Actions, Finnhub and the Claude API for Market Watch</dd></div>
       <div><dt>Data</dt><dd>Daily fund prices, cross-checked against a second source, and UK inflation from the ONS</dd></div>
-      <div><dt>Runs</dt><dd>Automatically every weekday, with checks before anything is published</dd></div>
+      <div><dt>Runs</dt><dd>Automatically every weekday after the London and US closes, with checks before anything is published</dd></div>
     </dl>
 
     <h2>The question</h2>
@@ -38,6 +39,11 @@ const dashboard = 'https://hridal.github.io/portfolio-risk-dashboard/';
 
     <h2>Making better decisions</h2>
     <p>Every investing decision goes into a journal with my reasoning at the time and a date to look back at it, and the dashboard shows what has happened since. Writing the reasoning down first is the only way I know to tell a good decision from a lucky one. Once I start investing, the dashboard will track my real portfolio too, including how much my own timing helps or hurts.</p>
+
+    <h2>Market Watch</h2>
+    <p>I also wanted a way to keep up with the market without reacting to every headline, so I added a second page that follows a watchlist of US stocks. It shows how each one has done over the last day to the last year next to the S&amp;P 500, and flags moves that were unusual for that stock, splitting each one into what the market and its sector explain and what looks specific to the company. It gathers the headlines around each move, with a short summary written by Claude that is told to hedge and never to say what to buy or sell.</p>
+    <p>For each stock it also shows separate signals, such as momentum, the trend, analyst ratings and the next earnings date, each with what it can't tell me. There's no combined score and no price prediction. Every run logs what the signals said and checks a month later whether they were right, so I can find out whether they deserve any weight.</p>
+    <p><a class="btn" href={marketWatch} target="_blank" rel="noopener">Open Market Watch</a></p>
 
     <h2>What's next</h2>
     <p>I'm adding a macro panel with the Bank of England base rate, gilt yields and inflation alongside the portfolios, and a breakdown of what each fund is really exposed to.</p>
