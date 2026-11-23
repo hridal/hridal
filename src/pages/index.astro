@@ -17,24 +17,43 @@ const icons: Record<string, string> = {
     <p class="eyebrow">the work &amp; writing of</p>
     <div class="name-row name-under">
       <h1 class="full-name"><span class="first">{me.name}</span><span class="sur"><span class="sp">{' '}</span>{me.surname}</span><em class="dot">.</em></h1>
-      <div class="name-card">
-        <div class="nc-head">
-          <p class="word">Hridal</p>
-          <p class="say">{me.pronunciation}</p>
-          <p class="pos">{me.origin}</p>
-        </div>
-        <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
-        <div class="nc-foot">
-          <p class="ety">{me.etymology}</p>
-          <p class="note">{me.soundsLike}</p>
-        </div>
-      </div>
     </div>
     <svg class="pulse" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
       <path pathLength="1" d="M0 30H420l14 0 12-22 18 44 14-34 10 12H1000" />
     </svg>
-    <p class="tagline">{me.tagline}</p>
-    <div class="actions"><a class="btn solid" href="/contact">Get in touch</a></div>
+    <div class="hero-split">
+      <div class="hero-copy">
+        <div class="name-card">
+          <div class="nc-head">
+            <p class="word">Hridal</p>
+            <p class="say">{me.pronunciation}</p>
+            <p class="pos">{me.origin}</p>
+          </div>
+          <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
+          <div class="nc-foot">
+            <p class="ety">{me.etymology}</p>
+            <p class="note">{me.soundsLike}</p>
+          </div>
+        </div>
+        <p class="tagline">{me.tagline}</p>
+        <div class="actions"><a class="btn solid" href="/contact">Get in touch</a></div>
+      </div>
+      <aside class="profile" aria-label="At a glance">
+        <div class="pc-top">
+          <div>
+            <p class="pc-name">At a glance</p>
+            {me.profile.status && <p class="pc-status"><span class="live-dot" aria-hidden="true"></span>{me.profile.status}</p>}
+          </div>
+        </div>
+        <dl class="pc-facts">
+          {me.profile.rows.map(r => <div><dt>{r.label}</dt><dd>{r.value}</dd></div>)}
+        </dl>
+        <div class="pc-links">
+          <a href="/experience">See experience</a>
+          {me.links.filter(l => /linkedin/i.test(l.href)).map(l => <a href={l.href} target="_blank" rel="noopener">LinkedIn</a>)}
+        </div>
+      </aside>
+    </div>
   </section>
 
 

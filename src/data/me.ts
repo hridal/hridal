@@ -17,6 +17,17 @@ export const me = {
     "I also write essays, which I publish here on this site. Away from all that, I play netball, go bouldering and paint when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
+  // The profile card beside the welcome text on the homepage.
+  // Set `status` to '' to hide the line with the dot.
+  profile: {
+    status: 'Open to summer 2027 internships',
+    rows: [
+      { label: 'Studying', value: 'MEng Materials Science, Imperial (Year 3)' },
+      { label: 'Latest role', value: 'Junior Consulting Intern, Roland Berger' },
+      { label: 'Based in', value: 'London' },
+      { label: 'Interested in', value: 'Consulting, strategy and product' },
+    ],
+  },
   // Change this whenever you update the Currently cards below.
   currentlyUpdated: 'November 2026',
   currently: [

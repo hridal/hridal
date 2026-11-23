@@ -65,6 +65,8 @@ function homeEntrance() {
   }
   const actions = intro.querySelector('.actions');
   if (actions) tl.from(actions.children, { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4');
+  const profile = intro.querySelector('.profile');
+  if (profile) tl.from(profile, { opacity: 0, y: 16, duration: 0.8, clearProps: 'transform,opacity' }, '-=0.9');
 }
 
 function headingReveals() {
