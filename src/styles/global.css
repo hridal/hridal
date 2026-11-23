@@ -1429,3 +1429,27 @@ html, body { overflow-x: clip; }
   .journal-stage { overflow: hidden; }
   #targets .chip { padding: 6px 10px; font-size: 13px; }
 }
+
+/* =========================================================
+   De-AI pass: Hanken Grotesk, no gradient washes or glows,
+   no tinted identical cards, no colour-only borders.
+   ========================================================= */
+:root { --sans: 'Hanken Grotesk Variable', -apple-system, system-ui, sans-serif; --display: var(--sans); }
+body *:not(svg):not(svg *) { font-family: var(--sans) !important; }
+article.essay *, #re-body, #re-body * { font-family: var(--read) !important; }
+body { font-feature-settings: normal; letter-spacing: 0; }
+body :is(h1, h2, h3, h4, .mark, .sb-title, .contact a.big, .mq-item):not(svg *) { letter-spacing: -0.02em !important; }
+body .intro h1 { letter-spacing: -0.04em !important; }
+.footer-mark { background: none; color: var(--ink); opacity: .06; -webkit-background-clip: border-box; background-clip: border-box; }
+.now-card::before { display: none !important; }
+/* Currently: a quiet list rather than a grid of identical tinted cards */
+.now-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 0 40px !important; }
+.now-card { background: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; padding: 18px 0 !important; border-top: 1px solid var(--line) !important; min-height: 0 !important; }
+.now-card:first-child, .now-card:nth-child(2) { border-top-color: var(--ink) !important; }
+.now-top span { font-size: 13px; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.now-title { font-size: 20px !important; font-weight: 600; margin: 6px 0 2px !important; }
+@media (max-width: 760px) { .now-grid { grid-template-columns: 1fr !important; } .now-card:nth-child(2) { border-top-color: var(--line) !important; } }
+/* No glowing shadows, consistent radius */
+.btn, button.solid { box-shadow: none !important; }
+.envelope, .rv-item, .paper-form { box-shadow: 0 1px 2px rgba(0,0,0,.06) !important; }
+.btn { border-radius: 999px; }

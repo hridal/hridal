@@ -1,5 +1,5 @@
 ---
-import '@fontsource-variable/inter';
+import '@fontsource-variable/hanken-grotesk';
 import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/source-serif-4/wght-italic.css';
 import '../styles/global.css';
@@ -15,9 +15,20 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
   <meta name="view-transition" content="same-origin" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title ? `${title} | Hridal` : `Hridal Gujrati`}</title>
+  <title>{title ? `${title} | Hridal Gujrati` : `Hridal Gujrati, Materials Science and Engineering at Imperial`}</title>
   <meta name="description" content={description} />
-  <link rel="icon" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="theme-color" content="#fbfaf8" />
+  <meta name="author" content="Hridal Gujrati" />
+  <link rel="canonical" href={new URL(Astro.url.pathname, 'https://hridal.com')} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hridal Gujrati" />
+  <meta property="og:title" content={title ? `${title} | Hridal Gujrati` : 'Hridal Gujrati'} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={new URL(Astro.url.pathname, 'https://hridal.com')} />
+  <meta property="og:image" content="https://hridal.com/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500);</script>
   <slot name="head" />
 </head>
