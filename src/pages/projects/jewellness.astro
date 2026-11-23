@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Jewellness" description="Jewellness is a halo bracelet that tracks women's health without looking like a fitness tracker. Hridal's start-up project at Imperial.">
+  <article class="case">
+    <a class="case-back" href="/projects">All projects</a>
+    <p class="case-kind">Start-up, Imperial Entrepreneurship module, October 2026 to now</p>
+    <h1>Jewellness</h1>
+    <p class="case-lede">A halo bracelet that tracks sleep, heart health and your cycle, with every sensor hidden in the clasp, so it looks like jewellery and never like a fitness tracker.</p>
+
+    <figure class="case-viewer">
+      <div class="viewer-box" id="viewer">
+        <img src="/projects/jewellness/product.jpg" alt="The Jewellness bracelet from the pitch deck" />
+        <button class="btn solid" id="load-viewer">Open the 3D model</button>
+      </div>
+      <figcaption>The 3D model lets you turn the bracelet, change the metal and stones, and look at the clasp from the skin side. <a href="/projects/jewellness/viewer.html" target="_blank" rel="noopener">Open it full screen</a></figcaption>
+    </figure>
+
+    <dl class="case-facts">
+      <div><dt>My role</dt><dd>Came up with the idea, market sizing and financial model, co-wrote the pitch</dd></div>
+      <div><dt>Team</dt><dd>Hridal Gujrati, Michael Rapsey and Albert Ding</dd></div>
+      <div><dt>Interviews</dt><dd>30+ potential customers</dd></div>
+      <div><dt>The ask</dt><dd>£500k pre-seed</dd></div>
+    </dl>
+
+    <h2>The problem</h2>
+    <p>Fitness trackers only help if people actually wear them, and a lot of people stop. Around 42% lose interest within six months, 29% of people in the UK find them unattractive, and almost half are worried about what happens to their data. I noticed the same gap myself, because I wanted something that did what a tracker does without looking like one, and I could not find it.</p>
+    <img class="case-slide" src="/projects/jewellness/problem.jpg" alt="Pitch deck slide showing why people stop wearing fitness trackers" loading="lazy" />
+
+    <h2>What we found</h2>
+    <p>We spoke to more than 30 people, and the answers pointed the same way. Seven in ten were uncomfortable with how a smartwatch or obvious tracker looks, every single one would value a device with no subscription, and 60% said they would not buy one at all if it shared their data, mostly because they worried an employer might see it.</p>
+    <img class="case-slide" src="/projects/jewellness/research.jpg" alt="Pitch deck slide summarising the customer interviews" loading="lazy" />
+
+    <h2>The product</h2>
+    <p>The bracelet keeps every electronic part inside the clasp, which sits on the underside of the wrist where the sensors can stay against the skin. The links on top are ordinary halo links with no electronics in them, so it moves like a normal tennis bracelet. It has a two-week battery, no subscription, a tap-for-help alert, and all the health data stays on your phone.</p>
+    <img class="case-slide" src="/projects/jewellness/product.jpg" alt="Pitch deck slide introducing the bracelet's features" loading="lazy" />
+
+    <h2>The market</h2>
+    <p>I built the market sizing from the UK wearables market of about $5.9bn, narrowed it to the roughly $1.8bn spent on health and fitness wearables by women, and set our target at 1% of that within five years, which is around $18m.</p>
+    <img class="case-slide" src="/projects/jewellness/market.jpg" alt="Pitch deck slide with the market sizing" loading="lazy" />
+
+    <h2>Where it is now</h2>
+    <p>We are testing demand with a low-cost pretotype before building anything expensive, which felt like the honest next step given how much of the case rests on people actually wanting to wear it every day.</p>
+  </article>
+  <script>
+    const btn = document.getElementById('load-viewer');
+    btn?.addEventListener('click', () => {
+      const box = document.getElementById('viewer')!;
+      const f = document.createElement('iframe');
+      f.src = '/projects/jewellness/viewer.html'; f.title = '3D model of the Jewellness bracelet'; f.loading = 'lazy';
+      f.setAttribute('allow', 'fullscreen');
+      box.replaceChildren(f);
+    });
+  </script>
+</Base>

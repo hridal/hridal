@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+const projects = [
+  { href: '/projects/jewellness', title: 'Jewellness', kind: 'Start-up, Oct 2026 to now', img: '/projects/jewellness/product.jpg',
+    text: 'Fitness jewellery for women: a halo bracelet that tracks sleep, heart health and your cycle, with every sensor hidden in the clasp. I came up with the idea, built the market sizing and financial model, and co-wrote the investment pitch.' },
+  { href: '/experience#tl-proj', title: 'Machine learning classification of materials', kind: 'Personal project, Oct to Dec 2025', img: null,
+    text: 'A classification pipeline on 5,000 alloy samples, which showed that band gap alone matched the full model’s accuracy and cut the lab measurements needed from ten to one.' },
+];
+---
+<Base title="Projects" description="Things Hridal has built outside her degree, from a fitness jewellery start-up to a machine learning model for alloys.">
+  <section class="block projects-page">
+    <h2>Projects</h2>
+    <div>
+      <p class="lead-small">Things I have built outside my degree, with the problem, what I did and how it turned out.</p>
+      <ul class="pj-list">
+        {projects.map(p => (
+          <li class="pj-item">
+            <a href={p.href}>
+              {p.img && <img src={p.img} alt="" loading="lazy" width="1100" height="619" />}
+              <span class="pj-kind">{p.kind}</span>
+              <span class="pj-title">{p.title}</span>
+              <span class="pj-text">{p.text}</span>
+              <span class="pj-more">Read the case study</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

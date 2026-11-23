@@ -1453,3 +1453,35 @@ body .intro h1 { letter-spacing: -0.04em !important; }
 .btn, button.solid { box-shadow: none !important; }
 .envelope, .rv-item, .paper-form { box-shadow: 0 1px 2px rgba(0,0,0,.06) !important; }
 .btn { border-radius: 999px; }
+
+/* Projects */
+.pj-list { list-style: none; padding: 0; margin: 30px 0 0; display: grid; gap: 0; }
+.pj-item a { display: grid; gap: 6px; padding: 28px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.pj-item:last-child a { border-bottom: 1px solid var(--line); }
+.pj-item img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 14px; border: 1px solid var(--line); }
+.pj-kind { font-size: 13px; color: var(--muted); }
+.pj-title { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+.pj-text { font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 62ch; }
+.pj-more { font-size: 14px; color: var(--accent); margin-top: 6px; }
+.pj-item a:hover .pj-title { color: var(--accent); }
+.case { max-width: 760px; margin: 0 auto; padding: 56px 0 40px; }
+.case-back { font-size: 14px; color: var(--muted); }
+.case-kind { font-size: 13px; color: var(--muted); margin: 34px 0 6px; }
+.case h1 { font-size: clamp(40px, 6vw, 64px) !important; margin: 0 0 14px; }
+.case-lede { font-size: 20px; line-height: 1.55; color: var(--ink); margin: 0 0 34px; }
+.case h2 { font-size: 26px !important; margin: 52px 0 12px; }
+.case p { font-size: 17px; line-height: 1.7; }
+.case-viewer { margin: 0 0 34px; }
+.viewer-box { position: relative; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #ede8df; }
+.viewer-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.viewer-box .btn { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); }
+.viewer-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+.case-viewer figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; }
+.case-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; margin: 0; }
+.case-facts div { border-top: 1px solid var(--line); padding: 14px 0; }
+.case-facts dt { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.case-facts dd { margin: 0; font-size: 16px; }
+.case-slide { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); margin: 18px 0 0; }
+@media (max-width: 760px) { .case { padding-top: 30px; } .case-facts { grid-template-columns: 1fr; } .viewer-box { aspect-ratio: 4 / 5; } .case-lede { font-size: 18px; } }
+.viewer-box img { object-fit: contain; background: #f6f2ea; }
+@media (min-width: 761px) { .viewer-box { aspect-ratio: 4 / 3; } }

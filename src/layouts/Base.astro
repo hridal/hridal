@@ -5,7 +5,7 @@ import '@fontsource-variable/source-serif-4/wght-italic.css';
 import '../styles/global.css';
 import { me } from '../data/me';
 const { title, description = me.tagline } = Astro.props;
-const links = [['/about','About'],['/experience','Experience'],['/essays','Essays']];
+const links = [['/about','About'],['/experience','Experience'],['/projects','Projects'],['/essays','Essays']];
 const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/shelf','Shelf'],['/focus','Focus']];
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---

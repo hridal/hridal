@@ -1,0 +1,519 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Jewellness Halo Bracelet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: full-bleed studio stage, caption top-left, one control rail docked at the bottom */
+:root{
+  --bg:#ede8df; --panel:#faf7f1; --ink:#22201c; --muted:#6c665c;
+  --line:rgba(34,32,28,.14); --gold:#a8792c; --gold-ink:#fffaf0;
+  --display:"Hanken Grotesk",system-ui,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:var(--body);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141312; --panel:#1a1816; --ink:#efe9de; --muted:#a39b8d;
+  --line:rgba(239,233,222,.16); --gold:#d6a654; --gold-ink:#1a1408; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141312; --panel:#1a1816; --ink:#efe9de; --muted:#a39b8d;
+  --line:rgba(239,233,222,.16); --gold:#d6a654; --gold-ink:#1a1408; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);overflow:hidden}
+#stage{position:fixed;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#stage:active{cursor:grabbing}
+.caption{position:fixed;top:calc(env(safe-area-inset-top,0px) + 18px);left:max(18px,env(safe-area-inset-left,0px));
+  max-width:min(600px,calc(100% - 36px));pointer-events:none;color:#2a251d;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.caption.on-dark{color:#f1ead9;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.caption h1{font-family:var(--display);font-weight:600;letter-spacing:-.02em;font-size:clamp(28px,4vw,40px);line-height:1;margin:0 0 6px;letter-spacing:.005em}
+.caption h1 em{font-style:italic;font-weight:500}
+.caption p{font-family:var(--mono);font-size:13px;margin:0;opacity:.75}
+.rail{position:fixed;left:0;right:0;bottom:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;justify-content:center;pointer-events:none}
+.bar{pointer-events:auto;display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-end;justify-content:center;
+  background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:12px 16px;max-width:100%}
+.group{display:flex;flex-direction:column;gap:6px;min-width:0}
+.group > span,.group > label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#stone{font:500 13px var(--body);color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:9px;padding:7px 28px 7px 11px;cursor:pointer;
+  appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+#stone option{color:#22201c;background:#fff}
+#stone:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.seg button{font:500 13px var(--body);color:var(--ink);background:transparent;border:0;padding:7px 11px;cursor:pointer;white-space:nowrap}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible,.save:focus-visible,.close:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.save{font:600 13px var(--body);background:var(--gold);color:var(--gold-ink);border:0;border-radius:9px;padding:8px 14px;cursor:pointer}
+.hint{position:fixed;right:max(18px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 22px);
+  font-family:var(--mono);font-size:10px;color:#2a251d;opacity:.55;pointer-events:none}
+.hint.on-dark{color:#f1ead9}
+.modal{position:fixed;inset:0;background:rgba(10,9,8,.72);display:flex;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0px) + 20px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(16px,env(safe-area-inset-left,0px));z-index:20}
+.sheet{background:var(--bg);color:var(--ink);border-radius:14px;padding:14px;max-width:min(1100px,100%);max-height:100%;display:flex;flex-direction:column;gap:10px}
+.sheet img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:8px;display:block}
+.sheet-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.sheet-row p{margin:0;font-size:13px;color:var(--muted)}
+.close{font:500 13px var(--body);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
+.err{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-size:15px}
+@media (max-width:640px){.hint{display:none}.bar{gap:10px 14px;padding:10px 12px}.seg button{padding:6px 9px;font-size:12px}}
+</style>
+
+<canvas id="stage" aria-label="3D render of the Jewellness halo bracelet"></canvas>
+<div class="caption" id="caption">
+  <h1>Jewellness Halo Bracelet <span id="cap-metal">in gold</span></h1>
+  <p id="cap-spec">6 mm halo links with 2.5 mm diamond centres, 12 pavé diamonds on each, and a tech clasp</p>
+</div>
+<div class="hint" id="hint">Drag to turn it, scroll to zoom</div>
+
+<div class="rail"><div class="bar">
+  <div class="group"><span>Metal</span><div class="seg" data-key="metal">
+    <button id="m-gold" data-v="gold" aria-pressed="true">Yellow gold</button>
+    <button id="m-rose" data-v="rose" aria-pressed="false">Rose gold</button>
+    <button id="m-silver" data-v="silver" aria-pressed="false">Silver</button>
+  </div></div>
+  <div class="group"><label for="stone">Stones</label><select id="stone">
+    <option value="diamond" selected>Diamond (Apr)</option>
+    <option value="cz">Cubic zirconia</option>
+    <option value="garnet">Garnet (Jan)</option>
+    <option value="amethyst">Amethyst (Feb)</option>
+    <option value="aquamarine">Aquamarine (Mar)</option>
+    <option value="emerald">Emerald (May)</option>
+    <option value="ruby">Ruby (Jul)</option>
+    <option value="peridot">Peridot (Aug)</option>
+    <option value="sapphire">Sapphire (Sep)</option>
+    <option value="pinksapphire">Pink sapphire (Oct)</option>
+    <option value="citrine">Citrine (Nov)</option>
+    <option value="bluetopaz">Blue topaz (Dec)</option>
+    <option value="tanzanite">Tanzanite (Dec)</option>
+    <option value="morganite">Morganite</option>
+    <option value="blackspinel">Black spinel</option>
+  </select></div>
+  <div class="group"><span>Finish</span><div class="seg" data-key="finish">
+    <button id="f-antique" data-v="antique" aria-pressed="true">Antique</button>
+    <button id="f-polished" data-v="polished" aria-pressed="false">Polished</button>
+  </div></div>
+  <div class="group"><span>Surface</span><div class="seg" data-key="surface">
+    <button id="s-linen" data-v="linen" aria-pressed="true">Linen</button>
+    <button id="s-velvet" data-v="velvet" aria-pressed="false">Velvet</button>
+    <button id="s-marble" data-v="marble" aria-pressed="false">Marble</button>
+    <button id="s-none" data-v="none" aria-pressed="false">None</button>
+  </div></div>
+  <div class="group"><span>Shadow</span><div class="seg" data-key="shadow">
+    <button id="sh-on" data-v="on" aria-pressed="true">On</button>
+    <button id="sh-off" data-v="off" aria-pressed="false">Off</button>
+  </div></div>
+  <div class="group"><span>Pose</span><div class="seg" data-key="pose">
+    <button id="p-flat" data-v="flat" aria-pressed="true">Lying flat</button>
+    <button id="p-flip" data-v="flip" aria-pressed="false">Sensor side up</button>
+    <button id="p-hang" data-v="hang" aria-pressed="false">Hanging</button>
+  </div></div>
+  <div class="group"><span>Shot</span><div class="seg" data-key="view">
+    <button id="v-hero" data-v="hero" aria-pressed="true">Hero</button>
+    <button id="v-macro" data-v="macro" aria-pressed="false">Link close-up</button>
+    <button id="v-clasp" data-v="clasp" aria-pressed="false">Clasp</button>
+    <button id="v-top" data-v="top" aria-pressed="false">Top</button>
+  </div></div>
+  <div class="group"><span>Turntable</span><div class="seg" data-key="spin">
+    <button id="r-off" data-v="off" aria-pressed="true">Off</button>
+    <button id="r-on" data-v="on" aria-pressed="false">On</button>
+  </div></div>
+  <button class="save" id="save">Capture image</button>
+</div></div>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet">
+    <img id="shot" alt="High resolution capture of the bracelet render">
+    <div class="sheet-row">
+      <p>Right-click the image (or press and hold on a phone) and choose Save image.</p>
+      <button class="close" id="close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="/projects/jewellness/three.min.js"></script>
+<script src="/projects/jewellness/OrbitControls.js"></script>
+<script>
+(function(){
+if(!window.THREE){document.body.insertAdjacentHTML('beforeend','<div class="err">The 3D viewer could not load. Check your connection and reload the page.</div>');return;}
+const canvas=document.getElementById('stage');
+let renderer;
+try{
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
+}catch(e){document.body.insertAdjacentHTML('beforeend','<div class="err">This browser could not start WebGL, which the render needs.</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.0;
+renderer.physicallyCorrectLights=true;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(26,1,0.5,3000);
+const controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=0.08;
+controls.minDistance=22;controls.maxDistance=260;
+controls.maxPolarAngle=Math.PI*0.47;
+controls.autoRotateSpeed=0.8;
+
+/* ---------- Studio environment (softboxes + black flags) ---------- */
+const pmrem=new THREE.PMREMGenerator(renderer);
+const envScene=new THREE.Scene();
+const room=new THREE.Mesh(new THREE.SphereGeometry(400,32,16),new THREE.MeshBasicMaterial({color:new THREE.Color(0.05,0.05,0.05),side:THREE.BackSide}));
+envScene.add(room);
+function box(w,h,pos,look,intensity,tint){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(tint[0],tint[1],tint[2]).multiplyScalar(intensity),side:THREE.DoubleSide}));
+  m.position.set(...pos);m.lookAt(...look);envScene.add(m);return m;
+}
+box(220,70,[0,180,40],[0,0,0],5.5,[1,0.98,0.95]);      // overhead key
+box(40,180,[-190,70,30],[0,0,0],4.2,[1,0.97,0.93]);     // left strip
+box(40,180,[190,70,-10],[0,0,0],3.2,[1,0.98,0.96]);     // right strip
+box(160,30,[0,40,-200],[0,0,0],6.0,[1,1,1]);            // back rim
+box(60,60,[90,120,150],[0,0,0],2.2,[1,0.96,0.9]);       // front fill
+const bounce=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshBasicMaterial({color:0xffffff}));
+bounce.rotation.x=-Math.PI/2;bounce.position.y=-6;envScene.add(bounce);
+let envTex=null;
+function rebuildEnv(c){
+  bounce.material.color.setRGB(c[0],c[1],c[2]);
+  const t=pmrem.fromScene(envScene,0.03).texture;
+  if(envTex)envTex.dispose();envTex=t;scene.environment=t;
+}
+
+/* ---------- Lights for floor shading and contact shadow ---------- */
+const sun=new THREE.DirectionalLight(0xfff6ea,2.2);
+sun.position.set(36,180,60);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-55,right:55,top:55,bottom:-55,near:20,far:420});
+sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.02;
+scene.add(sun);
+
+/* ---------- Surfaces ---------- */
+function canvasTex(draw,size=1024){
+  const c=document.createElement('canvas');c.width=c.height=size;const g=c.getContext('2d');draw(g,size);
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t;
+}
+function rnd(seed){return function(){seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};}
+const linenTex=canvasTex((g,s)=>{
+  const r=rnd(7);g.fillStyle='#e6ddcd';g.fillRect(0,0,s,s);
+  for(let i=0;i<s;i+=2){g.fillStyle=`rgba(${r()<.5?'255,255,250':'120,105,85'},${0.04+r()*0.07})`;g.fillRect(0,i,s,1+(r()<.2));}
+  for(let i=0;i<s;i+=2){g.fillStyle=`rgba(${r()<.5?'255,255,250':'120,105,85'},${0.03+r()*0.06})`;g.fillRect(i,0,1+(r()<.2),s);}
+  const d=g.getImageData(0,0,s,s);for(let i=0;i<d.data.length;i+=4){const n=(r()-.5)*10;d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}g.putImageData(d,0,0);
+});
+linenTex.repeat.set(14,14);
+const velvetTex=canvasTex((g,s)=>{
+  const r=rnd(11);g.fillStyle='#231d26';g.fillRect(0,0,s,s);
+  const d=g.getImageData(0,0,s,s);for(let i=0;i<d.data.length;i+=4){const n=(r()-.5)*18;d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}g.putImageData(d,0,0);
+});
+velvetTex.repeat.set(10,10);
+const marbleTex=canvasTex((g,s)=>{
+  const r=rnd(23);g.fillStyle='#efede8';g.fillRect(0,0,s,s);
+  for(let k=0;k<22;k++){
+    let x=r()*s,y=r()*s,a=r()*Math.PI*2;g.beginPath();g.moveTo(x,y);
+    for(let j=0;j<160;j++){a+=(r()-.5)*.5;x+=Math.cos(a)*7;y+=Math.sin(a)*7;g.lineTo(x,y);}
+    g.strokeStyle=`rgba(${110+r()*40},${108+r()*40},${104+r()*40},${0.05+r()*0.16})`;g.lineWidth=0.6+r()*2.4;g.filter=`blur(${r()*1.6}px)`;g.stroke();
+  }
+  g.filter='none';
+},2048);
+marbleTex.repeat.set(2.2,2.2);
+
+const SURFACES={
+  linen:{map:linenTex,rough:0.95,sheen:0,bg:[0.80,0.75,0.67],bounce:[0.55,0.49,0.40],fog:[230,222,208],dark:false},
+  velvet:{map:velvetTex,rough:1.0,sheen:1,bg:[0.06,0.05,0.065],bounce:[0.05,0.045,0.055],fog:[30,25,33],dark:true},
+  marble:{map:marbleTex,rough:0.28,sheen:0,bg:[0.86,0.85,0.83],bounce:[0.62,0.61,0.58],fog:[238,236,232],dark:false},
+  none:{map:null,rough:1,sheen:0,bg:[0.9,0.9,0.9],bounce:[0.5,0.5,0.5],fog:[236,236,235],dark:false,noFloor:true}
+};
+const floorMat=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.9,metalness:0});
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(1400,1400),floorMat);
+floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+
+/* ---------- Gold materials ---------- */
+// Metal reflectance (linear). "floor" is the recessed panel floor: patinated when antique, bright when polished.
+const FINISH={
+  gold:{label:'in gold',
+    antique:{wire:[0.86,0.62,0.30],wr:0.17,body:[0.80,0.57,0.27],br:0.24,floor:[0.36,0.24,0.10],fr:0.55},
+    polished:{wire:[1.0,0.77,0.36],wr:0.06,body:[0.98,0.75,0.35],br:0.09,floor:[0.78,0.56,0.25],fr:0.22}},
+  rose:{label:'in rose gold',
+    antique:{wire:[0.86,0.56,0.45],wr:0.17,body:[0.80,0.51,0.41],br:0.24,floor:[0.36,0.19,0.14],fr:0.55},
+    polished:{wire:[0.97,0.65,0.54],wr:0.06,body:[0.95,0.63,0.52],br:0.09,floor:[0.76,0.47,0.38],fr:0.22}},
+  silver:{label:'in silver',
+    antique:{wire:[0.86,0.85,0.82],wr:0.16,body:[0.78,0.77,0.75],br:0.24,floor:[0.10,0.10,0.10],fr:0.6},
+    polished:{wire:[0.97,0.96,0.92],wr:0.05,body:[0.95,0.94,0.91],br:0.08,floor:[0.80,0.79,0.77],fr:0.2}}
+};
+// Stones: body colour (sRGB) tints the facets; the clear coat keeps the surface glints white, as on a real cut stone.
+const STONES={
+  diamond:{name:'diamond',plural:'diamonds',c:[255,255,255],e:1.5},
+  cz:{name:'CZ',plural:'CZs',c:[246,247,255],e:1.35},
+  sapphire:{name:'sapphire',plural:'sapphires',c:[40,72,205],e:1.9},
+  pinksapphire:{name:'pink sapphire',plural:'pink sapphires',c:[245,120,175],e:1.8},
+  ruby:{name:'ruby',plural:'rubies',c:[215,22,58],e:1.9},
+  emerald:{name:'emerald',plural:'emeralds',c:[24,170,92],e:1.9},
+  amethyst:{name:'amethyst',plural:'amethysts',c:[160,90,215],e:1.8},
+  garnet:{name:'garnet',plural:'garnets',c:[150,18,32],e:2.0},
+  aquamarine:{name:'aquamarine',plural:'aquamarines',c:[160,220,236],e:1.6},
+  bluetopaz:{name:'blue topaz',plural:'blue topazes',c:[110,185,245],e:1.7},
+  peridot:{name:'peridot',plural:'peridots',c:[170,215,60],e:1.7},
+  citrine:{name:'citrine',plural:'citrines',c:[245,175,50],e:1.7},
+  tanzanite:{name:'tanzanite',plural:'tanzanites',c:[100,90,215],e:1.8},
+  morganite:{name:'morganite',plural:'morganites',c:[245,180,175],e:1.6},
+  blackspinel:{name:'black spinel',plural:'black spinels',c:[18,18,22],e:1.2}
+};
+const matWire=new THREE.MeshPhysicalMaterial({metalness:1,envMapIntensity:1.25});
+const matBody=new THREE.MeshPhysicalMaterial({metalness:1,envMapIntensity:1.2});
+const matFloor=new THREE.MeshPhysicalMaterial({metalness:1,envMapIntensity:0.9});
+const knurl=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=4;const g=c.getContext('2d');
+  for(let i=0;i<1024;i++){const v=128+127*Math.sin(i/1024*Math.PI*2*180);g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(i,0,1,4);}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;})();
+const matKnurl=new THREE.MeshPhysicalMaterial({metalness:1,envMapIntensity:1.2,bumpMap:knurl,bumpScale:0.6});
+/* Stones: a dedicated high-contrast "sparkle" environment (many small lights on black, a few faintly tinted for fire).
+   A cut stone mostly shows sharp white flashes against dark facets, which a plain glass/transmission look can't give. */
+function sparkleEnv(seed,tints,count,bg=0.012){
+  const s=new THREE.Scene();
+  s.add(new THREE.Mesh(new THREE.SphereGeometry(300,32,16),new THREE.MeshBasicMaterial({color:new THREE.Color(bg,bg,bg*1.05),side:THREE.BackSide})));
+  const r=rnd(seed);
+  for(let i=0;i<count;i++){
+    const u=r()*2-1,a=r()*Math.PI*2,rad=Math.sqrt(1-u*u),d=200;
+    const p=new THREE.Vector3(rad*Math.cos(a)*d,Math.abs(u)*d*0.9+10,rad*Math.sin(a)*d);
+    const tint=tints[Math.floor(r()*tints.length)],k=6+r()*22,sz=6+r()*16;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*(0.4+r())),new THREE.MeshBasicMaterial({color:new THREE.Color(...tint).multiplyScalar(k),side:THREE.DoubleSide}));
+    m.position.copy(p);m.lookAt(0,0,0);s.add(m);
+  }
+  const big=new THREE.Mesh(new THREE.PlaneGeometry(160,50),new THREE.MeshBasicMaterial({color:new THREE.Color(5,5,5),side:THREE.DoubleSide}));
+  big.position.set(0,190,30);big.lookAt(0,0,0);s.add(big);
+  const floorGlow=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.MeshBasicMaterial({color:new THREE.Color(0.25,0.22,0.18)}));
+  floorGlow.rotation.x=-Math.PI/2;floorGlow.position.y=-20;s.add(floorGlow);
+  return pmrem.fromScene(s,0.0,0.1,1000).texture;
+}
+const W=[1,1,1];
+const stoneEnv=sparkleEnv(5,[W,W,W,[1,0.55,0.4],[0.45,0.6,1],[1,0.9,0.45],[0.6,1,0.7]],70);
+// Diamond: more facets catching light and stronger spectral fire than the CZ accents
+const diamondEnv=sparkleEnv(9,[W,W,W,W,[1,0.25,0.15],[1,0.6,0.1],[1,0.95,0.2],[0.3,1,0.35],[0.15,0.55,1],[0.55,0.25,1]],130,0.14);
+const matStone=new THREE.MeshPhysicalMaterial({color:new THREE.Color(0.94,0.95,0.98),metalness:1,roughness:0.02,
+  envMap:stoneEnv,envMapIntensity:1.6,clearcoat:1,clearcoatRoughness:0,flatShading:true});
+const matDiamond=new THREE.MeshPhysicalMaterial({color:new THREE.Color(1,1,1),metalness:1,roughness:0,
+  envMap:diamondEnv,envMapIntensity:1.5,clearcoat:1,clearcoatRoughness:0,flatShading:true});
+const matCeramic=new THREE.MeshPhysicalMaterial({color:0xf2efea,roughness:0.25,clearcoat:0.8,clearcoatRoughness:0.12,envMapIntensity:0.8});
+const matSapphire=new THREE.MeshPhysicalMaterial({color:0x0e141b,roughness:0.03,metalness:0,clearcoat:1,envMapIntensity:1.4});
+const matSteel=new THREE.MeshPhysicalMaterial({color:new THREE.Color(0.62,0.62,0.6),metalness:0.35,roughness:0.35,envMapIntensity:0.6});
+function applyFinish(){
+  const f=FINISH[state.metal][state.finish];
+  matWire.color.setRGB(...f.wire);matWire.roughness=f.wr;
+  matBody.color.setRGB(...f.body);matBody.roughness=f.br;
+  matKnurl.color.setRGB(...f.body);matKnurl.roughness=f.br+0.04;
+  matFloor.color.setRGB(...f.floor);matFloor.roughness=f.fr;
+  updateCaption();
+}
+function applyStone(){
+  const st=STONES[state.stone],c=new THREE.Color(st.c[0]/255,st.c[1]/255,st.c[2]/255).convertSRGBToLinear();
+  matDiamond.color.copy(c);matDiamond.envMapIntensity=st.e;
+  matStone.color.copy(c).multiplyScalar(0.96);matStone.envMapIntensity=st.e*1.05;
+  updateCaption();
+}
+function updateCaption(){
+  const st=STONES[state.stone];
+  document.getElementById('cap-metal').textContent=FINISH[state.metal].label;
+  document.getElementById('cap-spec').textContent=`6 mm halo links with 2.5 mm ${st.name} centres, 12 pavé ${st.plural} on each, and a tech clasp`;
+}
+
+/* ---------- Helpers ---------- */
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function mesh(geo,mat,parent){const m=new THREE.Mesh(geo,mat);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function tube(pts,r,parent,mat=matWire,closed=false,segs){
+  const c=new THREE.CatmullRomCurve3(pts,closed,'centripetal');
+  return mesh(new THREE.TubeGeometry(c,segs||Math.max(40,pts.length*10),r,10,closed),mat,parent);
+}
+function rrect(w,h,r){const s=new THREE.Shape(),x=-w/2,y=-h/2;
+  s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;}
+function slab(shape,depth,bevel){const g=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelThickness:bevel,bevelSize:bevel,bevelSegments:4,curveSegments:16});
+  g.rotateX(-Math.PI/2);return g;}
+/* Round brilliant, 57 facets: table, 8 stars, 8 bezels (kites), 16 upper girdles, 16 lower girdles, 8 pavilion mains.
+   Proportions for a 5 mm stone: table 55%, crown 16%, pavilion 43%. */
+const stoneGeo=(()=>{
+  const R=2.5,deg=Math.PI/180,ring=(n,r,y,off)=>Array.from({length:n},(_,i)=>{const a=(i*360/n+off)*deg;return V(r*Math.cos(a),y,r*Math.sin(a));});
+  const T=ring(8,0.55*R,0.80,0), C=ring(8,0.80*R,0.42,22.5), Gt=ring(16,R,0.05,0), Gb=ring(16,R,-0.05,0),
+        Q=ring(8,0.52*R,-1.12,22.5), cul=V(0,-2.15,0), top=V(0,0.80,0), ctr=V(0,-0.2,0);
+  const pos=[];const tri=(a,b,c)=>{const n=new THREE.Vector3().subVectors(b,a).cross(new THREE.Vector3().subVectors(c,a));
+    const mid=a.clone().add(b).add(c).multiplyScalar(1/3).sub(ctr);if(n.dot(mid)<0)[b,c]=[c,b];pos.push(a.x,a.y,a.z,b.x,b.y,b.z,c.x,c.y,c.z);};
+  const m8=i=>(i+8)%8,m16=i=>(i+16)%16;
+  for(let i=0;i<8;i++){
+    tri(top,T[i],T[m8(i+1)]);                      // table
+    tri(T[i],T[m8(i+1)],C[i]);                     // star
+    tri(T[i],C[m8(i-1)],Gt[2*i]);tri(T[i],Gt[2*i],C[i]);   // bezel kite
+    tri(C[i],Gt[2*i],Gt[2*i+1]);tri(C[i],Gt[2*i+1],Gt[m16(2*i+2)]); // upper girdles
+    tri(Gb[2*i],Gb[2*i+1],Q[i]);tri(Gb[2*i+1],Gb[m16(2*i+2)],Q[i]); // lower girdles
+    tri(Gb[2*i],Q[m8(i-1)],cul);tri(Gb[2*i],cul,Q[i]);  // pavilion main
+  }
+  for(let j=0;j<16;j++){tri(Gt[j],Gt[m16(j+1)],Gb[j]);tri(Gb[j],Gt[m16(j+1)],Gb[m16(j+1)]);} // girdle band
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.computeVertexNormals();return g;
+})();
+
+/* ---------- Bracelet path (ellipse laid flat) ---------- */
+const A=36,B=27,N=4000;const arc=[0];let L=0;
+const ep=t=>V(A*Math.sin(t),0,B*Math.cos(t));
+for(let i=1;i<=N;i++){L+=ep(i/N*Math.PI*2).distanceTo(ep((i-1)/N*Math.PI*2));arc.push(L);}
+let POSE='flat';const HANG_R=L/(2*Math.PI),HANG_Y=HANG_R+16,FLIP_H=3.0;
+function frameAt(s){
+  if(POSE==='line')return{P:V(s,0,0),T:V(1,0,0),Y:V(0,1,0),N:V(0,0,1)};
+  if(POSE==='hang'){ // vertical circle, knot at the top, clasp hanging straight below; decorated faces point outward
+    const ph=s/HANG_R;return{P:V(HANG_R*Math.sin(ph),HANG_Y+HANG_R*Math.cos(ph),0),T:V(Math.cos(ph),-Math.sin(ph),0),Y:V(Math.sin(ph),Math.cos(ph),0),N:V(0,0,1)};
+  }
+  const FL=POSE==='flip';
+  s=((s%L)+L)%L;let lo=0,hi=N;while(hi-lo>1){const m=(lo+hi)>>1;if(arc[m]<s)lo=m;else hi=m;}
+  const t=(lo+(s-arc[lo])/(arc[hi]-arc[lo]||1))/N*Math.PI*2;
+  const P=ep(t),T=V(A*Math.cos(t),0,-B*Math.sin(t)).normalize(),Y=FL?V(0,-1,0):V(0,1,0),Nn=new THREE.Vector3().crossVectors(T,Y);
+  if(FL)P.y=FLIP_H;
+  return{P,T,Y,N:Nn};
+}
+function place(obj,s,y=0){const f=frameAt(s);const m=new THREE.Matrix4().makeBasis(f.T,f.Y,f.N);
+  obj.quaternion.setFromRotationMatrix(m);obj.position.copy(f.P).addScaledVector(f.Y,y);}
+
+/* Bend the straight-built centre section onto the hanging circle so knot and panels follow the wrist curve with no gaps.
+   Straight coords: x along the bracelet, y out of the face, z across. */
+function flipWinding(g){
+  if(g.index){const a=g.index.array;for(let i=0;i<a.length;i+=3){const t=a[i+1];a[i+1]=a[i+2];a[i+2]=t;}return;}
+  for(const k in g.attributes){const at=g.attributes[k],n=at.itemSize,a=at.array;
+    for(let t=0;t<at.count;t+=3)for(let j=0;j<n;j++){const x=a[(t+1)*n+j];a[(t+1)*n+j]=a[(t+2)*n+j];a[(t+2)*n+j]=x;}}
+}
+function bendToHang(roots,parent){
+  const R=HANG_R,list=[];
+  parent.updateMatrixWorld(true);const inv=parent.matrixWorld.clone().invert();
+  roots.forEach(r=>r.traverse(o=>{if(o.isMesh)list.push(o);}));
+  const bend=v=>{const ph=v.x/R,rho=R+v.y;return v.set(rho*Math.sin(ph),HANG_Y+rho*Math.cos(ph),v.z);};
+  list.forEach(m=>{
+    const M=inv.clone().multiply(m.matrixWorld);
+    if(m.isInstancedMesh){
+      const t=new THREE.Matrix4(),p=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),z=new THREE.Vector3(0,0,1);
+      for(let i=0;i<m.count;i++){m.getMatrixAt(i,t);t.premultiply(M);t.decompose(p,q,sc);const ph=p.x/R;bend(p);
+        q.premultiply(new THREE.Quaternion().setFromAxisAngle(z,-ph));t.compose(p,q,sc);m.setMatrixAt(i,t);}
+      m.instanceMatrix.needsUpdate=true;
+    }else{
+      const g=m.geometry.clone();g.applyMatrix4(M);if(M.determinant()<0)flipWinding(g);
+      const pos=g.attributes.position,nor=g.attributes.normal,v=new THREE.Vector3();
+      for(let i=0;i<pos.count;i++){v.fromBufferAttribute(pos,i);const ph=v.x/R,c=Math.cos(ph),sn=Math.sin(ph);
+        if(nor){const nx=nor.getX(i),ny=nor.getY(i);nor.setXY(i,nx*c+ny*sn,-nx*sn+ny*c);}
+        bend(v);pos.setXYZ(i,v.x,v.y,v.z);}
+      g.computeBoundingSphere();m.geometry=g;
+    }
+    m.position.set(0,0,0);m.quaternion.identity();m.scale.set(1,1,1);parent.add(m);
+  });
+  roots.forEach(r=>parent.remove(r));
+}
+function buildBracelet(){
+const bracelet=new THREE.Group();scene.add(bracelet);
+/* Halo tennis bracelet: 6.2 mm halo links on top, polished domes either side of the clasp,
+   and every electronic part inside the clasp (22 x 6.2 x 4 mm), which sits under the wrist. */
+const CL=22,CW=6.2,CH=4.0,GAP=3.7;
+const span=L-CL-2*GAP,nL=Math.round(span/6.55)+1,pitch=span/(nL-1);
+const linkS=[];for(let k=0;k<nL;k++)linkS.push(L/2+CL/2+GAP+k*pitch);
+const haloProf=[[0.001,0],[2.3,0.22],[2.95,0.9],[3.08,1.6],[2.98,2.15],[2.7,2.36],[2.55,2.36],[2.55,2.2],[0.001,2.2]].map(p=>new THREE.Vector2(p[0],p[1]));
+const domeProf=[[0.001,0],[2.3,0.22],[2.95,0.9],[3.05,1.55],[2.75,2.35],[1.85,2.88],[0.001,3.05]].map(p=>new THREE.Vector2(p[0],p[1]));
+const haloG=new THREE.LatheGeometry(haloProf,96),domeG=new THREE.LatheGeometry(domeProf,96);
+const floorG=new THREE.CylinderGeometry(2.56,2.56,0.05,64);
+const rimG=new THREE.TorusGeometry(2.66,0.14,10,72);rimG.rotateX(Math.PI/2);
+const cupG=new THREE.TorusGeometry(1.34,0.13,8,40);cupG.rotateX(Math.PI/2);
+const prongG=new THREE.SphereGeometry(0.21,12,8),beadG=new THREE.SphereGeometry(0.13,10,8),jrG=new THREE.TorusGeometry(0.7,0.24,8,20);
+linkS.forEach((s,k)=>{
+  const g=new THREE.Group();bracelet.add(g);place(g,s);
+  const dome=k<3||k>=nL-3;
+  if(dome){mesh(domeG,matBody,g);}
+  else{
+    mesh(haloG,matBody,g);
+    const fl=mesh(floorG,matFloor,g);fl.position.y=2.22;
+    const rim=mesh(rimG,matWire,g);rim.position.y=2.3;
+    const st=mesh(stoneGeo,matDiamond,g);st.scale.setScalar(0.5);st.position.y=2.5;st.rotation.y=k*0.7;st.castShadow=false;
+    const cup=mesh(cupG,matWire,g);cup.position.y=2.44;
+    for(let i=0;i<4;i++){const a=Math.PI/4+i*Math.PI/2;const p=mesh(prongG,matWire,g);p.position.set(Math.cos(a)*1.3,2.78,Math.sin(a)*1.3);}
+    const pv=new THREE.InstancedMesh(stoneGeo,matStone,12),bd=new THREE.InstancedMesh(beadG,matWire,12);
+    for(let i=0;i<12;i++){const a=i/12*Math.PI*2,b=a+Math.PI/12;
+      pv.setMatrixAt(i,new THREE.Matrix4().compose(V(Math.cos(a)*2.0,2.42,Math.sin(a)*2.0),new THREE.Quaternion().setFromAxisAngle(V(0,1,0),a),V(0.15,0.15,0.15)));
+      bd.setMatrixAt(i,new THREE.Matrix4().makeTranslation(Math.cos(b)*2.04,2.43,Math.sin(b)*2.04));}
+    g.add(pv);g.add(bd);bd.castShadow=true;
+  }
+  if(k<nL-1){const j=new THREE.Group();bracelet.add(j);place(j,s+pitch/2,1.15);mesh(jrG,matWire,j);}
+});
+// end rings into the clasp
+for(const s of [L/2+CL/2+GAP/2,L/2-CL/2-GAP/2]){const j=new THREE.Group();bracelet.add(j);place(j,s,1.15);mesh(jrG,matWire,j);}
+/* ---------- Tech clasp ---------- */
+const cg=new THREE.Group();bracelet.add(cg);place(cg,L/2);
+{
+  const body=mesh(slab(rrect(CL,CW,1.2),CH-0.6,0.3),matBody,cg);body.position.y=0.3;
+  const seam=mesh(new THREE.BoxGeometry(CL-1.4,0.06,CW+0.04),matFloor,cg);seam.position.y=2.5;
+  const lidl=mesh(new THREE.BoxGeometry(CL-2.6,0.05,0.1),matFloor,cg);lidl.position.set(0,CH+0.01,CW/2-0.9);
+  // pavé halo on the lid (also the radio window)
+  const hx=4.2;
+  const hc=mesh(new THREE.CylinderGeometry(1.8,1.8,0.3,48),matBody,cg);hc.position.set(hx,CH+0.1,0);
+  const hf=mesh(new THREE.CylinderGeometry(1.62,1.62,0.05,48),matFloor,cg);hf.position.set(hx,CH+0.26,0);
+  const hr=mesh(new THREE.TorusGeometry(1.8,0.1,8,48),matWire,cg);hr.rotation.x=Math.PI/2;hr.position.set(hx,CH+0.27,0);
+  const hs=mesh(stoneGeo,matDiamond,cg);hs.scale.setScalar(0.34);hs.position.set(hx,CH+0.48,0);hs.castShadow=false;
+  const pv=new THREE.InstancedMesh(stoneGeo,matStone,10);for(let i=0;i<10;i++){const a=i/10*Math.PI*2;pv.setMatrixAt(i,new THREE.Matrix4().compose(V(hx+Math.cos(a)*1.32,CH+0.38,Math.sin(a)*1.32),new THREE.Quaternion(),V(0.11,0.11,0.11)));}cg.add(pv);
+  // hinge barrel and three-notch extender
+  const hb=mesh(new THREE.CylinderGeometry(0.95,0.95,CW-0.5,28),matWire,cg);hb.rotation.x=Math.PI/2;hb.position.set(-CL/2+0.5,2.1,0);
+  const ex=mesh(slab(rrect(5,4.4,0.7),1.9,0.2),matBody,cg);ex.position.set(CL/2+1.9,0.35,0);
+  for(const dx of [-1.4,0,1.4]){const n=mesh(new THREE.BoxGeometry(0.5,0.06,2.4),matFloor,cg);n.position.set(CL/2+1.9+dx,2.47,0);}
+  // skin side: ceramic window, two PPG domes, two temperature pads, charging pads
+  const cb=mesh(slab(rrect(16,4.6,1.0),0.06,0.04),matCeramic,cg);cb.position.set(0.5,-0.12,0);
+  for(const dx of [-1.8,2.8]){const w=mesh(new THREE.SphereGeometry(1.05,32,12,0,Math.PI*2,Math.PI*0.7,Math.PI*0.3),matSapphire,cg);w.position.set(dx,0.7,0);}
+  for(const dx of [-5.6,6.4]){const t=mesh(new THREE.CylinderGeometry(0.55,0.55,0.08,24),matSteel,cg);t.position.set(dx,-0.22,0);}
+  for(const dz of [-1.2,1.2]){const p=mesh(new THREE.CylinderGeometry(0.42,0.42,0.08,20),matWire,cg);p.position.set(-8.9,-0.12,dz);}
+}
+return bracelet;
+}
+const flatGroup=buildBracelet();
+POSE='hang';const hangGroup=buildBracelet();hangGroup.visible=false;
+POSE='flip';const flipGroup=buildBracelet();flipGroup.visible=false;POSE='flat';
+
+/* ---------- Shots ---------- */
+const KNOT_Y=HANG_Y+HANG_R+2;
+const SHOTS={flat:{hero:{p:V(0,52,104),t:V(0,1,6)},macro:{p:V(15,16,50),t:V(0,2.2,25)},clasp:{p:V(-22,30,-66),t:V(0,2.2,-27)},top:{p:V(0,150,0.01),t:V(0,0,0)}},
+  flip:{hero:{p:V(0,60,-104),t:V(0,2,-6)},macro:{p:V(12,26,-56),t:V(0,3,-27)},clasp:{p:V(8,30,-54),t:V(0,3,-27)},top:{p:V(0,150,0.01),t:V(0,0,0)}},
+  hang:{hero:{p:V(75,95,240),t:V(0,HANG_Y-12,0)},macro:{p:V(16,KNOT_Y+24,40),t:V(0,KNOT_Y,0)},clasp:{p:V(20,HANG_Y-HANG_R+10,56),t:V(0,HANG_Y-HANG_R,0)},top:{p:V(0,HANG_Y-12,225),t:V(0,HANG_Y-12,0)}}};
+let tween=null;
+function go(k,instant){const s=SHOTS[state.pose][k];if(instant){camera.position.copy(s.p);controls.target.copy(s.t);controls.update();return;}
+  tween={p0:camera.position.clone(),t0:controls.target.clone(),p1:s.p.clone(),t1:s.t.clone(),u:0};}
+controls.addEventListener('start',()=>{tween=null;});
+
+function applySurface(k){
+  const s=SURFACES[k];floorMat.map=s.map;floorMat.roughness=s.rough;floorMat.sheen=s.sheen;floorMat.sheenColor=new THREE.Color(0.5,0.42,0.55);floorMat.sheenRoughness=0.5;floorMat.needsUpdate=true;
+  const bg=new THREE.Color(s.fog[0]/255,s.fog[1]/255,s.fog[2]/255).convertSRGBToLinear();
+  floor.visible=!s.noFloor; // no surface: nothing to catch a shadow
+  scene.background=bg;scene.fog=s.noFloor?null:new THREE.Fog(bg,180,520);rebuildEnv(s.bounce);
+  document.getElementById('caption').classList.toggle('on-dark',s.dark);document.getElementById('hint').classList.toggle('on-dark',s.dark);
+}
+
+/* ---------- UI ---------- */
+const state={metal:'gold',stone:'diamond',finish:'antique',surface:'linen',pose:'flat',view:'hero',spin:'off'};
+document.querySelectorAll('.seg').forEach(seg=>seg.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const key=seg.dataset.key,v=b.dataset.v;state[key]=v;
+  seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  if(key==='finish'||key==='metal')applyFinish();
+  if(key==='shadow')sun.castShadow=v==='on';if(key==='surface')applySurface(v);if(key==='view')go(v);
+  if(key==='pose'){flatGroup.visible=v==='flat';hangGroup.visible=v==='hang';flipGroup.visible=v==='flip';document.getElementById('v-top').textContent=v==='hang'?'Front':'Top';go(state.view);}if(key==='spin')controls.autoRotate=v==='on';
+}));
+const modal=document.getElementById('modal');
+document.getElementById('save').addEventListener('click',()=>{
+  const pr=renderer.getPixelRatio();renderer.setPixelRatio(Math.min(4,Math.max(2,pr)*1.5));resize();renderer.render(scene,camera);
+  const url=canvas.toDataURL('image/png');renderer.setPixelRatio(pr);resize();
+  document.getElementById('shot').src=url;modal.hidden=false;document.getElementById('close').focus();
+});
+document.getElementById('close').addEventListener('click',()=>{modal.hidden=true;});
+modal.addEventListener('click',e=>{if(e.target===modal)modal.hidden=true;});
+
+function resize(){const w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;
+  camera.fov=w<h?38:26;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);
+
+document.getElementById('stone').addEventListener('change',e=>{state.stone=e.target.value;applyStone();});
+applyFinish();applyStone();applySurface('linen');resize();go('hero',true);
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function frame(){
+  if(tween){tween.u=Math.min(1,tween.u+(reduce?1:0.035));const e=1-Math.pow(1-tween.u,3);
+    camera.position.lerpVectors(tween.p0,tween.p1,e);controls.target.lerpVectors(tween.t0,tween.t1,e);if(tween.u>=1)tween=null;}
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(frame);
+}
+frame();
+})();
+</script>
+
+</body></html>
