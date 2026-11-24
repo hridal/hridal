@@ -12,9 +12,9 @@ export const me = {
   etymology: 'From hriday (Sanskrit hṛdaya), “heart”.',
   tagline: 'Welcome, and thanks for stopping by. This is a little window into my life and what I\u2019m up to. I study Materials Science and Engineering at Imperial and sit on the AI Society committee, because I care a lot about AI research and how it gets used. In my spare time I write essays, and when I\u2019m not doing that I\u2019m probably bouldering. Have a look around.',
   about: [
-    "I'm Hridal, a Materials Science and Engineering student at Imperial College London. This summer I was a Junior Consultant Intern at Roland Berger, where I worked on a review of a client's graduate programme and worked on a commercial due diligence and an M&A pitch. Before that I supported NHS ESR at IBM, the HR and payroll system behind 1.3 million NHS staff, and worked on bridge design options at Wood Group.",
-    "At Imperial I sit on the AI Society's research team, and I helped with operations and logistics throughout AI Week, which had speakers from Anthropic and Google DeepMind and finished with Imperial AI Hack, a hackathon with 350 participants. I was also elected EDI rep for around 500 students in the Department of Materials. I care about AI research and how it gets applied, and I like building things too, from a machine learning model that predicts the properties of materials to the start-up I'm working on now.",
-    "I write essays too, which I publish here on this site, and I'm really interested in web design, digital design and UX, from designing the branding for Imperial AI Hack to building this site. Away from all that, I play netball, go bouldering and paint when I get the chance.",
+    "Hello! I'm Hridal, a Materials Science and Engineering student at Imperial College London. This summer I was a Junior Consultant Intern at Roland Berger, where I worked on a review of a client's graduate programme, a commercial due diligence and an M&A pitch. Before that I supported NHS ESR at IBM, the HR and payroll system behind 1.3 million NHS staff, and worked on bridge design options at Wood Group.",
+    "At Imperial I'm on the AI Society's research team, and most recently I helped with operations and logistics throughout AI Week, which had speakers from Anthropic and Google DeepMind and finished with Imperial AI Hack, a hackathon with 350 participants. I was also elected EDI representative to support around 500 students in the Department of Materials. I'm interested in AI research and how it can be applied, and I like building things too, from a machine learning model that predicts the properties of materials to the start-up I'm working on now.",
+    "I love writing essays, which I publish here on this site, and I'm really interested in web design, digital design and UX. I designed the branding and logo for Imperial AI Hack, and I'm always adding to this site. Away from all this, I play netball, go bouldering and draw in my sketchbook when I get the chance.",
   ],
   // The "Currently" section on the homepage. Change these whenever you like.
   // The profile card beside the welcome text on the homepage.
@@ -57,7 +57,7 @@ export const me = {
     { group: 'Communication', items: ['LAMDA Public Speaking, Gold Medal with Distinction'] },
     { group: 'Courses', items: ['AI Safety and Practices', 'Agile Foundations', 'Project Management Fundamentals'] },
     { group: 'Languages', items: ['English (native)', 'Hindi (fluent)', 'Gujarati (fluent)'] },
-    { group: 'Interests', items: ['Investing and markets', 'Coding with AI', 'Web design', 'Digital design and UX', 'Writing essays', 'Netball', 'Bouldering', 'Painting'] },
+    { group: 'Interests', items: ['Investing and markets', 'Coding with AI', 'Web design', 'Digital design and UX', 'Writing essays', 'Netball', 'Bouldering', 'Drawing'] },
   ],
   // What shows on the laptop screen on the About page (matches my LinkedIn).
   linkedin: {
