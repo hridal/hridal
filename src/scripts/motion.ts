@@ -62,6 +62,8 @@ function homeEntrance() {
     const words = new SplitText(tagline, { type: 'words', wordsClass: 'wd' });
     gsap.set(tagline, { opacity: 1 });
     tl.from(words.words, { opacity: 0, y: 8, filter: 'blur(6px)', duration: 0.6, stagger: 0.018, clearProps: 'filter,transform' }, '-=0.4');
+    // Underline the key words only once the whole welcome has appeared.
+    tl.call(() => tagline.classList.add('marks-on'));
   }
   const actions = intro.querySelector('.actions');
   if (actions) tl.from(actions.children, { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4');
