@@ -372,3 +372,12 @@ a.tile:hover, a.tile:hover .t-title, a.tile:hover .t-quote { color: var(--ink); 
 .signoff.signed .so-swoosh { animation: swoosh .7s 2.1s cubic-bezier(.6,0,.2,1) forwards; }
 @keyframes swoosh { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .so-swoosh, .signoff.signed .so-swoosh { animation: none; stroke-dashoffset: 0; } }
+
+/* Signature written with a pen: solid ink revealed along the pen path (replaces the outline draw) */
+.so-sign text, .signoff.signed .so-sign text { fill: var(--accent); fill-opacity: 1; stroke: none; animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+.so-ps { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; transition: stroke-width .5s ease; }
+.signoff.done .so-ps { stroke-width: 40; }              /* fill any tiny gaps once the pen has finished */
+.so-swoosh, .signoff.signed .so-swoosh { animation: none; stroke-dasharray: none; }
+.so-pen { opacity: 0; transition: opacity .35s; filter: drop-shadow(1px 2px 1.5px rgba(29,27,28,.25)); }
+.signoff.signed .so-pen { opacity: 1; }
+.signoff.done .so-pen { opacity: 0; transition-delay: .25s; }
