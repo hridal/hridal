@@ -71,18 +71,31 @@ import Base from '../layouts/Base.astro';
           </svg>
 
           <div class="room-bar">
-            <div class="rb-seat" id="rb-seat">
+            <form class="rb-seat" id="rb-seat">
               <p class="rb-q">Take a seat. What are you working on?</p>
               <div class="chips" id="rb-acts">{['Revising', 'Coding', 'Writing', 'Reading', 'Working', 'Just vibing'].map(a => <button class="chip" type="button" data-act={a}>{a}</button>)}</div>
-            </div>
+              <div class="rb-fields">
+                <input id="rb-name" maxlength="20" placeholder="Your name (optional)" aria-label="Your name, optional" autocomplete="given-name" />
+                <input id="rb-task" maxlength="50" placeholder="What exactly? (optional)" aria-label="What you're working on, optional" />
+                <button class="btn solid small" type="submit">Sit down</button>
+              </div>
+              <label class="rb-log"><input type="checkbox" id="rb-log" checked /> Add this time to my calendar on the desk below</label>
+            </form>
             <div class="rb-seated" id="rb-seated" hidden>
               <p class="rb-q">You're in the room, <b id="rb-act"></b>. <span class="rb-time" id="rb-time">0:00</span></p>
+              <button class="btn ghost small" type="button" id="rb-edit">Change</button>
               <button class="btn ghost small" type="button" id="rb-leave">Leave your seat</button>
+              <p class="rb-note" id="rb-note" hidden></p>
             </div>
             <div class="rb-sound">
               <p class="rb-q">Sound</p>
               <div class="chips" id="rb-sound"><button class="chip on" type="button" data-s="off">Off</button><button class="chip" type="button" data-s="rain">Rain</button><button class="chip" type="button" data-s="cafe">Café</button></div>
             </div>
+          </div>
+
+          <div class="room-who" id="room-who" hidden>
+            <p class="rw-head"><span>In the room</span></p>
+            <ul id="who-list"></ul>
           </div>
 
           <div class="room-week" id="room-week" hidden>
@@ -230,7 +243,7 @@ import Base from '../layouts/Base.astro';
       $('stop').disabled = !run; $('reset').disabled = !run;
       $('cat-select').disabled = !!run;
       document.querySelectorAll('#targets .chip').forEach(b => b.classList.toggle('on', +b.dataset.min === target));
-      if (run) $('t-status').textContent = run.paused ? 'Paused.' : `Working on ${catOf(run.cat).name}…`;
+      if (run) $('t-status').textContent = run.paused ? 'Paused.' : `Working on ${run.note ? run.note + ' (' + catOf(run.cat).name + ')' : catOf(run.cat).name}…`;
       else if (!$('t-status').dataset.keep) $('t-status').textContent = '';
     }
     $('start').onclick = () => {
@@ -244,7 +257,7 @@ import Base from '../layouts/Base.astro';
       const mins = elapsedMs() / 60000;
       emit('finish', { minutes: mins, cat: catOf(run.cat) });
       if (mins >= 1) {
-        sessions.push({ id: Date.now(), cat: run.cat, end: new Date().toISOString(), minutes: Math.round(mins * 10) / 10 });
+        sessions.push(Object.assign({ id: Date.now(), cat: run.cat, end: new Date().toISOString(), minutes: Math.round(mins * 10) / 10 }, run.note ? { note: run.note } : {}));
         save(K.sessions, sessions);
         $('t-status').textContent = `Saved ${fmtMin(mins)} of ${catOf(run.cat).name}. Nice work.`;
       } else $('t-status').textContent = 'Sessions under a minute aren’t saved.';
@@ -291,7 +304,7 @@ import Base from '../layouts/Base.astro';
       const by = {}; ss.forEach(s => by[s.cat] = (by[s.cat] || 0) + s.minutes);
       const nice = new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
       $('day-panel').innerHTML = `<h4>${nice}</h4>
-        <div class="dp-cols"><div><h5>Work done</h5>${Object.keys(by).length ? Object.entries(by).map(([c, m]) => `<p><i class="sw" style="background:${catOf(c).color}"></i>${esc(catOf(c).name)} <b>${fmtMin(m)}</b></p>`).join('') : '<p class="sub">Nothing logged.</p>'}</div>
+        <div class="dp-cols"><div><h5>Work done</h5>${Object.keys(by).length ? Object.entries(by).map(([c, m]) => `<p><i class="sw" style="background:${catOf(c).color}"></i>${esc(catOf(c).name)} <b>${fmtMin(m)}</b></p>`).join('') : '<p class="sub">Nothing logged.</p>'}${ss.filter(x => x.note).map(x => `<p class="sub dp-note">${esc(x.note)}, ${fmtMin(x.minutes)}</p>`).join('')}</div>
         <div><h5>Due</h5>${tt.length ? tt.map(t => `<p class="${t.done ? 'done' : ''}">${esc(t.text)}</p>`).join('') : '<p class="sub">Nothing due.</p>'}</div></div>`;
       $('day-panel').hidden = false;
     }
@@ -331,6 +344,18 @@ import Base from '../layouts/Base.astro';
     // Tell the study room what the timer is doing (it only broadcasts when Hridal is signed in).
     function emit(type, extra) { window.dispatchEvent(new CustomEvent('focus:' + type, { detail: Object.assign({ run, elapsed: elapsedMs(), cat: run ? catOf(run.cat) : null }, extra || {}) })); }
     window.__focusNow = () => ({ run, elapsed: elapsedMs(), cat: run ? catOf(run.cat) : null });
+    // The study room can start your timer when you sit down and save it to your calendar when you leave.
+    window.__focusApi = {
+      start(catName, note) {
+        if (run) { if (note) { run.note = note; save(K.run, run); syncButtons(); } return false; }
+        let c = cats.find(x => x.name.toLowerCase() === catName.toLowerCase());
+        if (!c) { c = { id: 'c' + Date.now(), name: catName, color: palette[cats.length % palette.length] }; cats.push(c); save(K.cats, cats); renderCats(); }
+        run = { cat: c.id, startedAt: Date.now(), accumulated: 0, paused: false, target, note: note || '' }; chimed = false;
+        $('cat-select').value = c.id; save(K.run, run); syncButtons(); tick(); emit('change'); return true;
+      },
+      note(n) { if (run) { run.note = n; save(K.run, run); syncButtons(); } },
+      finish() { if (run) $('stop').click(); },
+    };
     renderCats(); syncButtons(); tick(); renderAll();
     setInterval(tick, 500);
   })();
@@ -343,6 +368,12 @@ import Base from '../layouts/Base.astro';
     const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let data = null, offset = 0, seat = null, seatedAt = 0, act = store.get('hridal.room.act', 'Working'), key = store.get('hridal.room.key', '');
+    let myName = store.get('hridal.room.name', ''), myTask = '', logged = false;
+    const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} } };
+    // Stay in your seat if you reload or move between pages in the same tab.
+    try { const keep = JSON.parse(ss.get('hridal.room.seat') || 'null'); if (keep) ({ id: seat, since: seatedAt, act, task: myTask, logged } = keep); } catch (e) {}
+    const remember = () => ss.set('hridal.room.seat', seat ? JSON.stringify({ id: seat, since: seatedAt, act, task: myTask, logged }) : null);
+    const seatBody = () => ({ action: 'seat', id: seat, act, name: myName, task: myTask });
     const tones = ['#c06c7a', '#5f6f8a', '#a9845f', '#7d8a6a', '#9a5a8a', '#4f7a7a', '#d19a6a'];
     const fmt = ms => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
     const mins = m => { m = Math.round(m); const h = Math.floor(m / 60); return h ? `${h}h ${m % 60}m` : `${m}m`; };
@@ -381,7 +412,7 @@ import Base from '../layouts/Base.astro';
       const people = data.people || []; const others = people.filter(p => p.id !== seat);
       const mine = people.find(p => p.id === seat);
       const list = (mine ? [mine] : []).concat(others);
-      $('seats').innerHTML = seatX.map((x, i) => list[i] ? person(x, list[i].id === seat ? '#6c202d' : tones[parseInt(list[i].id.slice(0, 4), 36) % tones.length], list[i].id === seat ? 'You' : list[i].act, list[i].id === seat) : `<rect class="r-chair empty" x="${x - 24}" y="170" width="48" height="66" rx="10"/>`).join('')
+      $('seats').innerHTML = seatX.map((x, i) => list[i] ? person(x, list[i].id === seat ? '#6c202d' : tones[parseInt(list[i].id.slice(0, 4), 36) % tones.length], list[i].id === seat ? 'You' : (list[i].name || list[i].act), list[i].id === seat) : `<rect class="r-chair empty" x="${x - 24}" y="170" width="48" height="66" rx="10"/>`).join('')
         + (live ? `<g class="r-person host"><rect class="r-chair" x="376" y="164" width="48" height="72" rx="10"/><path d="M372 236 C 372 204, 386 192, 400 192 C 414 192, 428 204, 428 236 Z"/><circle cx="400" cy="174" r="15"/></g>` : `<rect class="r-chair empty" x="376" y="164" width="48" height="72" rx="10"/>`);
       $('r-more').textContent = list.length > seatX.length ? `+${list.length - seatX.length} more` : '';
       const n = people.length;
@@ -395,7 +426,12 @@ import Base from '../layouts/Base.astro';
         $('rs-line').innerHTML = l ? `Last session: <b>${esc(l.task || l.cat)}</b> for ${mins(l.minutes)}, ${ago(l.end)}.` : 'The lamp is off, but you’re welcome to sit and work.';
       }
       $('rs-sub').dataset.company = company;
-      renderWeek(); tick();
+      renderWho(list); renderWeek(); tick();
+    }
+    function renderWho(list) {
+      $('room-who').hidden = !list.length;
+      const now = Date.now() + offset;
+      $('who-list').innerHTML = list.map(p => `<li class="${p.id === seat ? 'me' : ''}"><b>${esc(p.id === seat ? (p.name ? p.name + ' (you)' : 'You') : (p.name || 'Someone'))}</b><span>${esc(p.task || p.act)}</span>${p.task ? `<em>${esc(p.act)}</em>` : ''}<time>${Math.max(1, Math.round((now - p.since) / 60000))} min</time></li>`).join('');
     }
     function renderWeek() {
       const w = data.week || {}; const days = [];
@@ -421,22 +457,36 @@ import Base from '../layouts/Base.astro';
     setInterval(tick, 1000);
 
     // ---------- seats ----------
-    function showSeated() { $('rb-seat').hidden = !!seat; $('rb-seated').hidden = !seat; $('rb-act').textContent = act.toLowerCase() === 'just vibing' ? 'just vibing' : act.toLowerCase();
+    function showSeated(editing) { $('rb-seat').hidden = !!seat && !editing; $('rb-seated').hidden = !seat || !!editing;
+      $('rb-act').textContent = myTask || (act === 'Just vibing' ? 'just vibing' : act.toLowerCase());
+      $('rb-seat').querySelector('[type=submit]').textContent = seat ? 'Update' : 'Sit down';
       document.querySelectorAll('#rb-acts .chip').forEach(b => b.classList.toggle('on', b.dataset.act === act)); }
-    document.querySelectorAll('#rb-acts .chip').forEach(b => b.onclick = async () => {
-      act = b.dataset.act; store.set('hridal.room.act', act);
-      if (!seat) { seat = rid(); seatedAt = Date.now(); }
-      showSeated(); const r = await call({ action: 'seat', id: seat, act });
-      if (!r.ok) { seat = null; showSeated(); $('rs-sub').textContent = (r.j && r.j.error) || 'Couldn’t take a seat just now.'; }
-    });
-    $('rb-leave').onclick = () => { const id = seat; seat = null; showSeated(); call({ action: 'leave', id }); };
+    $('rb-name').value = myName; $('rb-task').value = myTask;
+    document.querySelectorAll('#rb-acts .chip').forEach(b => b.onclick = () => { act = b.dataset.act; store.set('hridal.room.act', act); showSeated(!!seat); });
+    $('rb-seat').onsubmit = async e => {
+      e.preventDefault();
+      myName = $('rb-name').value.trim().slice(0, 20); myTask = $('rb-task').value.trim().slice(0, 50); store.set('hridal.room.name', myName);
+      const first = !seat;
+      if (first) { seat = rid(); seatedAt = Date.now(); }
+      const cat = act === 'Just vibing' ? 'Study' : act;
+      if (first && $('rb-log').checked && window.__focusApi) logged = window.__focusApi.start(cat, myTask || act);
+      else if (logged && window.__focusApi) window.__focusApi.note(myTask || act);
+      remember(); showSeated();
+      const r = await call(seatBody());
+      if (!r.ok) { if (first) { seat = null; remember(); showSeated(); } $('rb-note').hidden = false; $('rb-note').textContent = (r.j && r.j.error) || 'Couldn’t take a seat just now.'; return; }
+      const me = (r.j.people || []).find(p => p.id === seat);
+      const hid = me && ((myName && !me.name) || (myTask && !me.task));
+      $('rb-note').hidden = !hid; $('rb-note').textContent = hid ? 'Links and some words can’t be shown in the room, so it shows what you picked instead.' : '';
+    };
+    $('rb-edit').onclick = () => showSeated(true);
+    $('rb-leave').onclick = () => { const id = seat; seat = null; if (logged && window.__focusApi) window.__focusApi.finish(); logged = false; remember(); showSeated(); call({ action: 'leave', id }); };
     addEventListener('pagehide', () => { if (seat && navigator.sendBeacon) navigator.sendBeacon('/api/room', new Blob([JSON.stringify({ action: 'leave', id: seat })], { type: 'application/json' })); });
 
     // Keep in touch with the room while the page is open: a heartbeat if seated, otherwise a quiet check.
-    const poll = () => { if (document.hidden) return; seat ? call({ action: 'seat', id: seat, act }) : call(); };
+    const poll = () => { if (document.hidden) return; seat ? call(seatBody()) : call(); };
     setInterval(poll, 25000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
-    call().catch(closed);
+    (seat ? call(seatBody()) : call()).catch(closed);
 
     // ---------- ambient sound ----------
     let ctx = null, nodes = [];
