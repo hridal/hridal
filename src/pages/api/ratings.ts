@@ -3,6 +3,7 @@
 // URL and token below automatically. Without it, the page keeps ratings in each visitor's browser.
 import type { APIRoute } from 'astro';
 import { books, films } from '../../data/shelf';
+import { voter, overLimit } from '../../lib/store';
 
 export const prerender = false;
 
@@ -36,10 +37,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const id = String(body?.id || ''); const stars = Number(body?.stars);
   if (!ids.has(id)) return json({ error: 'That book or film isn’t on the shelf.' }, 400);
   if (!Number.isInteger(stars) || stars < 1 || stars > 5) return json({ error: 'Stars must be a whole number from 1 to 5.' }, 400);
-  // one rating per item per visitor address for 30 days
-  const who = (clientAddress || 'unknown').replace(/[^0-9a-f:.]/gi, '');
+  // one rating per item per visitor (each browser, so people on the same Wi-Fi all count) for 30 days
+  const who = voter(body, clientAddress);
   try {
-    const [first] = await redis([['SET', `voted:${id}:${who}`, '1', 'NX', 'EX', 60 * 60 * 24 * 30]]);
+    if (await overLimit(who.ip)) return json({ enabled: true, counted: false, ratings: await totals() }, 429);
+    const [first] = await redis([['SET', `voted:${id}:${who.id}`, '1', 'NX', 'EX', 60 * 60 * 24 * 30]]);
     if (first.result === 'OK') await redis([['HINCRBY', 'rating:' + id, 'sum', stars], ['HINCRBY', 'rating:' + id, 'count', 1]]);
     return json({ enabled: true, counted: first.result === 'OK', ratings: await totals() });
   } catch { return json({ enabled: false }, 503); }

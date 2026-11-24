@@ -204,7 +204,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
           const on = !mine.includes(id);
           mine = on ? [...mine, id] : mine.filter(x => x !== id); keep();
           if (beenCounts) beenCounts[id] = Math.max(0, (beenCounts[id] || 0) + (on ? 1 : -1)); paintBeen(); paintChips();
-          try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'been', id, on }) })).json(); if (j.counts) { beenCounts = j.counts; paintBeen(); } } catch {}
+          try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'been', id, on, vid: (window as any).hridalVid?.() }) })).json(); if (j.counts) { beenCounts = j.counts; paintBeen(); } } catch {}
         };
       }
       function paintChips() { document.querySelectorAll<HTMLButtonElement>('.place-chip').forEach(b => b.classList.toggle('been', mine.includes(pid(places[+b.dataset.i!])))); }

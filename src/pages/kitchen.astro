@@ -158,7 +158,7 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
       if (shared) hearts[id] = Math.max(0, (hearts[id] || 0) + (on ? 1 : -1));
       paintHearts();
       if (on) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
-      try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'heart', id, on }) })).json(); if (j.counts) { hearts = j.counts; paintHearts(); } } catch (err) {}
+      try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'heart', id, on, vid: window.hridalVid && window.hridalVid() }) })).json(); if (j.counts) { hearts = j.counts; paintHearts(); } } catch (err) {}
     }, true);
     fetch('/api/tally?kind=heart').then(r => r.json()).then(j => { shared = !!j.enabled; hearts = j.counts || {}; paintHearts(); }).catch(() => {});
     paintHearts();

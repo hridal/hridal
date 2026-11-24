@@ -1,7 +1,7 @@
 // Visitor tallies: "I've been here too" on the Travel globe, and hearts on Kitchen recipes.
-// Each visitor counts once per item (by network address, for a year) and can take it back.
+// Each visitor (each browser, not each Wi-Fi network) counts once per item for a year and can take it back.
 import type { APIRoute } from 'astro';
-import { redis, storeReady, json } from '../../lib/store';
+import { redis, storeReady, json, voter, overLimit } from '../../lib/store';
 import { places } from '../../data/travel';
 import { recipes } from '../../data/kitchen';
 
@@ -33,9 +33,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   let b: any; try { b = await request.json(); } catch { return json({ error: 'Send JSON.' }, 400); }
   const kind = String(b?.kind || ''), id = String(b?.id || ''), on = b?.on !== false;
   if (!ITEMS[kind] || !ITEMS[kind].has(id)) return json({ error: 'Unknown item.' }, 400);
-  const who = (clientAddress || 'unknown').replace(/[^0-9a-f:.]/gi, '');
-  const mark = `tally:${kind}:${id}:${who}`;
+  const who = voter(b, clientAddress);
+  const mark = `tally:${kind}:${id}:${who.id}`;
   try {
+    if (await overLimit(who.ip)) return json({ error: 'Too many changes from this network. Try again in a bit.', enabled: true, counts: await counts(kind) }, 429);
     if (on) {
       const [set] = await redis([['SET', mark, '1', 'NX', 'EX', YEAR]]);
       if (set === 'OK') await redis([['HINCRBY', 'tally:' + kind, id, 1]]);

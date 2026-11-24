@@ -43,7 +43,7 @@ const jump = [
   <meta property="og:url" content={new URL(Astro.url.pathname, 'https://hridal.com')} />
   <meta property="og:image" content="https://hridal.com/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500); setTimeout(function(){ document.documentElement.classList.add('marks-fallback'); }, 9000);</script>
+  <script is:inline>window.hridalVid = function () { var k = 'hridal.vid', v; try { v = localStorage.getItem(k); if (!v) { v = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 20); localStorage.setItem(k, v); } } catch (e) { v = window.__vid || (window.__vid = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 20)); } return v; }; document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500); setTimeout(function(){ document.documentElement.classList.add('marks-fallback'); }, 9000);</script>
   <slot name="head" />
   <Analytics />
 </head>

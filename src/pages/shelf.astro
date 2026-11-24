@@ -113,7 +113,7 @@ const all = [...bookItems, ...filmItems];
           if (mine[key]) { setAvg(d, 'You have already rated this.'); return; }
           mine[key] = i + 1; saveMine(); paint(i + 1);
           stars.forEach((x, j) => x.setAttribute('aria-checked', String(j === i)));
-          try { const r = await fetch('/api/ratings', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: key, stars: i + 1 }) }); const j = await r.json(); if (j.enabled) shared = j.ratings; } catch {}
+          try { const r = await fetch('/api/ratings', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: key, stars: i + 1, vid: window.hridalVid && window.hridalVid() }) }); const j = await r.json(); if (j.enabled) shared = j.ratings; } catch {}
           setAvg(d, 'Thanks for rating.');
         };
         s.addEventListener('click', pick);
