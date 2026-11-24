@@ -393,3 +393,9 @@ body .signoff .so-name { font-size: 80px; fill: var(--accent); }
 body .signoff .so-name .so-h { font-family: 'Herr Von Muellerhoff', cursive !important; }
 .so-sign { height: 120px; }
 .so-line { stroke-width: 1.2; }
+
+/* Phones: counts sit in tidy columns, and timeline text gets breathing room from the logos. */
+@media (max-width: 760px) {
+  .glance { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 16px 18px; }
+  body .tl-item { padding-left: 76px !important; }
+}
