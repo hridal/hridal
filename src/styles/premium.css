@@ -388,6 +388,5 @@ a.tile:hover, a.tile:hover .t-title, a.tile:hover .t-quote { color: var(--ink); 
 
 body .signoff .so-name { font-size: 80px; fill: var(--accent); }
 body .signoff .so-name .so-h { font-family: 'Herr Von Muellerhoff', cursive !important; }
-body .signoff .so-name .so-g { font-family: 'Pinyon Script', cursive !important; font-size: 70px; }
 .so-sign { height: 120px; }
 .so-line { stroke-width: 1.2; }
