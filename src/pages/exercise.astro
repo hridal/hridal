@@ -1,0 +1,309 @@
+---
+import Base from '../layouts/Base.astro';
+// Exercises offered in the tracker's "Add exercise" box. Anyone can type their own too.
+const library = [
+  'Bench press', 'Incline dumbbell press', 'Dumbbell press', 'Push-up', 'Cable fly', 'Chest press machine',
+  'Lat pulldown', 'Pull-up', 'Assisted pull-up', 'Seated cable row', 'Dumbbell row', 'Deadlift', 'Face pull',
+  'Back squat', 'Goblet squat', 'Leg press', 'Romanian deadlift', 'Hip thrust', 'Bulgarian split squat', 'Walking lunge', 'Leg curl', 'Leg extension', 'Calf raise', 'Abductor machine',
+  'Overhead press', 'Dumbbell shoulder press', 'Lateral raise', 'Rear delt fly',
+  'Bicep curl', 'Hammer curl', 'Tricep pushdown', 'Overhead tricep extension', 'Dips',
+  'Plank (seconds)', 'Hanging leg raise', 'Cable crunch', 'Russian twist', 'Dead hang (seconds)',
+  'Treadmill (minutes)', 'Rowing machine (minutes)', 'Exercise bike (minutes)', 'Stair climber (minutes)',
+];
+const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10'];
+---
+<Base title="Exercise" description="See when Hridal is bouldering or in the gym and what she's doing, send a wave mid-workout, and track your own workouts.">
+  <div class="tab-page exercise">
+    <section class="block stacked-full tool-page">
+      <h2>Exercise</h2>
+      <div>
+        <p class="lead-small">I boulder and lift. When I'm at the climbing wall or in the gym, my session shows up here as it happens and you can send a wave or a cheer. Below that there's a workout tracker you can use for your own sessions, which saves privately in your browser.</p>
+
+        <!-- What Hridal is doing now -->
+        <div class="ex-live" id="ex-live" data-state="off" aria-live="polite">
+          <div class="xl-top">
+            <p class="rs-badge"><i class="rs-dot"></i><span id="xl-badge">Checking…</span></p>
+            <span class="xl-time" id="xl-time"></span>
+          </div>
+          <h3 class="xl-title" id="xl-title">&nbsp;</h3>
+          <p class="xl-sum" id="xl-sum"></p>
+          <div class="xl-body" id="xl-body"></div>
+          <div class="xl-react" id="xl-react" hidden>
+            <button class="react" type="button" data-react="wave"><span aria-hidden="true">👋</span> Wave <b></b></button>
+            <button class="react" type="button" data-react="cheer"><span aria-hidden="true">🎉</span> Cheer me on <b></b></button>
+            <span class="xl-note" id="xl-note"></span>
+          </div>
+        </div>
+
+        <div class="ex-recent" id="ex-recent" hidden>
+          <div class="xr-stats" id="xr-stats"></div>
+          <h4>Recent sessions</h4>
+          <ul class="xr-list" id="xr-list"></ul>
+        </div>
+
+        <!-- Tracker: a visitor's own, or Hridal's (shown live) once she signs in -->
+        <h3 class="desk-head" id="xt-head">Track your own workout</h3>
+        <div class="ex-track" id="ex-track">
+          <div class="xt-idle" id="xt-idle">
+            <p class="xt-q">What are you doing today?</p>
+            <div class="xt-start">
+              <button class="btn solid" type="button" data-start="gym">Start a gym workout</button>
+              <button class="btn" type="button" data-start="climb">Start a climbing session</button>
+            </div>
+          </div>
+
+          <div class="xt-active" id="xt-active" hidden>
+            <div class="xt-head">
+              <input class="xt-name" id="xt-name" maxlength="60" aria-label="Workout name" />
+              <span class="xt-clock" id="xt-clock">0:00</span>
+            </div>
+            <p class="xt-live" id="xt-live" hidden></p>
+
+            <!-- gym -->
+            <div id="xt-gym" hidden>
+              <div id="xt-exercises"></div>
+              <form class="xt-add" id="xt-add">
+                <input id="xt-ex" list="ex-library" placeholder="Add an exercise, e.g. Squat" maxlength="50" aria-label="Exercise name" autocomplete="off" />
+                <button class="btn small" type="submit">Add exercise</button>
+              </form>
+              <datalist id="ex-library">{library.map(n => <option value={n} />)}</datalist>
+            </div>
+
+            <!-- climbing -->
+            <div id="xt-climb" hidden>
+              <p class="xt-q">Tap a grade each time you finish a climb.</p>
+              <div class="chips xt-result" id="xt-result">
+                <button class="chip on" type="button" data-result="sent">Sent</button>
+                <button class="chip" type="button" data-result="flash">Flashed</button>
+                <button class="chip" type="button" data-result="project">Still working on it</button>
+              </div>
+              <div class="xt-grades">{grades.map(g => <button type="button" class="grade" data-grade={g}>{g}</button>)}</div>
+              <div class="xt-climbs" id="xt-climbs"></div>
+            </div>
+
+            <div class="xt-rest" id="xt-rest" hidden>
+              <span>Rest <b id="xt-rest-t">1:30</b></span>
+              <button class="link-btn" type="button" id="xt-rest-add">+30s</button>
+              <button class="link-btn" type="button" id="xt-rest-skip">Skip</button>
+            </div>
+
+            <div class="xt-foot">
+              <button class="btn solid" type="button" id="xt-finish">Finish workout</button>
+              <button class="btn ghost" type="button" id="xt-discard">Discard</button>
+            </div>
+          </div>
+
+          <div class="xt-history" id="xt-history" hidden>
+            <h4>Your past workouts</h4>
+            <ul id="xt-hist"></ul>
+          </div>
+        </div>
+
+        <div class="room-host-entry">
+          <button class="link-btn" type="button" id="xh-open">Hridal? Sign in</button>
+          <form class="host-form" id="xh-form" hidden>
+            <input type="password" id="xh-pass" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+            <button class="btn solid small" type="submit">Sign in</button>
+            <span class="host-msg" id="xh-msg"></span>
+          </form>
+          <div class="xh-panel" id="xh-panel" hidden>
+            <label class="hp-share"><input type="checkbox" id="xh-share" checked /> Show my workouts live on this page</label>
+            <button class="link-btn" type="button" id="xh-out">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+  (() => {
+    const $ = id => document.getElementById(id);
+    const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const GR = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10'];
+    const clock = ms => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h}:${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : `${m}:${String(s % 60).padStart(2, '0')}`; };
+    const dur = ms => { const m = Math.round(ms / 60000); return m < 60 ? `${m} min` : `${Math.floor(m / 60)}h ${m % 60}m`; };
+    const ago = t => { const m = Math.round((Date.now() - t) / 60000); if (m < 60) return `${Math.max(1, m)} min ago`; const h = Math.round(m / 60); if (h < 24) return `${h} hour${h > 1 ? 's' : ''} ago`; const d = Math.round(h / 24); return d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); };
+    const kg = n => Math.round(n).toLocaleString('en-GB') + ' kg';
+    const unit = name => /\(seconds\)/i.test(name) ? 's' : /\(minutes\)/i.test(name) ? 'min' : 'reps';
+
+    // ---------- summaries ----------
+    function sum(w) {
+      if (w.type === 'climb') {
+        const tops = w.climbs.filter(c => c.result !== 'project');
+        const top = tops.reduce((a, c) => Math.max(a, GR.indexOf(c.grade)), -1);
+        return { done: tops.length, flashes: w.climbs.filter(c => c.result === 'flash').length, top: top >= 0 ? GR[top] : '', line: `${tops.length} climb${tops.length === 1 ? '' : 's'} sent${top >= 0 ? `, top grade ${GR[top]}` : ''}` };
+      }
+      let sets = 0, vol = 0; w.exercises.forEach(e => e.sets.forEach(s => { if (s.done) { sets++; if (unit(e.name) === 'reps') vol += s.kg * s.reps; } }));
+      return { sets, vol, line: `${w.exercises.length} exercise${w.exercises.length === 1 ? '' : 's'}, ${sets} set${sets === 1 ? '' : 's'}${vol ? `, ${kg(vol)} lifted` : ''}` };
+    }
+    const typeName = w => w.type === 'climb' ? 'Bouldering' : 'Gym';
+    function bodyHTML(w) {
+      if (w.type === 'climb') return w.climbs.length ? `<div class="xb-climbs">${w.climbs.map(c => `<span class="gpill ${c.result}">${c.grade}${c.result === 'flash' ? ' ⚡' : c.result === 'project' ? ' …' : ''}</span>`).join('')}</div>` : '<p class="xl-empty">Warming up.</p>';
+      return w.exercises.length ? `<ul class="xb-ex">${w.exercises.map(e => { const d = e.sets.filter(s => s.done); const u = unit(e.name);
+        return `<li><b>${esc(e.name.replace(/ \((seconds|minutes)\)/i, ''))}</b><span>${d.length ? d.map(s => u === 'reps' ? (s.kg ? `${s.kg}kg × ${s.reps}` : `${s.reps} reps`) : `${s.reps}${u}`).join(' · ') : 'up next'}</span></li>`; }).join('')}</ul>` : '<p class="xl-empty">Warming up.</p>';
+    }
+
+    // ---------- the public side: what Hridal is doing ----------
+    let data = null, key = (() => { try { return localStorage.getItem('hridal.room.key') || ''; } catch (e) { return ''; } })();
+    async function call(body, admin) {
+      const opt = body ? { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, admin ? { 'x-admin-password': key } : {}), body: JSON.stringify(body) } : {};
+      const r = await fetch('/api/exercise', opt); const j = await r.json().catch(() => ({}));
+      if (j && j.enabled) { data = j; paintLive(); } else if (j && j.enabled === false) closed();
+      return { ok: r.ok, status: r.status, j };
+    }
+    function closed() { $('ex-live').dataset.state = 'closed'; $('xl-badge').textContent = 'Live updates are off for now'; $('xl-title').textContent = 'The tracker below still works.'; }
+    function paintLive() {
+      const w = data.live, box = $('ex-live');
+      box.dataset.state = w ? w.type : 'off';
+      $('xl-react').hidden = !w;
+      if (w) {
+        const s = sum(w);
+        $('xl-badge').textContent = w.type === 'climb' ? 'Live at the climbing wall' : 'Live in the gym';
+        $('xl-title').textContent = w.title || (w.type === 'climb' ? 'Bouldering' : 'Gym session');
+        $('xl-sum').textContent = s.line;
+        $('xl-body').innerHTML = bodyHTML(w);
+        document.querySelectorAll('[data-react]').forEach(b => { const k = b.dataset.react, n = (data.reacts || {})[k] || 0;
+          b.querySelector('b').textContent = n || ''; const mine = ls.get(`hridal.ex.r.${w.id}.${k}`, false); b.classList.toggle('on', mine); b.disabled = mine; });
+      } else {
+        $('xl-badge').textContent = 'Not training right now';
+        const last = (data.history || [])[0];
+        $('xl-title').textContent = last ? `Last session: ${last.title || typeName(last)}` : 'No sessions yet';
+        $('xl-sum').textContent = last ? `${typeName(last)}, ${ago(last.endedAt || last.startedAt)}. ${sum(last).line}.` : 'When I start a workout it’ll show up here.';
+        $('xl-body').innerHTML = '';
+        $('xl-time').textContent = '';
+      }
+      paintRecent(); tickLive(); liveNote();
+    }
+    function tickLive() { const w = data && data.live; if (w) $('xl-time').textContent = clock(Date.now() - w.startedAt); }
+    function paintRecent() {
+      const h = (data.history || []); $('ex-recent').hidden = !h.length; if (!h.length) return;
+      const month = h.filter(w => Date.now() - (w.endedAt || w.startedAt) < 30 * 864e5);
+      const climbs = month.filter(w => w.type === 'climb'), gyms = month.filter(w => w.type === 'gym');
+      const top = climbs.reduce((a, w) => Math.max(a, GR.indexOf(sum(w).top)), -1);
+      const vol = gyms.reduce((a, w) => a + sum(w).vol, 0);
+      const stat = (n, l) => `<div><b>${n}</b><span>${l}</span></div>`;
+      $('xr-stats').innerHTML = stat(month.length, 'sessions in the last 30 days') + stat(climbs.length, 'climbing sessions') + stat(gyms.length, 'gym sessions') + (top >= 0 ? stat(GR[top], 'hardest send') : '') + (vol ? stat(kg(vol), 'lifted') : '');
+      $('xr-list').innerHTML = h.slice(0, 6).map(w => { const r = w.reacts || {}; const got = (r.wave || 0) + (r.cheer || 0);
+        return `<li><span class="xr-type ${w.type}">${typeName(w)}</span><b>${esc(w.title || typeName(w))}</b><span class="xr-line">${sum(w).line}${w.endedAt ? `, ${dur(w.endedAt - w.startedAt)}` : ''}</span><time>${ago(w.endedAt || w.startedAt)}${got ? ` · ${got} 👋` : ''}</time></li>`; }).join('');
+    }
+    document.querySelectorAll('[data-react]').forEach(b => b.onclick = async () => {
+      const w = data && data.live; if (!w) return; const k = b.dataset.react;
+      ls.set(`hridal.ex.r.${w.id}.${k}`, true); b.classList.add('on', 'pop'); b.disabled = true;
+      $('xl-note').textContent = k === 'wave' ? 'Waved! I’ll see it after this set.' : 'Thank you! That helps.';
+      await call({ action: 'react', kind: k, vid: window.hridalVid && window.hridalVid() });
+    });
+    const poll = () => { if (!document.hidden) call(); };
+    setInterval(poll, 20000); document.addEventListener('visibilitychange', poll);
+    setInterval(() => { tickLive(); tickTrack(); }, 1000);
+
+    // ---------- the tracker ----------
+    const KC = 'hridal.ex.current', KH = 'hridal.ex.history';
+    let cur = ls.get(KC, null), hist = ls.get(KH, []), result = 'sent', rest = 0, restTimer = null;
+    const host = () => !!key && $('xh-share').checked;
+    const save = () => { ls.set(KC, cur); if (host()) pushLive(); };
+    let pushT = null; const pushLive = () => { clearTimeout(pushT); pushT = setTimeout(() => cur && call({ action: 'live', workout: cur }, true).then(r => { if (r.status === 401) signOut('Signed out. Sign in again to go live.'); else liveNote(); }), 700); };
+    function liveNote() {
+      const el = $('xt-live'); el.hidden = !host() || !cur; if (el.hidden) return;
+      const r = (data && data.live && data.live.id === cur.id && data.reacts) || {};
+      const parts = []; if (r.wave) parts.push(`${r.wave} 👋`); if (r.cheer) parts.push(`${r.cheer} 🎉`);
+      el.textContent = 'Live on the site' + (parts.length ? `. ${parts.join('  ')}` : '. No waves yet.');
+    }
+    function lastTime(name) {
+      for (const w of hist) { const e = (w.exercises || []).find(x => x.name.toLowerCase() === name.toLowerCase()); if (e && e.sets.some(s => s.done)) return e.sets.filter(s => s.done); }
+      return null;
+    }
+    function start(type) {
+      const d = new Date(), part = d.getHours() < 12 ? 'Morning' : d.getHours() < 17 ? 'Afternoon' : 'Evening';
+      cur = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), type, title: type === 'climb' ? `${part} bouldering` : `${part} workout`, startedAt: Date.now(), exercises: [], climbs: [] };
+      save(); paintTrack();
+      if (type === 'gym') $('xt-ex').focus();
+    }
+    document.querySelectorAll('[data-start]').forEach(b => b.onclick = () => start(b.dataset.start));
+    $('xt-name').oninput = () => { if (cur) { cur.title = $('xt-name').value.slice(0, 60); save(); } };
+
+    function paintTrack() {
+      $('xt-idle').hidden = !!cur; $('xt-active').hidden = !cur;
+      $('xt-history').hidden = !hist.length;
+      $('xt-hist').innerHTML = hist.slice(0, 8).map((w, i) => `<li><span class="xr-type ${w.type}">${typeName(w)}</span><b>${esc(w.title)}</b><span class="xr-line">${sum(w).line}, ${dur(w.endedAt - w.startedAt)}</span><time>${ago(w.endedAt)}</time><button class="x" type="button" data-del="${i}" aria-label="Delete this workout">×</button></li>`).join('');
+      $('xt-hist').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { hist.splice(+b.dataset.del, 1); ls.set(KH, hist); paintTrack(); });
+      if (!cur) { $('xt-rest').hidden = true; liveNote(); return; }
+      $('xt-name').value = cur.title; $('xt-gym').hidden = cur.type !== 'gym'; $('xt-climb').hidden = cur.type !== 'climb';
+      if (cur.type === 'gym') paintExercises(); else paintClimbs();
+      liveNote(); tickTrack();
+    }
+    function tickTrack() { if (cur) $('xt-clock').textContent = clock(Date.now() - cur.startedAt); }
+
+    function paintExercises() {
+      $('xt-exercises').innerHTML = cur.exercises.map((e, i) => { const u = unit(e.name), last = lastTime(e.name);
+        return `<div class="xt-exercise" data-e="${i}">
+          <div class="xe-head"><b>${esc(e.name)}</b><button class="x" type="button" data-rm="${i}" aria-label="Remove ${esc(e.name)}">×</button></div>
+          ${last ? `<p class="xe-last">Last time: ${last.map(s => u === 'reps' ? (s.kg ? `${s.kg}kg × ${s.reps}` : `${s.reps}`) : `${s.reps}${u}`).join(', ')}</p>` : ''}
+          <div class="xe-sets"><div class="xe-row xe-labels"><span>Set</span>${u === 'reps' ? '<span>kg</span>' : '<span></span>'}<span>${u === 'reps' ? 'Reps' : u === 's' ? 'Seconds' : 'Minutes'}</span><span></span></div>
+          ${e.sets.map((s, j) => `<div class="xe-row${s.done ? ' done' : ''}"><span class="xe-n">${j + 1}</span>
+            ${u === 'reps' ? `<input inputmode="decimal" type="number" min="0" step="0.5" value="${s.kg || ''}" placeholder="0" data-f="kg" data-s="${j}" aria-label="Set ${j + 1} weight in kg">` : '<span></span>'}
+            <input inputmode="numeric" type="number" min="0" step="1" value="${s.reps || ''}" placeholder="0" data-f="reps" data-s="${j}" aria-label="Set ${j + 1} ${u === 'reps' ? 'reps' : u === 's' ? 'seconds' : 'minutes'}">
+            <button class="tick" type="button" data-tick="${j}" aria-pressed="${s.done}" aria-label="Mark set ${j + 1} done">✓</button></div>`).join('')}</div>
+          <button class="link-btn xe-addset" type="button" data-addset="${i}">+ Add set</button></div>`; }).join('');
+      const box = $('xt-exercises');
+      box.querySelectorAll('input[data-f]').forEach(inp => inp.oninput = () => { const e = cur.exercises[+inp.closest('[data-e]').dataset.e]; e.sets[+inp.dataset.s][inp.dataset.f] = Math.max(0, +inp.value || 0); save(); });
+      box.querySelectorAll('[data-tick]').forEach(b => b.onclick = () => { const e = cur.exercises[+b.closest('[data-e]').dataset.e], s = e.sets[+b.dataset.tick]; s.done = !s.done; save(); paintExercises(); if (s.done) startRest(); });
+      box.querySelectorAll('[data-addset]').forEach(b => b.onclick = () => { const e = cur.exercises[+b.dataset.addset], prev = e.sets[e.sets.length - 1]; e.sets.push(prev ? { reps: prev.reps, kg: prev.kg, done: false } : { reps: 0, kg: 0, done: false }); save(); paintExercises(); });
+      box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { cur.exercises.splice(+b.dataset.rm, 1); save(); paintExercises(); });
+    }
+    $('xt-add').onsubmit = e => {
+      e.preventDefault(); const name = $('xt-ex').value.trim().slice(0, 50); if (!name || !cur) return;
+      const last = lastTime(name);
+      const sets = last ? last.map(s => ({ reps: s.reps, kg: s.kg, done: false })) : [{ reps: 0, kg: 0, done: false }, { reps: 0, kg: 0, done: false }, { reps: 0, kg: 0, done: false }];
+      cur.exercises.push({ name, sets }); $('xt-ex').value = ''; save(); paintExercises();
+      const inp = $('xt-exercises').querySelector(`[data-e="${cur.exercises.length - 1}"] input`); if (inp) inp.focus();
+    };
+
+    function paintClimbs() {
+      const s = sum(cur);
+      $('xt-climbs').innerHTML = cur.climbs.length ? `<p class="xe-last">${s.line}${s.flashes ? `, ${s.flashes} flashed` : ''}</p><div class="xb-climbs">${cur.climbs.map((c, i) => `<button type="button" class="gpill ${c.result}" data-rmc="${i}" aria-label="Remove ${c.grade}">${c.grade}${c.result === 'flash' ? ' ⚡' : c.result === 'project' ? ' …' : ''} <i aria-hidden="true">×</i></button>`).join('')}</div>` : '';
+      $('xt-climbs').querySelectorAll('[data-rmc]').forEach(b => b.onclick = () => { cur.climbs.splice(+b.dataset.rmc, 1); save(); paintClimbs(); });
+    }
+    document.querySelectorAll('#xt-result .chip').forEach(b => b.onclick = () => { result = b.dataset.result; document.querySelectorAll('#xt-result .chip').forEach(x => x.classList.toggle('on', x === b)); });
+    document.querySelectorAll('[data-grade]').forEach(b => b.onclick = () => { if (!cur) return; cur.climbs.push({ grade: b.dataset.grade, result, attempts: 0 }); save(); paintClimbs(); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); });
+
+    // rest timer between sets
+    function startRest(sec = 90) { rest = Date.now() + sec * 1000; $('xt-rest').hidden = false; clearInterval(restTimer); restTimer = setInterval(restTick, 250); restTick(); }
+    function restTick() { const left = rest - Date.now(); if (left <= 0) { clearInterval(restTimer); $('xt-rest-t').textContent = 'done'; beep(); setTimeout(() => { $('xt-rest').hidden = true; }, 2500); return; } $('xt-rest-t').textContent = clock(left); }
+    $('xt-rest-add').onclick = () => { rest += 30000; restTick(); };
+    $('xt-rest-skip').onclick = () => { clearInterval(restTimer); $('xt-rest').hidden = true; };
+    function beep() { try { const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; g.gain.setValueAtTime(.12, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .5); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .55); } catch (e) {} }
+
+    $('xt-finish').onclick = async () => {
+      if (!cur) return;
+      // keep only sets that were done and exercises with something in them
+      cur.exercises = cur.exercises.map(e => ({ name: e.name, sets: e.sets.filter(s => s.done) })).filter(e => e.sets.length);
+      cur.endedAt = Date.now();
+      const done = cur; hist.unshift(done); hist = hist.slice(0, 200); ls.set(KH, hist); cur = null; ls.set(KC, null);
+      clearInterval(restTimer); paintTrack();
+      if (host()) await call({ action: 'finish', workout: done }, true);
+    };
+    $('xt-discard').onclick = async () => {
+      const b = $('xt-discard'); if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Sure?'; setTimeout(() => { delete b.dataset.sure; b.textContent = 'Discard'; }, 2500); return; }
+      cur = null; ls.set(KC, null); clearInterval(restTimer); paintTrack(); if (host()) await call({ action: 'cancel' }, true);
+    };
+
+    // ---------- Hridal signs in (same password as the study room) ----------
+    function hostUI() { const on = !!key; $('xh-open').hidden = on; $('xh-form').hidden = true; $('xh-panel').hidden = !on;
+      $('xt-head').textContent = on ? 'My tracker' : 'Track your own workout'; liveNote(); }
+    function signOut(msg) { key = ''; try { localStorage.removeItem('hridal.room.key'); } catch (e) {} hostUI(); $('xh-msg').textContent = msg || ''; }
+    $('xh-share').checked = ls.get('hridal.ex.share', true);
+    $('xh-share').onchange = () => { ls.set('hridal.ex.share', $('xh-share').checked); if (key) { if ($('xh-share').checked && cur) pushLive(); else call({ action: 'cancel' }, true); } liveNote(); };
+    $('xh-open').onclick = () => { $('xh-form').hidden = false; $('xh-open').hidden = true; $('xh-pass').focus(); };
+    $('xh-form').onsubmit = async e => {
+      e.preventDefault(); key = $('xh-pass').value; $('xh-msg').textContent = 'Checking…';
+      const r = await call({ action: 'check' }, true).catch(() => ({ ok: false }));
+      if (r.ok) { try { localStorage.setItem('hridal.room.key', key); } catch (err) {} $('xh-pass').value = ''; $('xh-msg').textContent = ''; hostUI(); if (cur) pushLive(); }
+      else { key = ''; $('xh-msg').textContent = r.status === 401 ? 'That password didn’t work.' : 'Couldn’t check right now.'; }
+    };
+    $('xh-out').onclick = () => signOut();
+
+    hostUI(); paintTrack(); call().then(() => { if (host() && cur && !(data && data.live)) pushLive(); liveNote(); }).catch(closed);
+  })();
+  </script>
+</Base>

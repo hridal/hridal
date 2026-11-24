@@ -13,30 +13,34 @@ const glance = [
 ];
 const sections = [
   { id: 'kitchen', title: 'Kitchen', href: '/kitchen', cta: 'Open the kitchen',
-    left: 'Easy, healthy vegetarian food for busy weeknights.',
-    right: 'Open the cupboard when you can\u2019t decide what to make, heart the recipes you like so they\u2019re saved for later, and copy any of them straight into your notes.' },
+    left: 'Find something to cook tonight from my favourite vegetarian weeknight meals.',
+    right: 'Save the ones you like with a heart and copy any recipe straight into your notes.' },
   { id: 'travel', title: 'Travel', href: '/travel', cta: 'Spin the globe',
-    left: 'Every city I\u2019ve been to, on a globe that follows the real sun.',
-    right: 'Tap a light to look closer, and if you\u2019ve been there too, add yourself and see how many other visitors have.' },
+    left: 'Spin a globe of every city I\u2019ve been to, lit by the real sun.',
+    right: 'Add yourself to the places you\u2019ve been too and see how many other visitors have.' },
   { id: 'shelf', title: 'Shelf', href: '/shelf', cta: 'Browse the shelf',
-    left: 'Books I\u2019ve read and things I\u2019ve watched, with what I thought of each.',
+    left: 'Read what I thought of the books and films I\u2019ve been through.',
     right: 'Leave your own rating and see how other visitors scored them.' },
   { id: 'focus', title: 'Study with me', href: '/focus', cta: 'Pull up a chair',
-    left: 'When I\u2019m studying, the lamp in this room is on and you can see what I\u2019m working on.',
-    right: 'Take a seat, say what you\u2019re doing and work alongside me, and your time goes into a calendar of your own.' },
+    left: 'See when I\u2019m studying and what I\u2019m working on.',
+    right: 'Take a seat to work alongside me, and keep your own timer, calendar and to-do list.' },
+  { id: 'exercise', title: 'Exercise', href: '/exercise', cta: 'See my training',
+    left: 'See when I\u2019m at the climbing wall or in the gym, and send a wave mid-workout.',
+    right: 'Log your own sessions too, with exercises, sets and climbs, in a simple workout tracker.' },
 ];
 const doodles: Record<string, string> = {
   kitchen: '<path d="M30 44h60v6c0 12-10 20-30 20s-30-8-30-20z"/><path d="M24 44h72M48 36c-4-6 4-8 0-14M60 36c-4-6 4-8 0-14M72 36c-4-6 4-8 0-14"/>',
   travel: '<circle cx="60" cy="40" r="28"/><path d="M32 40h56M60 12c-12 14-12 42 0 56M60 12c12 14 12 42 0 56M36 26h48M36 54h48"/>',
   shelf: '<path d="M30 66h60M34 66V22h12v44M46 66V30h12v36M60 66l10-40 11 3-10 40M86 66V18"/><path d="M38 30h4M50 38h4"/>',
   focus: '<circle cx="60" cy="42" r="26"/><path d="M60 26v16l10 8M52 12h16M60 12v4"/>',
+  exercise: '<path d="M34 40h52"/><rect x="24" y="28" width="10" height="24" rx="2"/><rect x="86" y="28" width="10" height="24" rx="2"/><rect x="16" y="33" width="8" height="14" rx="2"/><rect x="96" y="33" width="8" height="14" rx="2"/>',
 };
 ---
-<Base title="Beyond work" description="The parts of Hridal's life you can join in with: her kitchen, a globe of where she's been, her bookshelf and a room to study with her.">
+<Base title="Interact" description="Things on Hridal's site you can use and join in with: her recipes, a globe of where she's been, her bookshelf, a room to study with her and her training.">
   <div class="tab-page life">
     <section class="block">
       <div class="side">
-        <h2>Beyond work</h2>
+        <h2>Interact</h2>
         <ul class="glance" aria-label="At a glance">
           {glance.map(g => (
             <li><a href={g.href}><b data-count={g.n}>{g.n}</b><span>{g.label}</span></a></li>
@@ -44,7 +48,7 @@ const doodles: Record<string, string> = {
         </ul>
       </div>
       <div>
-        <p class="lead-small">The parts of my life you can join in with, from what I cook and where I’ve been to what I’m reading and when I’m studying.</p>
+        <p class="lead-small">Things on this site you can use and join in with, from my recipes and a globe of where I’ve been to my bookshelf, a room to study with me and my training.</p>
         <ol class="life-index">
           {sections.map(s => (
             <li>
