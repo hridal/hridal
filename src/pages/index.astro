@@ -153,9 +153,12 @@ const joinIn = [
   </script>
 
   <section class="block stacked-full home-story" aria-labelledby="story-h">
-    <div class="now-head"><h2 id="story-h">How this all started</h2></div>
     <div class="story-grid">
-      <div class="story-body">{me.story.map(p => <p>{p}</p>)}</div>
+      <div class="story-body">
+        <p class="t-kicker story-kicker">Backstory</p>
+        <h2 id="story-h" class="story-title">The story behind <span>hridal.com</span></h2>
+        <div class="story-text">{me.story.map(p => <p>{p}</p>)}</div>
+      </div>
       <aside class="join-card spot" aria-labelledby="join-h">
         <p class="t-kicker">Interact</p>
         <h3 id="join-h" class="join-title">Come and join in</h3>
