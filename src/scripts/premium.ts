@@ -73,20 +73,24 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
 })();
 
 // Sign-off: the signature writes itself left to right, then a fine underline is drawn, when the footer comes into view (peak-end rule).
+// The reveal is a CSS mask on the whole SVG (works the same in Safari), and is removed once finished so nothing can stay clipped.
 (() => {
   const so = document.querySelector<HTMLElement>('.signoff'); if (!so) return;
   so.querySelector('.to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
-  const pen = so.querySelector<SVGGElement>('.so-pen'), line = so.querySelector<SVGPathElement>('.so-line'); if (!pen || !line) return;
+  const sign = so.querySelector<SVGSVGElement>('.so-sign'), line = so.querySelector<SVGPathElement>('.so-line'); if (!sign || !line) return;
   const L = line.getTotalLength(); line.style.strokeDasharray = `${L}`;
-  const set = (x: number, u: number) => { pen.setAttribute('transform', `translate(${x.toFixed(1)} 0)`); line.style.strokeDashoffset = `${L * (1 - u)}`; };
-  if (reduce || !('IntersectionObserver' in window)) { set(320, 1); so.classList.add('signed'); return; }
-  set(0, 0);
+  const reveal = (p: number) => { const m = `linear-gradient(90deg, #000 ${(p * 112 - 12).toFixed(1)}%, transparent ${(p * 112).toFixed(1)}%)`;
+    sign.style.setProperty('-webkit-mask-image', m); sign.style.setProperty('mask-image', m); };
+  const done = () => { sign.style.removeProperty('-webkit-mask-image'); sign.style.removeProperty('mask-image'); line.style.strokeDashoffset = '0'; };
+  if (reduce || !('IntersectionObserver' in window)) { done(); so.classList.add('signed'); return; }
+  reveal(0); line.style.strokeDashoffset = `${L}`;
   const WRITE = 1900, PAUSE = 120, LINE = 650; // ms
   const ease = (x: number) => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
   const run = () => { so.classList.add('signed'); const t0 = performance.now();
     const frame = (now: number) => { const e = now - t0;
-      const w = Math.min(1, e / WRITE), u = Math.min(1, Math.max(0, (e - WRITE - PAUSE) / LINE));
-      set(320 * ease(w), ease(u)); if (e < WRITE + PAUSE + LINE) requestAnimationFrame(frame); };
+      if (e < WRITE) reveal(ease(e / WRITE)); else { sign.style.removeProperty('-webkit-mask-image'); sign.style.removeProperty('mask-image'); }
+      const u = Math.min(1, Math.max(0, (e - WRITE - PAUSE) / LINE)); line.style.strokeDashoffset = `${L * (1 - ease(u))}`;
+      if (e < WRITE + PAUSE + LINE) requestAnimationFrame(frame); else done(); };
     requestAnimationFrame(frame); };
   const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); run(); } }, { threshold: 0.6 });
   io.observe(so);
