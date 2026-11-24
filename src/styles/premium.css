@@ -651,26 +651,31 @@ button.gpill { cursor: pointer; } button.gpill i { font-style: normal; opacity: 
   .story-grid { grid-template-columns: 1fr; gap: 32px; }
 }
 
-/* Homepage "Come and join in": five evenly sized cards, three over two */
-.jgrid { list-style: none; margin: 18px 0 16px; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
-.jgrid li { grid-column: span 2; min-width: 0; }
-.jgrid li:nth-child(-n+2) { grid-column: span 3; }
-.jtile { position: relative; display: flex; flex-direction: column; align-items: flex-start; height: 100%; min-height: 112px; box-sizing: border-box; padding: 12px 12px 11px; border-radius: 14px; background: #fff; border: 1px solid var(--line); color: var(--ink); text-decoration: none; box-shadow: 0 1px 0 rgba(108,32,45,.04), 0 8px 18px -16px rgba(108,32,45,.45); transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s; }
-.jtile svg { width: 48px; height: 32px; margin: 0 0 auto -4px; fill: none; stroke: var(--muted); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s, transform .35s cubic-bezier(.2,.8,.2,1); }
-.jt-name { margin-top: 12px; font: 600 14px/1.2 var(--sans); }
-.jt-hint { margin-top: 3px; font: 400 12.5px/1.3 var(--sans); color: var(--muted); }
-
-.jt-hint i { position: absolute; right: 13px; top: 10px; font-size: 16px; font-style: normal; color: var(--accent); opacity: 0; transform: translateX(-4px); transition: opacity .25s, transform .25s; }
-.jtile:hover, .jtile:focus-visible { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 14px 26px -16px rgba(108,32,45,.55); outline: none; }
-.jtile:hover svg, .jtile:focus-visible svg { stroke: var(--accent); transform: rotate(-4deg) scale(1.06); }
-.jtile:hover .jt-hint i, .jtile:focus-visible .jt-hint i { opacity: 1; transform: none; }
-.jt-live { display: none; position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: #d2453d; animation: rs-pulse 2s infinite; }
-.jtile.is-live { border-color: #f0b9b3; } .jtile.is-live .jt-live { display: block; }
-@container (max-width: 330px) {
-  .jgrid { gap: 8px; } .jtile { padding: 10px 10px 9px; min-height: 104px; }
-  .jt-name { font-size: 13px; } .jt-hint { font-size: 11.5px; }
-}
-@media (prefers-reduced-motion: reduce) { .jtile, .jtile svg { transition: none; } }
+/* Homepage "Come and join in": the five things orbit a centre that names whichever one is lit */
+.orbit { container-type: inline-size; position: relative; width: min(100%, 320px); aspect-ratio: 1; margin: 16px auto 20px; }
+.orb-glow { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(108,32,45,.10), rgba(108,32,45,0) 70%); animation: orb-breathe 5s ease-in-out infinite; }
+@keyframes orb-breathe { 50% { transform: scale(1.12); opacity: .7; } }
+.orb-core { position: absolute; left: 50%; top: 50%; width: 46cqw; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; text-decoration: none; color: var(--ink); z-index: 1; }
+.oc-name { font: 600 clamp(13px, 5.4cqw, 18px)/1.15 var(--sans); letter-spacing: -0.01em; }
+.oc-hint { font: 400 clamp(11px, 4cqw, 13.5px)/1.3 var(--sans); color: var(--muted); }
+.orb-core.swap .oc-name, .orb-core.swap .oc-hint { animation: oc-in .45s cubic-bezier(.2,.8,.2,1) both; }
+.orb-core.swap .oc-hint { animation-delay: .06s; }
+@keyframes oc-in { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+.ring { position: absolute; left: 50%; top: 50%; width: calc(var(--r) * 2); height: calc(var(--r) * 2); margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1); border-radius: 50%; border: 1px dashed rgba(108,32,45,.2); animation: orb-spin var(--t) linear infinite; z-index: 2; }
+.r1 { --r: 26.5cqw; --t: 40s; }
+.r2 { --r: 41.5cqw; --t: 60s; animation-direction: reverse; }
+@keyframes orb-spin { to { rotate: 360deg; } }
+.orb { position: absolute; left: 50%; top: 50%; width: 15cqw; height: 15cqw; margin: -7.5cqw 0 0 -7.5cqw; transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(var(--a) * -1)); border-radius: 50%; outline: none; }
+.orb-in { position: relative; display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; background: #fff; border: 1px solid var(--line); box-shadow: 0 8px 18px -12px rgba(108,32,45,.5); animation: orb-spin var(--t) linear infinite reverse; transition: scale .35s cubic-bezier(.2,.8,.2,1), border-color .3s, box-shadow .3s, background .3s; }
+.r2 .orb-in { animation-direction: normal; }
+.orb-in svg { width: 72%; height: auto; fill: none; stroke: var(--muted); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s; }
+.orb.on .orb-in { scale: 1.16; border-color: var(--accent); background: #fffaf8; box-shadow: 0 0 0 5px rgba(108,32,45,.07), 0 12px 22px -12px rgba(108,32,45,.6); }
+.orb.on .orb-in svg { stroke: var(--accent); }
+.orb:focus-visible .orb-in { outline: 2px solid var(--accent); outline-offset: 3px; }
+.orbit:hover .ring, .orbit:hover .orb-in, .orbit:focus-within .ring, .orbit:focus-within .orb-in { animation-play-state: paused; }
+.orb .jt-live { display: none; position: absolute; top: 2px; right: 2px; width: 9px; height: 9px; border-radius: 50%; background: #d2453d; border: 2px solid #fff; animation: rs-pulse 2s infinite; }
+.orb.is-live .jt-live { display: block; }
+@media (prefers-reduced-motion: reduce) { .ring, .orb-in, .orb-glow { animation: none; } .orb-core.swap .oc-name, .orb-core.swap .oc-hint { animation: none; } }
 
 /* Study timer controls: one big round start/pause button with a progress ring, quieter round buttons either side */
 .seg { position: relative; display: inline-flex; gap: 2px; padding: 4px; margin: 0 auto; border-radius: 999px; background: rgba(108,32,45,.06); border: 1px solid rgba(108,32,45,.08); }
@@ -720,4 +725,3 @@ button.gpill { cursor: pointer; } button.gpill i { font-style: normal; opacity: 
   .tc-side { margin-top: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { .tc-main.running .tc-disc { animation: none; } .seg-pill, .tr-fg { transition: none; } }
-.jtile.is-live .jt-hint i { display: none; }

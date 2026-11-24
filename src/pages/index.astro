@@ -159,20 +159,38 @@ const joinIn = [
       <aside class="join-card spot" aria-labelledby="join-h">
         <p class="t-kicker">Interact</p>
         <h3 id="join-h" class="join-title">Come and join in</h3>
-        <ul class="jgrid">{joinIn.map((j) => (
-          <li><a class="jtile" href={j.href} data-id={j.id}>
-            <svg viewBox="0 0 120 80" aria-hidden="true" set:html={doodles[j.id]} />
-            <span class="jt-name">{j.label}</span>
-            <span class="jt-hint">{j.hint} <i aria-hidden="true">→</i></span>
-            <b class="jt-live" aria-hidden="true"></b>
-          </a></li>
-        ))}</ul>
+        <div class="orbit" aria-label="Things you can join in with">
+          <i class="orb-glow" aria-hidden="true"></i>
+          <a class="orb-core" href={joinIn[0].href} aria-hidden="true" tabindex="-1"><span class="oc-name">{joinIn[0].label}</span><span class="oc-hint">{joinIn[0].hint}</span></a>
+          {[joinIn.slice(0, 2), joinIn.slice(2)].map((ring, r) => (
+            <div class={`ring r${r + 1}`}>{ring.map((j, i) => (
+              <a class="orb" href={j.href} data-id={j.id} data-name={j.label} data-hint={j.hint} aria-label={`${j.label}: ${j.hint}`}
+                 style={`--a:${(360 / ring.length) * i + (r ? 30 : -20)}deg`}>
+                <span class="orb-in"><svg viewBox="0 0 120 80" aria-hidden="true" set:html={doodles[j.id]} /><b class="jt-live" aria-hidden="true"></b></span>
+              </a>
+            ))}</div>
+          ))}
+        </div>
         <p class="join-live" id="join-live" hidden><i class="rs-dot"></i><span></span></p>
         <a class="join-link" href="/life">See everything you can do <span aria-hidden="true">→</span></a>
       </aside>
     </div>
   </section>
   <script>
+    // Orbit: the centre names whichever icon is lit. It moves round on its own, and follows hover or focus.
+    (() => {
+      const orbit = document.querySelector('.orbit'); if (!orbit) return;
+      const orbs = [...orbit.querySelectorAll<HTMLAnchorElement>('.orb')], core = orbit.querySelector<HTMLAnchorElement>('.orb-core')!;
+      const nm = core.querySelector('.oc-name')!, hn = core.querySelector('.oc-hint')!;
+      let on = 0, held = false;
+      const show = (k: number) => { on = k; orbs.forEach((o, i) => o.classList.toggle('on', i === k)); const o = orbs[k];
+        if (nm.textContent !== o.dataset.name) { core.classList.remove('swap'); void core.offsetWidth; core.classList.add('swap'); }
+        nm.textContent = o.dataset.name!; hn.textContent = o.dataset.hint!; core.href = o.href; };
+      show(0);
+      orbs.forEach((o, i) => { o.addEventListener('mouseenter', () => { held = true; show(i); }); o.addEventListener('focus', () => { held = true; show(i); });
+        o.addEventListener('mouseleave', () => { held = false; }); o.addEventListener('blur', () => { held = false; }); });
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { if (!held && !document.hidden) show((on + 1) % orbs.length); }, 2600);
+    })();
     // If Hridal is studying or training right now, say so on the card (checked once, when it comes into view).
     const card = document.querySelector('.join-card');
     if (card) new IntersectionObserver((es, io) => { if (!es.some(e => e.isIntersecting)) return; io.disconnect();
@@ -182,7 +200,7 @@ const joinIn = [
         if (room?.host) { msg = room.host.paused ? 'I’m on a study break, back soon' : 'I’m studying right now, pull up a chair'; href = '/focus'; }
         else if (ex?.live) { msg = ex.live.type === 'climb' ? 'I’m at the climbing wall right now' : 'I’m in the gym right now, send a wave'; href = '/exercise'; }
         if (!msg) return;
-        document.querySelector(`.jtile[data-id="${href.slice(1)}"]`)?.classList.add('is-live');
+        document.querySelector(`.orb[data-id="${href.slice(1)}"]`)?.classList.add('is-live');
         t.textContent = msg; el.hidden = false; el.onclick = () => { location.href = href; }; el.setAttribute('role', 'link'); el.tabIndex = 0;
         el.onkeydown = (e) => { if (e.key === 'Enter') location.href = href; };
       });
