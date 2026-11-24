@@ -109,6 +109,7 @@ const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'
           </form>
           <div class="xh-panel" id="xh-panel" hidden>
             <label class="hp-share"><input type="checkbox" id="xh-share" checked /> Show my workouts live on this page</label>
+            <p class="vault-note" id="vault-note" aria-live="polite"></p>
             <button class="link-btn" type="button" id="xh-out">Sign out</button>
           </div>
         </div>
@@ -119,7 +120,8 @@ const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'
   <script is:inline>
   (() => {
     const $ = id => document.getElementById(id);
-    const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+    let vault = null;
+    const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} if (vault) vault.touch(k, v); } };
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const GR = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10'];
     const clock = ms => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h}:${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : `${m}:${String(s % 60).padStart(2, '0')}`; };
@@ -212,6 +214,14 @@ const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'
     // ---------- the tracker ----------
     const KC = 'hridal.ex.current', KH = 'hridal.ex.history';
     let cur = ls.get(KC, null), hist = ls.get(KH, []), result = 'sent', rest = 0, restTimer = null;
+    // While Hridal is signed in, her workouts (finished and in progress) are also saved to the site.
+    vault = window.hridalVault && window.hridalVault('exercise', {
+      lists: { [KH]: (a, b) => (b.startedAt || 0) - (a.startedAt || 0) },
+      ones: [KC],
+      apply() { cur = ls.get(KC, null); hist = ls.get(KH, []); paintTrack(); },
+      onState: (s) => { const el = document.getElementById('vault-note'); if (!el) return; el.dataset.s = s;
+      el.textContent = s === 'saving' ? 'Saving to your account…' : s === 'saved' ? 'Saved to your account, so it’s on every device you sign in on.' : s === 'error' ? 'Couldn’t reach your account just now. It’s safe on this device and will try again.' : ''; },
+    });
     const host = () => !!key && $('xh-share').checked;
     const save = () => { const fresh = markPBs(); ls.set(KC, cur); if (host()) pushLive(); return fresh; };
     let pushT = null; const pushLive = () => { clearTimeout(pushT); pushT = setTimeout(() => cur && call({ action: 'live', workout: cur }, true).then(r => { if (r.status === 401) signOut('Signed out. Sign in again to go live.'); else liveNote(); }), 700); };

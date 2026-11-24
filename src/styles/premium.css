@@ -729,3 +729,9 @@ section.block.home-story .story-title span { display: inline; font: inherit; let
   .tc-side { margin-top: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { .tc-main.running .tc-disc { animation: none; } .seg-pill, .tr-fg { transition: none; } }
+
+/* "Saved to your account" line in Hridal's signed-in panels */
+.vault-note { margin: 6px 0 4px; font: 400 13px/1.4 var(--sans); color: var(--muted); }
+.vault-note:empty { display: none; }
+.vault-note[data-s="saved"]::before { content: "✓ "; color: #3d8a5a; }
+.vault-note[data-s="error"] { color: #b3322b; }

@@ -43,8 +43,69 @@ const jump = [
   <meta property="og:url" content={new URL(Astro.url.pathname, 'https://hridal.com')} />
   <meta property="og:image" content="https://hridal.com/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script is:inline>window.hridalAuth = { status: function () { return fetch('/api/auth', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) { return !!j.signedIn; }).catch(function () { return false; }); }, login: function (password) { return fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'login', password: password }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.signedIn, error: j.error }; }); }).catch(function () { return { ok: false, error: 'Couldn’t reach the site.' }; }); }, logout: function () { return fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) }).catch(function () {}); } }; try { localStorage.removeItem('hridal.room.key'); sessionStorage.removeItem('hridal.rv'); } catch (e) {}
+  <script is:inline>window.hridalAuth = { status: function () { return fetch('/api/auth', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) { return !!j.signedIn; }).catch(function () { return false; }); }, login: function (password) { return fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'login', password: password }) }).then(function (r) { return r.json().then(function (j) { var ok = r.ok && j.signedIn; if (ok) dispatchEvent(new CustomEvent('hridal:auth', { detail: true })); return { ok: ok, error: j.error }; }); }).catch(function () { return { ok: false, error: 'Couldn’t reach the site.' }; }); }, logout: function () { return fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) }).catch(function () {}).then(function () { dispatchEvent(new CustomEvent('hridal:auth', { detail: false })); }); } }; try { localStorage.removeItem('hridal.room.key'); sessionStorage.removeItem('hridal.rv'); } catch (e) {}
   window.hridalVid = function () { var k = 'hridal.vid', v; try { v = localStorage.getItem(k); if (!v) { v = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 20); localStorage.setItem(k, v); } } catch (e) { v = window.__vid || (window.__vid = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 20)); } return v; }; document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500); setTimeout(function(){ document.documentElement.classList.add('marks-fallback'); }, 9000);</script>
+  <script is:inline>
+  // Saves Hridal's own Focus and Exercise data to the site while she's signed in, so it's there on every device.
+  // Pages call touch(key, value) whenever they save something to this browser; this notes what changed
+  // (and what was deleted), then sends it in the background and takes back the merged copy.
+  window.hridalVault = function (app, spec) {
+    var MK = 'hridal.vault.' + app, on = false, timer = null, busy = false, again = false, gen = 0;
+    var rd = function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+    var wr = function (k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    var sig = function (o) { var c = {}; for (var k in o) if (k !== '_t') c[k] = o[k]; return JSON.stringify(c); };
+    var snap = function (list) { var m = {}; (list || []).forEach(function (it) { if (it && it.id != null) m[String(it.id)] = sig(it); }); return m; };
+    var lists = Object.keys(spec.lists), ones = spec.ones || [];
+    var meta = rd(MK, null) || { prev: {}, t: {}, gone: {} };
+    lists.forEach(function (k) { if (!meta.prev[k]) meta.prev[k] = snap(rd(k, [])); });
+    wr(MK, meta);
+    var state = function (s) { if (spec.onState) try { spec.onState(s); } catch (e) {} };
+    function touch(k, v) {
+      var now = Date.now();
+      if (lists.indexOf(k) >= 0) {
+        var prev = meta.prev[k] || {}, next = {};
+        (v || []).forEach(function (it) { if (!it || it.id == null) return; var id = String(it.id), s = sig(it); next[id] = s; if (prev[id] !== s) it._t = now; });
+        Object.keys(prev).forEach(function (id) { if (!(id in next)) meta.gone[k + '|' + id] = now; });
+        meta.prev[k] = next; wr(k, v);
+      } else if (ones.indexOf(k) >= 0) meta.t[k] = now;
+      else return;
+      gen++; wr(MK, meta); if (on) { state('saving'); clearTimeout(timer); timer = setTimeout(push, 1000); }
+    }
+    function doc() {
+      var d = { lists: {}, ones: {}, gone: meta.gone };
+      lists.forEach(function (k) { d.lists[k] = rd(k, []); });
+      ones.forEach(function (k) { d.ones[k] = { v: rd(k, null), t: meta.t[k] || 0 }; });
+      return d;
+    }
+    function apply(d) {
+      var changed = false;
+      lists.forEach(function (k) {
+        var list = (d.lists && d.lists[k]) || []; if (spec.lists[k]) list.sort(spec.lists[k]);
+        if (JSON.stringify(list) !== JSON.stringify(rd(k, []))) { changed = true; wr(k, list); }
+        meta.prev[k] = snap(list);
+      });
+      ones.forEach(function (k) { var o = d.ones && d.ones[k]; if (o && (o.t || 0) >= (meta.t[k] || 0)) { if (JSON.stringify(o.v) !== JSON.stringify(rd(k, null))) { changed = true; wr(k, o.v); } meta.t[k] = o.t || 0; } });
+      meta.gone = d.gone || meta.gone; wr(MK, meta);
+      if (changed && spec.apply) spec.apply();
+    }
+    function push() {
+      if (!on) return; if (busy) { again = true; return; }
+      busy = true; var g = gen; state('saving');
+      fetch('/api/vault', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ app: app, doc: doc() }) })
+        .then(function (r) { if (r.status === 401) { on = false; state('off'); return null; } return r.json().then(function (j) { if (r.ok) return j; state('error'); retry(); return null; }); })
+        .then(function (j) { if (!j || !j.doc) return; if (g === gen) { apply(j.doc); state('saved'); } else again = true; })
+        .catch(function () { state('error'); retry(); })
+        .then(function () { busy = false; if (again) { again = false; push(); } });
+    }
+    var retry = function () { clearTimeout(timer); timer = setTimeout(push, 15000); };
+    function start() { if (on) return; on = true; push(); }
+    window.hridalAuth.status().then(function (s) { if (s) start(); else state('off'); });
+    addEventListener('hridal:auth', function (e) { if (e.detail) start(); else { on = false; state('off'); } });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && on) push(); });
+    addEventListener('pageshow', function (e) { if (e.persisted && on) push(); });
+    return { touch: touch };
+  };
+  </script>
   <slot name="head" />
   <Analytics />
 </head>

@@ -159,6 +159,7 @@ import Base from '../layouts/Base.astro';
               <label class="hp-share"><input type="checkbox" id="hp-share" checked /> Show this session in the room</label>
               <input id="hp-task" maxlength="80" placeholder="What visitors see, e.g. Nanomaterials problem sheet" aria-label="What visitors see" />
               <p class="hp-msg" id="hp-msg"></p>
+              <p class="vault-note" id="vault-note" aria-live="polite"></p>
               <button class="link-btn" type="button" id="host-out">Sign out</button>
             </div>
           </div>
@@ -205,7 +206,8 @@ import Base from '../layouts/Base.astro';
   (() => {
     const K = { cats: 'hridal.focus.cats', sessions: 'hridal.focus.sessions', todos: 'hridal.focus.todos', run: 'hridal.focus.running' };
     const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
-    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    let vault = null;
+    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} if (vault) vault.touch(k, v); };
     const palette = ['#6c202d', '#c06c7a', '#a9845f', '#7d8a6a', '#5f6f8a', '#9a5a8a', '#d19a6a', '#4f7a7a'];
 
     let cats = load(K.cats, [{ id: 'study', name: 'Study', color: palette[0] }, { id: 'work', name: 'Work', color: palette[1] }, { id: 'reading', name: 'Reading', color: palette[2] }]);
@@ -213,6 +215,18 @@ import Base from '../layouts/Base.astro';
     let todos = load(K.todos, []);
     let run = load(K.run, null); // { cat, startedAt, accumulated, paused, target }
     let target = run ? run.target || 0 : 0;
+    // While Hridal is signed in, her sessions, to-dos, types of work and any running timer are also saved to the site.
+    vault = window.hridalVault && window.hridalVault('focus', {
+      lists: { [K.cats]: (a, b) => (a._t || 0) - (b._t || 0), [K.sessions]: (a, b) => new Date(a.end) - new Date(b.end), [K.todos]: (a, b) => a.id - b.id },
+      ones: [K.run],
+      apply() {
+        cats = load(K.cats, cats); sessions = load(K.sessions, []); todos = load(K.todos, []); run = load(K.run, null);
+        if (run) target = run.target || 0;
+        renderCats(); if (run) $('cat-select').value = run.cat; renderAll(); syncButtons(); tick();
+      },
+      onState: (s) => { const el = document.getElementById('vault-note'); if (!el) return; el.dataset.s = s;
+      el.textContent = s === 'saving' ? 'Saving to your account…' : s === 'saved' ? 'Saved to your account, so it’s on every device you sign in on.' : s === 'error' ? 'Couldn’t reach your account just now. It’s safe on this device and will try again.' : ''; },
+    });
     let viewMonth = new Date(); viewMonth.setDate(1);
     let chimed = false;
 
