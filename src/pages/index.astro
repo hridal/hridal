@@ -11,10 +11,11 @@ const exp = await getCollection('experience');
 const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => +b.data.date - +a.data.date);
 const latest = essays[0];
 const countries = new Set(places.map(p => p.country)).size;
-// Hand-drawn underlines on two phrases in the welcome text: one for the CV side, one for the creative side.
+// Hand-drawn underlines on three phrases in the welcome text: one for the CV side, one for the creative side.
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const marks = ['Imperial', 'Roland Berger and IBM', 'writing essays and sketching'];
-const taglineHtml = marks.reduce((h, m) => h.replace(esc(m), `<span class="mark">${esc(m)}</span>`), esc(me.tagline));
+// Each underline gets its turn (--i) so they draw in reading order.
+const taglineHtml = marks.reduce((h, m, i) => h.replace(esc(m), `<span class="mark" style="--i:${i}">${esc(m)}</span>`), esc(me.tagline));
 // Words that rotate in the eyebrow above the name.
 const flips = ['work & writing', 'projects', 'essays', 'sketches', 'ideas'];
 const icons: Record<string, string> = {

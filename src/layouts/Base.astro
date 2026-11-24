@@ -6,6 +6,7 @@ import '@fontsource-variable/dancing-script';
 import '@fontsource/herr-von-muellerhoff';
 import '../styles/global.css';
 import '../styles/premium.css';
+import Analytics from '@vercel/analytics/astro';
 import { getCollection } from 'astro:content';
 import { me } from '../data/me';
 import { projects } from '../data/projects';
@@ -44,6 +45,7 @@ const jump = [
   <meta name="twitter:card" content="summary_large_image" />
   <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500); setTimeout(function(){ document.documentElement.classList.add('marks-fallback'); }, 9000);</script>
   <slot name="head" />
+  <Analytics />
 </head>
 <body>
   <div class="wrap">
