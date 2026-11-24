@@ -72,25 +72,21 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
   if (!/Mac|iPhone|iPad/.test(navigator.platform)) document.querySelectorAll('.k-btn kbd').forEach(k => { k.textContent = 'Ctrl K'; });
 })();
 
-// Sign-off: the signature writes itself, line by line, when the footer comes into view (peak-end rule).
+// Sign-off: the signature writes itself left to right, then a fine underline is drawn, when the footer comes into view (peak-end rule).
 (() => {
   const so = document.querySelector<HTMLElement>('.signoff'); if (!so) return;
   so.querySelector('.to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
-  const lines = [...so.querySelectorAll<SVGPathElement>('.so-line')]; if (!lines.length) return;
-  const Ls = lines.map(p => p.getTotalLength()), total = Ls.reduce((a, b) => a + b, 0);
-  const show = (len: number) => { let left = len; lines.forEach((p, i) => { const l = Math.max(0, Math.min(Ls[i], left)); p.style.strokeDashoffset = `${Ls[i] - l}`; left -= Ls[i]; }); };
-  lines.forEach((p, i) => { p.style.strokeDasharray = `${Ls[i]}`; });
-  if (reduce || !('IntersectionObserver' in window)) { show(total); so.classList.add('signed'); return; }
-  show(0);
-  // Each line is written at pen speed, with a short pause where the pen lifts between lines.
-  const SPEED = 0.28, LIFT = 140; // units per ms, ms per lift
-  const plan: { start: number; end: number; from: number; len: number }[] = []; let t = 0, from = 0;
-  Ls.forEach(L => { const dur = L / SPEED; plan.push({ start: t, end: t + dur, from, len: L }); t += dur + LIFT; from += L; });
-  const ease = (x: number) => 1 - Math.pow(1 - x, 1.6);
+  const pen = so.querySelector<SVGGElement>('.so-pen'), line = so.querySelector<SVGPathElement>('.so-line'); if (!pen || !line) return;
+  const L = line.getTotalLength(); line.style.strokeDasharray = `${L}`;
+  const set = (x: number, u: number) => { pen.setAttribute('transform', `translate(${x.toFixed(1)} 0)`); line.style.strokeDashoffset = `${L * (1 - u)}`; };
+  if (reduce || !('IntersectionObserver' in window)) { set(320, 1); so.classList.add('signed'); return; }
+  set(0, 0);
+  const WRITE = 1900, PAUSE = 120, LINE = 650; // ms
+  const ease = (x: number) => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
   const run = () => { so.classList.add('signed'); const t0 = performance.now();
-    const frame = (now: number) => { const e = now - t0; let len = 0;
-      for (const s of plan) { if (e >= s.end) len = s.from + s.len; else if (e > s.start) { len = s.from + s.len * ease((e - s.start) / (s.end - s.start)); break; } else break; }
-      show(len); if (e < t) requestAnimationFrame(frame); else show(total); };
+    const frame = (now: number) => { const e = now - t0;
+      const w = Math.min(1, e / WRITE), u = Math.min(1, Math.max(0, (e - WRITE - PAUSE) / LINE));
+      set(320 * ease(w), ease(u)); if (e < WRITE + PAUSE + LINE) requestAnimationFrame(frame); };
     requestAnimationFrame(frame); };
   const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); run(); } }, { threshold: 0.6 });
   io.observe(so);

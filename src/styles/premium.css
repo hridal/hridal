@@ -385,3 +385,6 @@ a.tile:hover, a.tile:hover .t-title, a.tile:hover .t-quote { color: var(--ink); 
 /* Monoline signature (replaces the script font version) */
 .so-sign { width: 300px; height: 110px; }
 .so-line { fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+body .signoff .so-name { font-family: 'Mrs Saint Delafield', cursive !important; font-size: 76px; fill: var(--accent); }
+.so-line { stroke-width: 1.2; }
