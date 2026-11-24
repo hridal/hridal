@@ -14,16 +14,16 @@ const glance = [
 const sections = [
   { id: 'kitchen', title: 'Kitchen', href: '/kitchen', cta: 'Open the kitchen',
     left: 'Easy, healthy vegetarian food for busy weeknights.',
-    right: 'The meals I keep going back to, plus a cupboard that helps you decide what to cook tonight.' },
+    right: 'Open the cupboard when you can\u2019t decide what to make, heart the recipes you like so they\u2019re saved for later, and copy any of them straight into your notes.' },
   { id: 'travel', title: 'Travel', href: '/travel', cta: 'Spin the globe',
-    left: 'Every city I’ve been to, on a globe that follows the real sun.',
-    right: 'Every light is somewhere I\u2019ve been. Tap one to take a closer look.' },
+    left: 'Every city I\u2019ve been to, on a globe that follows the real sun.',
+    right: 'Tap a light to look closer, and if you\u2019ve been there too, add yourself and see how many other visitors have.' },
   { id: 'shelf', title: 'Shelf', href: '/shelf', cta: 'Browse the shelf',
-    left: 'Books I\u2019ve read and things I\u2019ve watched, with my ratings.',
-    right: 'Pick any of them to read what I thought, then leave your own rating.' },
-  { id: 'focus', title: 'Focus', href: '/focus', cta: 'Start the clock',
-    left: 'A study timer, a calendar and a to-do list in one.',
-    right: 'Track the hours you put into each module or project and see your week fill up.' },
+    left: 'Books I\u2019ve read and things I\u2019ve watched, with what I thought of each.',
+    right: 'Leave your own rating and see how other visitors scored them.' },
+  { id: 'focus', title: 'Study with me', href: '/focus', cta: 'Pull up a chair',
+    left: 'When I\u2019m studying, the lamp in this room is on and you can see what I\u2019m working on.',
+    right: 'Take a seat, say what you\u2019re doing and work alongside me, and your time goes into a calendar of your own.' },
 ];
 const doodles: Record<string, string> = {
   kitchen: '<path d="M30 44h60v6c0 12-10 20-30 20s-30-8-30-20z"/><path d="M24 44h72M48 36c-4-6 4-8 0-14M60 36c-4-6 4-8 0-14M72 36c-4-6 4-8 0-14"/>',
@@ -32,11 +32,11 @@ const doodles: Record<string, string> = {
   focus: '<circle cx="60" cy="42" r="26"/><path d="M60 26v16l10 8M52 12h16M60 12v4"/>',
 };
 ---
-<Base title="My life" description="The things Hridal does outside work: cooking, travel, reading and how she studies.">
+<Base title="Hang out" description="The parts of Hridal's life you can join in with: her kitchen, a globe of where she's been, her bookshelf and a room to study with her.">
   <div class="tab-page life">
     <section class="block">
       <div class="side">
-        <h2>My life</h2>
+        <h2>Hang out</h2>
         <ul class="glance" aria-label="At a glance">
           {glance.map(g => (
             <li><a href={g.href}><b data-count={g.n}>{g.n}</b><span>{g.label}</span></a></li>
@@ -44,7 +44,7 @@ const doodles: Record<string, string> = {
         </ul>
       </div>
       <div>
-        <p class="lead-small">The things I do outside work, from the food I cook to the places I have been and the books I keep going back to.</p>
+        <p class="lead-small">The parts of my life you can join in with, from what I cook and where I’ve been to what I’m reading and when I’m studying.</p>
         <ol class="life-index">
           {sections.map(s => (
             <li>
