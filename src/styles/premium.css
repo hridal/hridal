@@ -399,3 +399,5 @@ body .signoff .so-name .so-h { font-family: 'Herr Von Muellerhoff', cursive !imp
   .glance { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 16px 18px; }
   body .tl-item { padding-left: 76px !important; }
 }
+/* Signature box has room on every side so no stroke relies on overflow (iOS Safari clips SVGs to their box). */
+body .signoff .so-sign { width: min(300px, 100%); height: auto; aspect-ratio: 300 / 170; overflow: visible; }
