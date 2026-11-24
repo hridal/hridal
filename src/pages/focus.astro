@@ -1,12 +1,106 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Focus" description="A study and work timer with a calendar and to-do list.">
+<Base title="Study with me" description="Study with Hridal: see when she's studying and what on, take a seat in the room, and keep your own timer, calendar and to-do list.">
   <div class="tab-page focus">
     <section class="block stacked-full tool-page">
-      <h2>Focus</h2>
+      <h2>Study with me</h2>
       <div>
-        <p class="lead-small">A study and work timer. Pick what you're working on, start the clock, and every session is added to your calendar so you can see how much you're really doing. Everything is saved privately in your own browser.</p>
+        <p class="lead-small">When I'm studying, the lamp in this room is on and you can see what I'm working on. Pull up a chair, pick what you're doing, and work alongside me and anyone else who's here. Below the room there's a desk of your own, with a timer, calendar and to-do list that save privately in your browser.</p>
+
+        <!-- The room -->
+        <div class="room" id="room" data-live="false" data-tod="day">
+          <div class="room-status" aria-live="polite">
+            <p class="rs-badge"><i class="rs-dot"></i><span id="rs-badge">Checking the room…</span></p>
+            <p class="rs-line" id="rs-line">&nbsp;</p>
+            <p class="rs-sub" id="rs-sub">&nbsp;</p>
+          </div>
+
+          <svg class="room-scene" viewBox="0 0 800 330" role="img" aria-label="An illustrated study room with a long desk, a window and a bookshelf">
+            <defs>
+              <linearGradient id="sky-dawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2c6b4"/><stop offset="1" stop-color="#fbe7c8"/></linearGradient>
+              <linearGradient id="sky-day" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9d3e4"/><stop offset="1" stop-color="#e6eff2"/></linearGradient>
+              <linearGradient id="sky-dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b4a73"/><stop offset="1" stop-color="#e59a7a"/></linearGradient>
+              <linearGradient id="sky-night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2440"/><stop offset="1" stop-color="#3a3f63"/></linearGradient>
+              <radialGradient id="lamp-glow"><stop offset="0" stop-color="#ffd98a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+              <clipPath id="win-clip"><rect x="318" y="34" width="164" height="128" rx="3"/></clipPath>
+            </defs>
+            <rect class="r-wall" width="800" height="330"/>
+            <rect class="r-floor" y="268" width="800" height="62"/>
+            <!-- window -->
+            <g clip-path="url(#win-clip)">
+              <rect class="r-sky" x="318" y="34" width="164" height="128"/>
+              <g class="r-stars"><circle cx="340" cy="52" r="1.2"/><circle cx="372" cy="70" r="1"/><circle cx="410" cy="48" r="1.3"/><circle cx="452" cy="64" r="1"/><circle cx="468" cy="96" r="1.2"/><circle cx="350" cy="104" r="1"/></g>
+              <circle class="r-sun" cx="452" cy="66" r="13"/>
+              <path class="r-roofs" d="M318 162 V132 h22 v-14 h18 v20 h16 v-26 l12 -10 l12 10 v26 h20 v-18 h26 v12 h18 v-22 h20 v42 z"/>
+              <g class="r-rain">{Array.from({ length: 22 }, (_, i) => <line x1={322 + (i * 37) % 160} y1={(i * 53) % 120 + 30} x2={316 + (i * 37) % 160} y2={(i * 53) % 120 + 46} />)}</g>
+            </g>
+            <rect class="r-frame" x="314" y="30" width="172" height="136" rx="5"/>
+            <line class="r-mullion" x1="400" y1="34" x2="400" y2="162"/><line class="r-mullion" x1="318" y1="98" x2="482" y2="98"/>
+            <rect class="r-sill" x="306" y="164" width="188" height="7" rx="2"/>
+            <!-- bookshelf -->
+            <g class="r-shelf">
+              <rect x="44" y="46" width="150" height="176" rx="3" class="r-wood"/>
+              <rect x="52" y="54" width="134" height="160" class="r-shelf-in"/>
+              <line x1="52" y1="108" x2="186" y2="108"/><line x1="52" y1="162" x2="186" y2="162"/>
+              <g class="r-books">
+                <rect x="58" y="70" width="10" height="38" fill="#6c202d"/><rect x="70" y="64" width="12" height="44" fill="#a9845f"/><rect x="84" y="74" width="8" height="34" fill="#5f6f8a"/><rect x="94" y="68" width="11" height="40" fill="#c06c7a"/><rect x="116" y="80" width="30" height="8" fill="#7d8a6a"/><rect x="118" y="88" width="28" height="9" fill="#d19a6a"/><rect x="118" y="97" width="30" height="11" fill="#6c202d"/>
+                <rect x="60" y="126" width="9" height="36" fill="#4f7a7a"/><rect x="71" y="120" width="12" height="42" fill="#6c202d"/><rect x="85" y="128" width="10" height="34" fill="#d19a6a"/><rect x="110" y="122" width="9" height="40" fill="#9a5a8a"/><rect x="121" y="126" width="12" height="36" fill="#a9845f" transform="rotate(12 127 162)"/>
+                <rect x="58" y="178" width="12" height="36" fill="#5f6f8a"/><rect x="72" y="172" width="10" height="42" fill="#c06c7a"/><rect x="84" y="180" width="11" height="34" fill="#7d8a6a"/><circle cx="150" cy="196" r="12" class="r-globe"/><line x1="150" y1="208" x2="150" y2="214"/>
+              </g>
+            </g>
+            <!-- plant -->
+            <g class="r-plant" transform="translate(28 0)"><path d="M690 268 l6 -40 h32 l6 40 z" class="r-pot"/><path d="M712 230 C 700 200, 676 196, 668 178 C 690 184, 706 200, 712 226 M712 228 C 714 196, 722 170, 742 158 C 738 186, 726 206, 714 228 M712 228 C 724 206, 748 200, 764 204 C 750 216, 730 222, 714 230"/></g>
+            <circle class="r-glow" cx="372" cy="196" r="120" fill="url(#lamp-glow)"/>
+            <!-- seats (behind the desk) -->
+            <g id="seats"></g>
+            <!-- desk -->
+            <rect class="r-desk" x="40" y="236" width="720" height="14" rx="3"/>
+            <rect class="r-desk-front" x="40" y="250" width="720" height="8"/>
+            <rect class="r-leg" x="64" y="258" width="10" height="56"/><rect class="r-leg" x="726" y="258" width="10" height="56"/>
+            <!-- Hridal's spot -->
+            <g class="r-host">
+              <path class="r-lamp" d="M330 236 h26 M343 236 V214 L360 182 M360 182 l-14 -10 l18 -14 l12 18 z"/>
+              <rect class="r-laptop" x="378" y="208" width="48" height="28" rx="2"/><path class="r-laptop-base" d="M370 236 h64"/>
+              <rect class="r-screen" x="382" y="212" width="40" height="20" rx="1"/>
+              <path class="r-mug" d="M440 222 h16 v12 a3 3 0 0 1 -3 3 h-10 a3 3 0 0 1 -3 -3 z M456 225 c6 0 6 8 0 8"/>
+              <g class="r-steam"><path d="M445 218 c-3 -5 3 -7 0 -12"/><path d="M451 218 c-3 -5 3 -7 0 -12"/></g>
+              <text class="r-tag" x="400" y="272">Hridal</text>
+            </g>
+            <text class="r-more" id="r-more" x="752" y="296" text-anchor="end"></text>
+          </svg>
+
+          <div class="room-bar">
+            <div class="rb-seat" id="rb-seat">
+              <p class="rb-q">Take a seat. What are you working on?</p>
+              <div class="chips" id="rb-acts">{['Revising', 'Coding', 'Writing', 'Reading', 'Working', 'Just vibing'].map(a => <button class="chip" type="button" data-act={a}>{a}</button>)}</div>
+            </div>
+            <div class="rb-seated" id="rb-seated" hidden>
+              <p class="rb-q">You're in the room, <b id="rb-act"></b>. <span class="rb-time" id="rb-time">0:00</span></p>
+              <button class="btn ghost small" type="button" id="rb-leave">Leave your seat</button>
+            </div>
+            <div class="rb-sound">
+              <p class="rb-q">Sound</p>
+              <div class="chips" id="rb-sound"><button class="chip on" type="button" data-s="off">Off</button><button class="chip" type="button" data-s="rain">Rain</button><button class="chip" type="button" data-s="cafe">Café</button></div>
+            </div>
+          </div>
+
+          <div class="room-week" id="room-week" hidden>
+            <p class="rw-head"><span>My week in the room</span><b id="rw-total"></b></p>
+            <div class="rw-bars" id="rw-bars"></div>
+          </div>
+
+          <div class="room-host-entry">
+            <button class="link-btn" type="button" id="host-open">Hridal? Sign in</button>
+            <form class="host-form" id="host-form" hidden>
+              <input type="password" id="host-pass" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+              <button class="btn solid small" type="submit">Sign in</button>
+              <span class="host-msg" id="host-msg"></span>
+            </form>
+          </div>
+        </div>
+
+        <h3 class="desk-head">Your desk</h3>
 
         <div class="f-grid">
           <!-- Timer -->
@@ -34,6 +128,12 @@ import Base from '../layouts/Base.astro';
               <button class="btn ghost" id="reset" disabled>Discard</button>
             </div>
             <p class="t-status" id="t-status"></p>
+            <div class="host-panel" id="host-panel" hidden>
+              <label class="hp-share"><input type="checkbox" id="hp-share" checked /> Show this session in the room</label>
+              <input id="hp-task" maxlength="80" placeholder="What visitors see, e.g. Nanomaterials problem sheet" aria-label="What visitors see" />
+              <p class="hp-msg" id="hp-msg"></p>
+              <button class="link-btn" type="button" id="host-out">Sign out</button>
+            </div>
           </div>
 
           <!-- Stats -->
@@ -138,10 +238,11 @@ import Base from '../layouts/Base.astro';
       if (!run) { run = { cat: $('cat-select').value, startedAt: Date.now(), accumulated: 0, paused: false, target }; chimed = false; }
       else if (run.paused) { run.startedAt = Date.now(); run.paused = false; }
       else { run.accumulated += Date.now() - run.startedAt; run.paused = true; }
-      save(K.run, run); syncButtons(); tick();
+      save(K.run, run); syncButtons(); tick(); emit('change');
     };
     $('stop').onclick = () => {
       const mins = elapsedMs() / 60000;
+      emit('finish', { minutes: mins, cat: catOf(run.cat) });
       if (mins >= 1) {
         sessions.push({ id: Date.now(), cat: run.cat, end: new Date().toISOString(), minutes: Math.round(mins * 10) / 10 });
         save(K.sessions, sessions);
@@ -150,9 +251,9 @@ import Base from '../layouts/Base.astro';
       $('t-status').dataset.keep = '1';
       run = null; save(K.run, null); syncButtons(); tick(); renderAll();
     };
-    $('reset').onclick = () => { if (confirmDiscard()) { run = null; save(K.run, null); syncButtons(); tick(); } };
+    $('reset').onclick = () => { if (confirmDiscard()) { run = null; save(K.run, null); syncButtons(); tick(); emit('off'); } };
     function confirmDiscard() { const b = $('reset'); if (b.dataset.sure) { delete b.dataset.sure; b.textContent = 'Discard'; return true; } b.dataset.sure = '1'; b.textContent = 'Sure?'; setTimeout(() => { delete b.dataset.sure; b.textContent = 'Discard'; }, 2500); return false; }
-    document.querySelectorAll('#targets .chip').forEach(b => b.onclick = () => { target = +b.dataset.min; chimed = false; if (run) { run.target = target; save(K.run, run); } syncButtons(); tick(); });
+    document.querySelectorAll('#targets .chip').forEach(b => b.onclick = () => { target = +b.dataset.min; chimed = false; if (run) { run.target = target; save(K.run, run); emit('change'); } syncButtons(); tick(); });
 
     /* ---------- stats ---------- */
     function renderStats() {
@@ -227,8 +328,174 @@ import Base from '../layouts/Base.astro';
     };
 
     function renderAll() { renderStats(); renderCal(); renderTodos(); }
+    // Tell the study room what the timer is doing (it only broadcasts when Hridal is signed in).
+    function emit(type, extra) { window.dispatchEvent(new CustomEvent('focus:' + type, { detail: Object.assign({ run, elapsed: elapsedMs(), cat: run ? catOf(run.cat) : null }, extra || {}) })); }
+    window.__focusNow = () => ({ run, elapsed: elapsedMs(), cat: run ? catOf(run.cat) : null });
     renderCats(); syncButtons(); tick(); renderAll();
     setInterval(tick, 500);
+  })();
+  </script>
+  <script is:inline>
+  // ---------- Study with me: the shared room ----------
+  (() => {
+    const $ = id => document.getElementById(id);
+    const room = $('room'); if (!room) return;
+    const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let data = null, offset = 0, seat = null, seatedAt = 0, act = store.get('hridal.room.act', 'Working'), key = store.get('hridal.room.key', '');
+    const tones = ['#c06c7a', '#5f6f8a', '#a9845f', '#7d8a6a', '#9a5a8a', '#4f7a7a', '#d19a6a'];
+    const fmt = ms => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+    const mins = m => { m = Math.round(m); const h = Math.floor(m / 60); return h ? `${h}h ${m % 60}m` : `${m}m`; };
+    const ago = t => { const m = Math.round((Date.now() + offset - t) / 60000); return m < 60 ? `${Math.max(1, m)} min ago` : m < 1440 ? `${Math.round(m / 60)} hour${Math.round(m / 60) > 1 ? 's' : ''} ago` : `${Math.round(m / 1440)} day${Math.round(m / 1440) > 1 ? 's' : ''} ago`; };
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const rid = () => Math.random().toString(36).slice(2, 12).padEnd(10, '0');
+
+    // Window shows the sky in London right now.
+    const tod = () => { const h = +new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/London' }).format(new Date());
+      room.dataset.tod = h >= 6 && h < 9 ? 'dawn' : h >= 9 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
+    tod(); setInterval(tod, 600000);
+
+    async function call(body, admin) {
+      const opt = body ? { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, admin ? { 'x-admin-password': key } : {}), body: JSON.stringify(body) } : {};
+      const t0 = Date.now(); const r = await fetch('/api/room', opt); const j = await r.json().catch(() => ({}));
+      if (j && j.now) offset = j.now - Math.round((t0 + Date.now()) / 2);
+      if (j && j.enabled) { data = j; render(); }
+      else if (j && j.enabled === false) closed();
+      return { ok: r.ok, status: r.status, j };
+    }
+    function closed() { room.dataset.closed = 'true'; $('rs-badge').textContent = 'The room is closed for now'; $('rs-line').textContent = 'Your desk below still works as normal.'; $('rs-sub').innerHTML = '&nbsp;'; }
+
+    // ---------- drawing ----------
+    const seatX = [118, 206, 294, 506, 594, 682];
+    function person(x, color, label, you) {
+      return `<g class="r-person${you ? ' you' : ''}" transform="translate(${x} 0)">
+        <rect class="r-chair" x="-24" y="170" width="48" height="66" rx="10"/>
+        <path d="M-26 236 C -26 206, -14 196, 0 196 C 14 196, 26 206, 26 236 Z" fill="${color}"/>
+        <circle cx="0" cy="180" r="14" fill="${color}"/>
+        <text class="r-label" x="0" y="274">${esc(label)}</text></g>`;
+    }
+    function render() {
+      if (!data) return;
+      const h = data.host, live = !!h;
+      room.dataset.live = String(live); room.dataset.paused = String(!!(h && h.paused)); delete room.dataset.closed;
+      const people = data.people || []; const others = people.filter(p => p.id !== seat);
+      const mine = people.find(p => p.id === seat);
+      const list = (mine ? [mine] : []).concat(others);
+      $('seats').innerHTML = seatX.map((x, i) => list[i] ? person(x, list[i].id === seat ? '#6c202d' : tones[parseInt(list[i].id.slice(0, 4), 36) % tones.length], list[i].id === seat ? 'You' : list[i].act, list[i].id === seat) : `<rect class="r-chair empty" x="${x - 24}" y="170" width="48" height="66" rx="10"/>`).join('')
+        + (live ? `<g class="r-person host"><rect class="r-chair" x="376" y="164" width="48" height="72" rx="10"/><path d="M372 236 C 372 204, 386 192, 400 192 C 414 192, 428 204, 428 236 Z"/><circle cx="400" cy="174" r="15"/></g>` : `<rect class="r-chair empty" x="376" y="164" width="48" height="72" rx="10"/>`);
+      $('r-more').textContent = list.length > seatX.length ? `+${list.length - seatX.length} more` : '';
+      const n = people.length;
+      const company = n === 0 ? '' : n === 1 && mine ? 'You’re the only visitor here right now.' : `${n} ${n === 1 ? 'person' : 'people'} in the room${mine ? ', including you' : ''}.`;
+      if (live) {
+        $('rs-badge').textContent = h.paused ? 'Live, on a short break' : 'Live now';
+        $('rs-line').innerHTML = `I’m studying <b>${esc(h.task || h.cat || 'something')}</b>${h.task && h.cat && h.task !== h.cat ? ` <span class="rs-cat" style="--c:${h.color}">${esc(h.cat)}</span>` : ''}`;
+      } else {
+        $('rs-badge').textContent = 'Not studying right now';
+        const l = data.last;
+        $('rs-line').innerHTML = l ? `Last session: <b>${esc(l.task || l.cat)}</b> for ${mins(l.minutes)}, ${ago(l.end)}.` : 'The lamp is off, but you’re welcome to sit and work.';
+      }
+      $('rs-sub').dataset.company = company;
+      renderWeek(); tick();
+    }
+    function renderWeek() {
+      const w = data.week || {}; const days = [];
+      const fmtKey = d => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(d);
+      for (let i = 6; i >= 0; i--) { const d = new Date(Date.now() - i * 864e5); days.push({ k: fmtKey(d), label: d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'Europe/London' }), m: w[fmtKey(d)] || 0 }); }
+      const total = days.reduce((a, d) => a + d.m, 0), max = Math.max(60, ...days.map(d => d.m));
+      $('room-week').hidden = total === 0;
+      $('rw-total').textContent = mins(total);
+      $('rw-bars').innerHTML = days.map(d => `<div class="rw-day" title="${d.label}: ${mins(d.m)}"><i style="height:${Math.max(d.m ? 6 : 2, d.m / max * 100)}%"></i><span>${d.label.slice(0, 2)}</span></div>`).join('');
+    }
+    // Every second: the shared focus block and your time in the room.
+    function tick() {
+      const h = data && data.host; let sub = '';
+      if (h) {
+        const e = h.elapsed + (h.paused ? 0 : Date.now() + offset - h.at);
+        sub = h.target ? (e < h.target * 60000 ? `${fmt(h.target * 60000 - e)} left in a ${h.target}-minute focus block. Sit down and start one with me.` : `Just finished a ${h.target}-minute block.`) : `${fmt(e)} in so far.`;
+        if (h.paused) sub = `Back in a moment. ${fmt(e)} done so far.`;
+      }
+      const c = $('rs-sub').dataset.company || '';
+      $('rs-sub').textContent = [sub, c].filter(Boolean).join(' ') || ' ';
+      if (seat) $('rb-time').textContent = fmt(Date.now() - seatedAt);
+    }
+    setInterval(tick, 1000);
+
+    // ---------- seats ----------
+    function showSeated() { $('rb-seat').hidden = !!seat; $('rb-seated').hidden = !seat; $('rb-act').textContent = act.toLowerCase() === 'just vibing' ? 'just vibing' : act.toLowerCase();
+      document.querySelectorAll('#rb-acts .chip').forEach(b => b.classList.toggle('on', b.dataset.act === act)); }
+    document.querySelectorAll('#rb-acts .chip').forEach(b => b.onclick = async () => {
+      act = b.dataset.act; store.set('hridal.room.act', act);
+      if (!seat) { seat = rid(); seatedAt = Date.now(); }
+      showSeated(); const r = await call({ action: 'seat', id: seat, act });
+      if (!r.ok) { seat = null; showSeated(); $('rs-sub').textContent = (r.j && r.j.error) || 'Couldn’t take a seat just now.'; }
+    });
+    $('rb-leave').onclick = () => { const id = seat; seat = null; showSeated(); call({ action: 'leave', id }); };
+    addEventListener('pagehide', () => { if (seat && navigator.sendBeacon) navigator.sendBeacon('/api/room', new Blob([JSON.stringify({ action: 'leave', id: seat })], { type: 'application/json' })); });
+
+    // Keep in touch with the room while the page is open: a heartbeat if seated, otherwise a quiet check.
+    const poll = () => { if (document.hidden) return; seat ? call({ action: 'seat', id: seat, act }) : call(); };
+    setInterval(poll, 25000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+    call().catch(closed);
+
+    // ---------- ambient sound ----------
+    let ctx = null, nodes = [];
+    function noise(kind) {
+      const len = ctx.sampleRate * 4, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0); let last = 0;
+      for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; if (kind === 'brown') { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; }
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; return src;
+    }
+    function sound(kind) {
+      nodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) {} }); nodes = [];
+      clearTimeout(sound.clink); room.dataset.sound = kind;
+      if (kind === 'off') return;
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); ctx.resume();
+      const out = ctx.createGain(); out.gain.value = 0; out.gain.linearRampToValueAtTime(kind === 'rain' ? .16 : .22, ctx.currentTime + 1.2); out.connect(ctx.destination); nodes.push(out);
+      if (kind === 'rain') {
+        const n = noise('white'), bp = ctx.createBiquadFilter(), lp = ctx.createBiquadFilter(); bp.type = 'highpass'; bp.frequency.value = 500; lp.type = 'lowpass'; lp.frequency.value = 2600;
+        n.connect(bp).connect(lp).connect(out); n.start(); nodes.push(n);
+        const lo = noise('brown'), g = ctx.createGain(); g.gain.value = .5; lo.connect(g).connect(out); lo.start(); nodes.push(lo);
+      } else {
+        const n = noise('brown'), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; n.connect(lp).connect(out); n.start(); nodes.push(n);
+        const clink = () => { const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime; o.frequency.value = 1800 + Math.random() * 1400; g.gain.setValueAtTime(.025, t); g.gain.exponentialRampToValueAtTime(.0001, t + .35); o.connect(g).connect(out); o.start(t); o.stop(t + .4); sound.clink = setTimeout(clink, 3000 + Math.random() * 7000); };
+        sound.clink = setTimeout(clink, 2500);
+      }
+    }
+    document.querySelectorAll('#rb-sound .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#rb-sound .chip').forEach(x => x.classList.toggle('on', x === b)); sound(b.dataset.s); });
+
+    // ---------- Hridal's side: her timer tells the room what she's doing ----------
+    const panel = $('host-panel');
+    const share = () => $('hp-share').checked;
+    $('hp-task').value = store.get('hridal.room.task', '');
+    $('hp-share').checked = store.get('hridal.room.share', '1') === '1';
+    function hostUI() { const on = !!key; panel.hidden = !on; $('host-open').hidden = on; $('host-form').hidden = true; room.classList.toggle('is-host', on); }
+    async function broadcast(type, detail) {
+      if (!key) return;
+      const now = window.__focusNow ? window.__focusNow() : {};
+      const d = detail || now;
+      let body;
+      if (type === 'finish') body = { action: 'finish', minutes: d.minutes, cat: d.cat && d.cat.name, task: $('hp-task').value.trim(), day: new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(new Date()) };
+      else if (type === 'change' && !d.run) return; // opening the page on another device shouldn't switch the room off
+      else if (type === 'off' || !share()) body = { action: 'off' };
+      else body = { action: 'live', task: $('hp-task').value.trim(), cat: d.cat && d.cat.name, color: d.cat && d.cat.color, elapsed: d.elapsed, paused: d.run.paused, target: d.run.target || 0 };
+      const r = await call(body, true);
+      if (r.status === 401) { key = ''; store.set('hridal.room.key', null); hostUI(); $('host-msg').textContent = 'Signed out. Sign in again to broadcast.'; return; }
+      $('hp-msg').textContent = !r.ok ? 'Couldn’t reach the room. It’ll try again shortly.' : body.action === 'live' ? (d.run.paused ? 'The room sees you’re on a break.' : 'The room can see you’re studying.') : body.action === 'finish' && d.minutes >= 1 ? `Added ${mins(d.minutes)} to your week in the room.` : 'The room sees you’re not studying.';
+    }
+    ['change', 'finish', 'off'].forEach(t => addEventListener('focus:' + t, e => broadcast(t, e.detail)));
+    $('hp-share').onchange = () => { store.set('hridal.room.share', share() ? '1' : '0'); broadcast('change'); };
+    $('hp-task').onchange = () => { store.set('hridal.room.task', $('hp-task').value.trim()); broadcast('change'); };
+    setInterval(() => { const n = window.__focusNow && window.__focusNow(); if (key && n && n.run && share()) broadcast('change'); }, 45000);
+    $('host-open').onclick = () => { $('host-form').hidden = false; $('host-open').hidden = true; $('host-pass').focus(); };
+    $('host-form').onsubmit = async e => {
+      e.preventDefault(); key = $('host-pass').value; $('host-msg').textContent = 'Checking…';
+      const r = await call({ action: 'check' }, true).catch(() => ({ ok: false }));
+      if (r.ok) { store.set('hridal.room.key', key); $('host-pass').value = ''; $('host-msg').textContent = ''; hostUI(); broadcast('change'); panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); }
+      else { key = ''; $('host-msg').textContent = r.status === 401 ? 'That password didn’t work.' : 'Couldn’t check right now.'; }
+    };
+    $('host-out').onclick = () => { broadcast('off'); key = ''; store.set('hridal.room.key', null); hostUI(); };
+    hostUI(); showSeated();
+    if (key) broadcast('change');
   })();
   </script>
 </Base>
