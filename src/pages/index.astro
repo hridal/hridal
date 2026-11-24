@@ -13,10 +13,10 @@ const latest = essays[0];
 const countries = new Set(places.map(p => p.country)).size;
 // Hand-drawn underlines on two phrases in the welcome text: one for the CV side, one for the creative side.
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-const marks = ['Roland Berger and IBM', 'writing essays and sketching'];
+const marks = ['Imperial', 'Roland Berger and IBM', 'writing essays and sketching'];
 const taglineHtml = marks.reduce((h, m) => h.replace(esc(m), `<span class="mark">${esc(m)}</span>`), esc(me.tagline));
 // Words that rotate in the eyebrow above the name.
-const flips = ['work & writing', 'consulting', 'code', 'essays', 'sketches', 'ideas'];
+const flips = ['work & writing', 'projects', 'essays', 'sketches', 'ideas'];
 const icons: Record<string, string> = {
   pen: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>',
   music: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
@@ -97,7 +97,7 @@ const icons: Record<string, string> = {
         <span class="t-kicker">Experience</span>
         <span class="t-title">Consulting at Roland Berger, tech at IBM and engineering at Wood</span>
         <span class="t-logos">
-          {[['roland-berger','Roland Berger','Junior Consultant Intern'],['ibm','IBM','Application Support Analyst Intern'],['wood','Wood Group','Engineering Consulting Intern'],['imperial','Imperial','AI Society, EDI rep and more']].map(([f,n,r]) => (
+          {[['roland-berger','Roland Berger','Junior Consultant (Intern)'],['ibm','IBM','Application Support Analyst Intern'],['wood','Wood Group','Engineering Consulting Intern'],['imperial','Imperial','AI Society, EDI rep and more']].map(([f,n,r]) => (
             <span class="t-logo" data-tip={`${n}: ${r}`}><img src={`/logos/${f}.png`} alt={n} width="44" height="44" loading="lazy" /></span>
           ))}
         </span>

@@ -3,6 +3,7 @@ import '@fontsource-variable/hanken-grotesk';
 import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/source-serif-4/wght-italic.css';
 import '@fontsource-variable/dancing-script';
+import '@fontsource/mrs-saint-delafield';
 import '../styles/global.css';
 import '../styles/premium.css';
 import { getCollection } from 'astro:content';
@@ -59,7 +60,7 @@ const jump = [
     <main><slot /></main>
     <div class="signoff" aria-label={`Thanks for stopping by, ${me.name}`}>
       <p class="so-thanks">Thanks for stopping by,</p>
-      <svg class="so-sign" viewBox="0 0 260 90" aria-hidden="true"><text x="8" y="66">{me.name}</text></svg>
+      <svg class="so-sign" viewBox="0 0 300 110" aria-hidden="true"><g transform="rotate(-8 150 55)"><text x="14" y="80">{me.name}</text><path class="so-swoosh" pathLength="1" d="M4 98 C 60 96, 150 80, 294 42" /></g></svg>
       <button class="to-top" type="button" aria-label="Back to the top of the page"><span aria-hidden="true">↑</span> Back to top</button>
     </div>
     <div class="footer-mark" aria-hidden="true">hridal.</div>

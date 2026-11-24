@@ -12,7 +12,7 @@ export const me = {
   etymology: 'From hriday (Sanskrit hṛdaya), “heart”.',
   tagline: "Welcome to hridal.com, and thanks for stopping by! This is a little window into my life and what I've been up to. I study Materials Science and Engineering at Imperial and I'm part of the AI Society's research team. I've interned at Roland Berger and IBM, so a lot of my experience so far is in consulting, and I'm always looking for the chance to learn something new and put it into practice. Outside of that, I keep active with bouldering and netball, and stay creative by writing essays and sketching. Have a look around, and I hope you enjoy your visit!",
   about: [
-    "Hello! I'm Hridal, a Materials Science and Engineering student at Imperial College London. This summer I was a Junior Consultant Intern at Roland Berger, where I worked on a review of a client's graduate programme, a commercial due diligence and an M&A pitch. Before that I supported NHS ESR at IBM, the HR and payroll system behind 1.3 million NHS staff, and worked on bridge design options at Wood Group.",
+    "Hello! I'm Hridal, a Materials Science and Engineering student at Imperial College London. This summer I was a Junior Consultant (Intern) at Roland Berger, where I worked on a review of a client's graduate programme, a commercial due diligence and an M&A pitch. Before that I supported NHS ESR at IBM, the HR and payroll system behind 1.3 million NHS staff, and worked on bridge design options at Wood Group.",
     "At Imperial I'm on the AI Society's research team, and most recently I helped with operations and logistics throughout AI Week, which had speakers from Anthropic and Google DeepMind and finished with Imperial AI Hack, a hackathon with 350 participants. I was also elected EDI representative to support around 500 students in the Department of Materials. I'm interested in AI research and how it can be applied, and I like building things too, from a machine learning model that predicts the properties of materials to the start-up I'm working on now.",
     "I love writing essays, which I publish here on this site, and I'm really interested in web design, digital design and UX. I designed the branding and logo for Imperial AI Hack, and I'm always adding to this site. Away from all this, I play netball, go bouldering and draw in my sketchbook when I get the chance.",
   ],
@@ -23,7 +23,7 @@ export const me = {
     status: '',
     rows: [
       { label: 'Studying', value: 'MEng Materials Science, Imperial (Year 3)' },
-      { label: 'Latest role', value: 'Junior Consultant Intern, Roland Berger' },
+      { label: 'Latest role', value: 'Junior Consultant (Intern), Roland Berger' },
       { label: 'Based in', value: 'London' },
       { label: 'At Imperial', value: 'AI Society research team, EDI rep for Materials' },
     ],

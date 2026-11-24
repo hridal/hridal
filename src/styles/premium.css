@@ -363,3 +363,12 @@ a.tile:hover, a.tile:hover .t-title, a.tile:hover .t-quote { color: var(--ink); 
 .t-logo::after { left: 0; bottom: auto; top: calc(100% + 8px); transform: translateY(-4px); }
 .t-logo:hover::after { transform: none; }
 .b-topic { background-position: 0 12px; }
+
+/* Signature: signature-style script with a long rising stroke through it */
+.so-sign { width: 280px; height: 103px; }
+.so-sign text { font-family: "Mrs Saint Delafield", cursive !important; font-weight: 400; font-size: 96px; stroke-width: 1.2; stroke-dasharray: 1400; stroke-dashoffset: 1400; }
+.so-swoosh { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.signoff.signed .so-sign text { animation: sign 2.4s cubic-bezier(.45,0,.2,1) forwards, sign-fill .6s 1.9s forwards; }
+.signoff.signed .so-swoosh { animation: swoosh .7s 2.1s cubic-bezier(.6,0,.2,1) forwards; }
+@keyframes swoosh { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .so-swoosh, .signoff.signed .so-swoosh { animation: none; stroke-dashoffset: 0; } }
