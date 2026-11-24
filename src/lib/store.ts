@@ -27,3 +27,23 @@ export async function overLimit(ip: string, max = 300) {
   const [n] = await redis([['INCR', k], ['EXPIRE', k, 3600]]);
   return +n > max;
 }
+
+// ---------- Hridal's sign-in ----------
+// She signs in once with the password; the site then gives her browser a random session token in an
+// HttpOnly, Secure, SameSite=Strict cookie. Pages never see or store the password, and every admin
+// action checks the session against the database.
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+export const SESSION_COOKIE = 'hs';
+export const SESSION_DAYS = 30;
+const digest = (s: string) => createHash('sha256').update(s).digest();
+export const passwordMatches = (pw: unknown) => !!adminPassword && typeof pw === 'string' && timingSafeEqual(digest(pw), digest(adminPassword));
+export const newToken = () => randomBytes(32).toString('hex');
+export function sessionToken(req: Request) {
+  const m = (req.headers.get('cookie') || '').match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([a-f0-9]{64})(?:;|$)`));
+  return m ? m[1] : '';
+}
+export async function isAdmin(req: Request) {
+  const t = sessionToken(req); if (!t || !storeReady) return false;
+  const [v] = await redis([['GET', 'sess:' + t]]);
+  return v === '1';
+}

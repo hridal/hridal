@@ -147,9 +147,9 @@ const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'
     }
 
     // ---------- the public side: what Hridal is doing ----------
-    let data = null, key = (() => { try { return localStorage.getItem('hridal.room.key') || ''; } catch (e) { return ''; } })();
+    let data = null, key = ''; // truthy once Hridal is signed in
     async function call(body, admin) {
-      const opt = body ? { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, admin ? { 'x-admin-password': key } : {}), body: JSON.stringify(body) } : {};
+      const opt = body ? { method: 'POST', headers: { 'content-type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) } : {};
       const r = await fetch('/api/exercise', opt); const j = await r.json().catch(() => ({}));
       if (j && j.enabled) { data = j; paintLive(); } else if (j && j.enabled === false) closed();
       return { ok: r.ok, status: r.status, j };
@@ -338,19 +338,19 @@ const grades = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'
     // ---------- Hridal signs in (same password as the study room) ----------
     function hostUI() { const on = !!key; $('xh-open').hidden = on; $('xh-form').hidden = true; $('xh-panel').hidden = !on;
       $('xt-head').textContent = on ? 'My tracker' : 'Track your own workout'; liveNote(); if (data && data.enabled) paintRecent(); }
-    function signOut(msg) { key = ''; try { localStorage.removeItem('hridal.room.key'); } catch (e) {} hostUI(); $('xh-msg').textContent = msg || ''; }
+    function signOut(msg) { key = ''; hostUI(); $('xh-msg').textContent = msg || ''; }
     $('xh-share').checked = ls.get('hridal.ex.share', true);
     $('xh-share').onchange = () => { ls.set('hridal.ex.share', $('xh-share').checked); if (key) { if ($('xh-share').checked && cur) pushLive(); else call({ action: 'cancel' }, true); } liveNote(); };
     $('xh-open').onclick = () => { $('xh-form').hidden = false; $('xh-open').hidden = true; $('xh-pass').focus(); };
     $('xh-form').onsubmit = async e => {
-      e.preventDefault(); key = $('xh-pass').value; $('xh-msg').textContent = 'Checking…';
-      const r = await call({ action: 'check' }, true).catch(() => ({ ok: false }));
-      if (r.ok) { try { localStorage.setItem('hridal.room.key', key); } catch (err) {} $('xh-pass').value = ''; $('xh-msg').textContent = ''; hostUI(); if (cur) pushLive(); }
-      else { key = ''; $('xh-msg').textContent = r.status === 401 ? 'That password didn’t work.' : 'Couldn’t check right now.'; }
+      e.preventDefault(); $('xh-msg').textContent = 'Checking…';
+      const r = await window.hridalAuth.login($('xh-pass').value); $('xh-pass').value = '';
+      if (r.ok) { key = 'signed-in'; $('xh-msg').textContent = ''; hostUI(); if (cur) pushLive(); }
+      else $('xh-msg').textContent = r.error || 'Couldn’t sign in.';
     };
-    $('xh-out').onclick = () => signOut();
-
-    hostUI(); paintTrack(); call().then(() => { if (host() && cur && !(data && data.live)) pushLive(); liveNote(); }).catch(closed);
+    $('xh-out').onclick = async () => { await window.hridalAuth.logout(); signOut(); };
+    hostUI(); paintTrack();
+    Promise.all([window.hridalAuth.status(), call().catch(closed)]).then(([on]) => { if (on) { key = 'signed-in'; hostUI(); } if (host() && cur && !(data && data.live)) pushLive(); liveNote(); });
   })();
   </script>
 </Base>

@@ -1,15 +1,14 @@
 // "Study with me" room on the Focus page.
-// Hridal's own timer (once she has signed in with the admin password) tells the room when she is
+// Hridal's own timer (once she has signed in) tells the room when she is
 // studying and what on. Visitors can take a seat; seats disappear a minute or so after they leave.
 import type { APIRoute } from 'astro';
-import { redis, storeReady, adminPassword, json } from '../../lib/store';
+import { redis, storeReady, json, isAdmin } from '../../lib/store';
 
 export const prerender = false;
 
 const ACTS = ['Revising', 'Coding', 'Writing', 'Reading', 'Working', 'Just vibing'];
 const SEAT_TTL = 75_000;   // a seat is freed this long after its last heartbeat
 const HOST_TTL = 150;      // seconds the live status lasts without a heartbeat from Hridal's timer
-const isAdmin = (req: Request) => !!adminPassword && req.headers.get('x-admin-password') === adminPassword;
 const clean = (s: unknown, max: number) => String(s ?? '').replace(/[\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 // Visitors' names and tasks are shown to everyone, so keep them short, link-free and polite.
 const BLOCK = /(fuck|shit|cunt|bitch|nigg|fag|retard|whore|slut|dick|cock|pussy|wank|twat|rape|nazi|porn|sex|kill ?yourself|kys)/i;
@@ -68,7 +67,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // ---- Hridal ----
-    if (!isAdmin(request)) return json({ error: 'Wrong password.' }, 401);
+    if (!(await isAdmin(request))) return json({ error: 'Wrong password.' }, 401);
     if (action === 'check') return json({ ok: true });
     if (action === 'live') {
       const host = {

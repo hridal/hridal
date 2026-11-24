@@ -1,12 +1,11 @@
 // Reader essays: anyone can submit; nothing is public until Hridal publishes it.
 import type { APIRoute } from 'astro';
-import { redis, storeReady, adminPassword, json } from '../../lib/store';
+import { redis, storeReady, json, isAdmin } from '../../lib/store';
 
 export const prerender = false;
 
 const clean = (s: unknown, max: number) => String(s ?? '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, max);
 const words = (s: string) => (s.match(/\S+/g) || []).length;
-const isAdmin = (req: Request) => adminPassword && req.headers.get('x-admin-password') === adminPassword;
 
 async function read(ids: string[]) {
   if (!ids.length) return [];
@@ -26,7 +25,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   try {
     const id = url.searchParams.get('id');
     if (url.searchParams.get('pending')) {
-      if (!isAdmin(request)) return json({ error: 'Wrong password.' }, 401);
+      if (!(await isAdmin(request))) return json({ error: 'Wrong password.' }, 401);
       const ids = await redis([['ZREVRANGE', 'essays:pending', 0, 99]]);
       return json({ enabled: true, essays: await read(ids[0] || []) });
     }
@@ -48,7 +47,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   let b: any; try { b = await request.json(); } catch { return json({ error: 'Something went wrong reading that. Try again.' }, 400); }
 
   if (b?.action) {
-    if (!isAdmin(request)) return json({ error: 'Wrong password.' }, 401);
+    if (!(await isAdmin(request))) return json({ error: 'Wrong password.' }, 401);
     const id = String(b.id || '').replace(/[^a-z0-9]/gi, '');
     if (!id) return json({ error: 'Missing essay.' }, 400);
     if (b.action === 'publish') {

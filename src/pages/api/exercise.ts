@@ -1,13 +1,12 @@
 // Exercise page: Hridal's live workout (gym or bouldering), her recent sessions, and visitors' waves.
-// Her own tracker (signed in with the admin password) sends updates; everyone else can read and wave.
+// Her own tracker (once she has signed in) sends updates; everyone else can read and wave.
 import type { APIRoute } from 'astro';
-import { redis, storeReady, adminPassword, json, voter, overLimit } from '../../lib/store';
+import { redis, storeReady, json, isAdmin, voter, overLimit } from '../../lib/store';
 
 export const prerender = false;
 
 const LIVE_TTL = 4 * 60 * 60;            // a live workout disappears after 4 hours without an update
 const REACTS = ['wave', 'cheer'];
-const isAdmin = (req: Request) => !!adminPassword && req.headers.get('x-admin-password') === adminPassword;
 const txt = (s: unknown, max: number) => String(s ?? '').replace(/[\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 const num = (n: unknown, max: number) => { const v = Math.round((+(n as number) || 0) * 10) / 10; return Math.max(0, Math.min(v, max)); };
 const GRADES = ['VB', 'V0', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10'];
@@ -63,7 +62,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }
 
     // ---- Hridal ----
-    if (!isAdmin(request)) return json({ error: 'Wrong password.' }, 401);
+    if (!(await isAdmin(request))) return json({ error: 'Wrong password.' }, 401);
     if (action === 'check') return json({ ok: true });
     if (action === 'live') {
       const w = tidy(b.workout); if (!w.id) return json({ error: 'No workout.' }, 400);

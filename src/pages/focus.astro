@@ -367,7 +367,7 @@ import Base from '../layouts/Base.astro';
     const room = $('room'); if (!room) return;
     const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let data = null, offset = 0, seat = null, seatedAt = 0, act = store.get('hridal.room.act', 'Working'), key = store.get('hridal.room.key', '');
+    let data = null, offset = 0, seat = null, seatedAt = 0, act = store.get('hridal.room.act', 'Working'), key = ''; // key: truthy once Hridal is signed in
     let myName = store.get('hridal.room.name', ''), myTask = '', logged = false;
     const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} } };
     // Stay in your seat if you reload or move between pages in the same tab.
@@ -387,7 +387,7 @@ import Base from '../layouts/Base.astro';
     tod(); setInterval(tod, 600000);
 
     async function call(body, admin) {
-      const opt = body ? { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, admin ? { 'x-admin-password': key } : {}), body: JSON.stringify(body) } : {};
+      const opt = body ? { method: 'POST', headers: { 'content-type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) } : {};
       const t0 = Date.now(); const r = await fetch('/api/room', opt); const j = await r.json().catch(() => ({}));
       if (j && j.now) offset = j.now - Math.round((t0 + Date.now()) / 2);
       if (j && j.enabled) { data = j; render(); }
@@ -529,7 +529,7 @@ import Base from '../layouts/Base.astro';
       else if (type === 'off' || !share()) body = { action: 'off' };
       else body = { action: 'live', task: $('hp-task').value.trim(), cat: d.cat && d.cat.name, color: d.cat && d.cat.color, elapsed: d.elapsed, paused: d.run.paused, target: d.run.target || 0 };
       const r = await call(body, true);
-      if (r.status === 401) { key = ''; store.set('hridal.room.key', null); hostUI(); $('host-msg').textContent = 'Signed out. Sign in again to broadcast.'; return; }
+      if (r.status === 401) { key = ''; hostUI(); $('host-msg').textContent = 'Signed out. Sign in again to broadcast.'; return; }
       $('hp-msg').textContent = !r.ok ? 'Couldn’t reach the room. It’ll try again shortly.' : body.action === 'live' ? (d.run.paused ? 'The room sees you’re on a break.' : 'The room can see you’re studying.') : body.action === 'finish' && d.minutes >= 1 ? `Added ${mins(d.minutes)} to your week in the room.` : 'The room sees you’re not studying.';
     }
     ['change', 'finish', 'off'].forEach(t => addEventListener('focus:' + t, e => broadcast(t, e.detail)));
@@ -538,14 +538,14 @@ import Base from '../layouts/Base.astro';
     setInterval(() => { const n = window.__focusNow && window.__focusNow(); if (key && n && n.run && share()) broadcast('change'); }, 45000);
     $('host-open').onclick = () => { $('host-form').hidden = false; $('host-open').hidden = true; $('host-pass').focus(); };
     $('host-form').onsubmit = async e => {
-      e.preventDefault(); key = $('host-pass').value; $('host-msg').textContent = 'Checking…';
-      const r = await call({ action: 'check' }, true).catch(() => ({ ok: false }));
-      if (r.ok) { store.set('hridal.room.key', key); $('host-pass').value = ''; $('host-msg').textContent = ''; hostUI(); broadcast('change'); panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); }
-      else { key = ''; $('host-msg').textContent = r.status === 401 ? 'That password didn’t work.' : 'Couldn’t check right now.'; }
+      e.preventDefault(); $('host-msg').textContent = 'Checking…';
+      const r = await window.hridalAuth.login($('host-pass').value); $('host-pass').value = '';
+      if (r.ok) { key = 'signed-in'; $('host-msg').textContent = ''; hostUI(); broadcast('change'); panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); }
+      else $('host-msg').textContent = r.error || 'Couldn’t sign in.';
     };
-    $('host-out').onclick = () => { broadcast('off'); key = ''; store.set('hridal.room.key', null); hostUI(); };
+    $('host-out').onclick = async () => { await broadcast('off'); key = ''; await window.hridalAuth.logout(); hostUI(); };
     hostUI(); showSeated();
-    if (key) broadcast('change');
+    window.hridalAuth.status().then(on => { if (on) { key = 'signed-in'; hostUI(); broadcast('change'); } });
   })();
   </script>
 </Base>
