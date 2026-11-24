@@ -1,4 +1,4 @@
-// Places on the Travel globe.
+// Cities on the Travel globe (cities only, no regions or islands, so the count stays like for like).
 // To add a place: copy a block, change the name, country and coordinates (right-click any spot on Google Maps to copy them).
 
 export type Place = { name: string; country: string; lat: number; lng: number; when?: string; note?: string; photos: string[] };
@@ -14,8 +14,6 @@ export const places: Place[] = [
   { name: "Blackpool", country: "United Kingdom", lat: 53.8175, lng: -3.0357, when: "", note: "", photos: [] },
   { name: "Brighton", country: "United Kingdom", lat: 50.8225, lng: -0.1372, when: "", note: "", photos: [] },
   { name: "Bournemouth", country: "United Kingdom", lat: 50.7192, lng: -1.8808, when: "", note: "", photos: [] },
-  { name: "Wales", country: "United Kingdom", lat: 52.1307, lng: -3.7837, when: "", note: "", photos: [] },
-  { name: "Scotland", country: "United Kingdom", lat: 56.4907, lng: -4.2026, when: "", note: "", photos: [] },
   { name: "Prague", country: "Czechia", lat: 50.0755, lng: 14.4378, when: "", note: "", photos: [] },
   { name: "Tivat", country: "Montenegro", lat: 42.43, lng: 18.696, when: "", note: "", photos: [] },
   { name: "Kotor", country: "Montenegro", lat: 42.4247, lng: 18.7712, when: "", note: "", photos: [] },
@@ -26,19 +24,13 @@ export const places: Place[] = [
   { name: "Sandane", country: "Norway", lat: 61.7744, lng: 6.2153, when: "", note: "", photos: [] },
   { name: "M\u00e1laga", country: "Spain", lat: 36.7213, lng: -4.4214, when: "", note: "", photos: [] },
   { name: "Barcelona", country: "Spain", lat: 41.3874, lng: 2.1686, when: "", note: "", photos: [] },
-  { name: "Gran Canaria", country: "Spain", lat: 27.9202, lng: -15.5474, when: "Canary Islands", note: "", photos: [] },
-  { name: "Fuerteventura", country: "Spain", lat: 28.3587, lng: -14.0537, when: "Canary Islands", note: "", photos: [] },
-  { name: "Tenerife", country: "Spain", lat: 28.2916, lng: -16.6291, when: "Canary Islands", note: "", photos: [] },
-  { name: "Lanzarote", country: "Spain", lat: 29.0469, lng: -13.59, when: "Canary Islands", note: "", photos: [] },
   { name: "Albufeira", country: "Portugal", lat: 37.0891, lng: -8.2479, when: "", note: "", photos: [] },
   { name: "Gibraltar", country: "Gibraltar", lat: 36.1408, lng: -5.3536, when: "", note: "", photos: [] },
   { name: "Agadir", country: "Morocco", lat: 30.4278, lng: -9.5981, when: "", note: "", photos: [] },
   { name: "Marrakech", country: "Morocco", lat: 31.6295, lng: -7.9811, when: "", note: "", photos: [] },
   { name: "Mumbai", country: "India", lat: 19.076, lng: 72.8777, when: "", note: "", photos: [] },
-  { name: "Gujarat", country: "India", lat: 23.0225, lng: 72.5714, when: "", note: "", photos: [] },
   { name: "Indore", country: "India", lat: 22.7196, lng: 75.8577, when: "", note: "", photos: [] },
   { name: "Bangalore", country: "India", lat: 12.9716, lng: 77.5946, when: "", note: "", photos: [] },
-  { name: "Virginia", country: "United States", lat: 37.4316, lng: -78.6569, when: "", note: "", photos: [] },
   { name: "Los Angeles", country: "United States", lat: 34.0522, lng: -118.2437, when: "California", note: "", photos: [] },
   { name: "Las Vegas", country: "United States", lat: 36.1699, lng: -115.1398, when: "Nevada", note: "", photos: [] },
   { name: "Sedona", country: "United States", lat: 34.8697, lng: -111.761, when: "Arizona", note: "", photos: [] },

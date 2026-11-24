@@ -6,7 +6,7 @@ import { recipes } from '../data/kitchen';
 // At-a-glance counts for the left column, worked out from the site's own data so they stay current.
 const glance = [
   { n: new Set(places.map(p => p.country)).size, label: 'countries visited', href: '/travel' },
-  { n: places.length, label: 'places on the globe', href: '/travel' },
+  { n: places.length, label: 'cities on the globe', href: '/travel' },
   { n: books.length, label: 'books on the shelf', href: '/shelf' },
   { n: films.length, label: 'films and series rated', href: '/shelf' },
   { n: recipes.length, label: 'recipes in the kitchen', href: '/kitchen' },
@@ -16,7 +16,7 @@ const sections = [
     left: 'Easy, healthy vegetarian food for busy weeknights.',
     right: 'The meals I keep going back to, plus a cupboard that helps you decide what to cook tonight.' },
   { id: 'travel', title: 'Travel', href: '/travel', cta: 'Spin the globe',
-    left: 'Every place I’ve been, on a globe that follows the real sun.',
+    left: 'Every city I’ve been to, on a globe that follows the real sun.',
     right: 'Every light is somewhere I\u2019ve been. Tap one to take a closer look.' },
   { id: 'shelf', title: 'Shelf', href: '/shelf', cta: 'Browse the shelf',
     left: 'Books I\u2019ve read and things I\u2019ve watched, with my ratings.',

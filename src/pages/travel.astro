@@ -5,15 +5,15 @@ const countries = new Set(places.map(p => p.country)).size;
 const byCountry: Record<string, { p: typeof places[number]; i: number }[]> = {};
 places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
 ---
-<Base title="Travel" description="A globe of the places I've been.">
+<Base title="Travel" description="A globe of the cities I've been to.">
   <div class="tab-page travel">
-    <section class="block">
+    <section class="block stacked-full tool-page">
       <h2>Travel</h2>
       <div>
-        <p class="lead-small">Every place I've been, on a globe that follows the real sun: the lit side is wherever it's daytime right now. Drag to spin it, scroll to zoom, and tap a light to look closer.</p>
-        <div class="travel-stats"><span><b>{places.length}</b> places</span><span><b>{countries}</b> {countries === 1 ? 'country' : 'countries'}</span></div>
+        <p class="lead-small">Every city I've been to, on a globe that follows the real sun: the lit side is wherever it's daytime right now. Drag to spin it, scroll to zoom, and tap a light to look closer.</p>
+        <div class="travel-stats"><span><b>{places.length}</b> cities</span><span><b>{countries}</b> {countries === 1 ? 'country' : 'countries'}</span></div>
         <div class="globe-wrap">
-          <div id="globe" aria-label="Interactive globe of places visited"></div>
+          <div id="globe" aria-label="Interactive globe of cities visited"></div>
           <aside class="place-panel" id="place-panel" hidden>
             <button class="pp-close" id="pp-close" aria-label="Close">×</button>
             <div id="pp-body"></div>
@@ -184,7 +184,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
       document.getElementById('pp-close')!.onclick = () => { panel.hidden = true; ctl.autoRotate = true; };
       document.querySelectorAll<HTMLButtonElement>('.place-chip').forEach(b => b.onclick = () => open(+b.dataset.i!));
     } catch (err) {
-      hint.textContent = 'Your browser couldn’t load the 3D globe, but the list of places is below.';
+      hint.textContent = 'Your browser couldn’t load the 3D globe, but the list of cities is below.';
     }
   </script>
 </Base>

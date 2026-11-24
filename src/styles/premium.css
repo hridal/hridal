@@ -192,3 +192,7 @@ body section.block.stacked-full { display: block; }
   .live-dot, .pulse.draw path, .k-menu[open] { animation: none; }
   .pj-stack .pj-item { position: static; }
 }
+
+/* ---------- Kitchen, Travel, Focus: heading above, tool uses the full width ---------- */
+body section.block.tool-page > h2 { margin-bottom: 18px; }
+body section.block.tool-page > div { min-width: 0; }
