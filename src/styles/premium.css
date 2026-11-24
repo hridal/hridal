@@ -501,3 +501,35 @@ body .signoff .so-sign { width: min(300px, 100%); height: auto; aspect-ratio: 30
 }
 .rb-note { flex-basis: 100%; margin: 0; font: 13px var(--sans); color: var(--muted); }
 @media (max-width: 760px) { .room-bar .rb-seat { flex: 0 0 auto; } }
+
+/* ---------- Kitchen hearts, saved recipes and copy ---------- */
+.meal-wrap { position: relative; display: flex; }
+.meal-wrap .meal-card { flex: 1; padding-right: 64px; }
+.heart { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,.75); border: 1px solid rgba(108,32,45,.18); border-radius: 999px; padding: 6px 10px; cursor: pointer; color: var(--accent); font: 600 13px var(--sans); line-height: 1; transition: background .2s, border-color .2s, transform .15s; }
+.meal-wrap .heart { position: absolute; top: 14px; right: 14px; }
+.heart svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; transition: fill .2s; }
+.heart:hover { border-color: var(--accent); }
+.heart:active { transform: scale(.94); }
+.heart.on svg { fill: currentColor; }
+.heart.on { background: #fff; }
+.heart .hc:empty { display: none; }
+.heart.pop svg { animation: heart-pop .45s cubic-bezier(.2,1.6,.4,1); }
+@keyframes heart-pop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.heart.big { padding: 9px 14px; font-size: 14px; }
+.rc-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.saved-recipes { margin: -30px 0 50px; }
+.saved-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.saved-chip { display: inline-flex; align-items: baseline; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; font: 15px var(--sans); color: var(--ink); }
+.saved-chip:hover { border-color: var(--accent); }
+.saved-chip em { font-style: normal; font-size: 12px; color: var(--muted); }
+.saved-note { font: 13px var(--sans); color: var(--muted); margin: 10px 0 0; }
+@media (max-width: 760px) { .rc-actions { justify-content: flex-start; } .saved-recipes { margin-top: -20px; } }
+@media (prefers-reduced-motion: reduce) { .heart.pop svg { animation: none; } }
+
+/* ---------- Travel: "I've been here too" ---------- */
+.pp-been { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.ppb-count { margin: 0; font: 14px/1.45 var(--sans); color: var(--muted); }
+.ppb-btn { justify-self: start; background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: 999px; padding: 8px 14px; font: 500 14px var(--sans); cursor: pointer; }
+.ppb-btn.on { background: transparent; color: var(--accent); border-color: var(--accent); }
+.place-chip.been { border-color: var(--accent) !important; color: var(--accent) !important; }
+.place-chip.been::after { content: ' ✓'; }

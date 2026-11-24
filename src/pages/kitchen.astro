@@ -12,13 +12,22 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
 
         <h4>My favourite weeknight meals</h4>
         <div class="fav-meals">{favs.map(r => (
-          <button class="meal-card" data-id={r!.id}>
-            <span class="mc-time">{r!.minutes} minutes, serves {r!.serves}</span>
-            <span class="mc-name">{r!.name}</span>
-            <span class="mc-blurb">{r!.blurb}</span>
-            <span class="mc-link">See the recipe</span>
-          </button>
+          <div class="meal-wrap">
+            <button class="meal-card" data-id={r!.id}>
+              <span class="mc-time">{r!.minutes} minutes, serves {r!.serves}</span>
+              <span class="mc-name">{r!.name}</span>
+              <span class="mc-blurb">{r!.blurb}</span>
+              <span class="mc-link">See the recipe</span>
+            </button>
+            <button class="heart" type="button" data-heart={r!.id} aria-pressed="false" aria-label={`Save ${r!.name}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.1A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.8c0 5.5-7.5 10.1-7.5 10.1z"/></svg><span class="hc"></span></button>
+          </div>
         ))}</div>
+
+        <div class="saved-recipes" id="saved" hidden>
+          <h4>Your saved recipes</h4>
+          <div class="saved-list" id="saved-list"></div>
+          <p class="saved-note">Saved in this browser. Open one to copy it into your notes.</p>
+        </div>
 
         <h3 class="cb-title">What should I make tonight?</h3>
         <div class="cupboard" id="picker">
@@ -64,7 +73,7 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
     </section>
   </div>
 
-  <script define:vars={{ recipes, whereLabels }}>
+  <script define:vars={{ recipes, whereLabels, HEART: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.1A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.8c0 5.5-7.5 10.1-7.5 10.1z"/></svg>' }}>
     const out = document.getElementById('recipe-out');
     const count = document.getElementById('count');
     let mood = null, time = 999, lastId = null;
@@ -77,14 +86,19 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
         <div class="rc-head">
           <div><p class="eyebrow">${r.minutes} minutes, serves ${r.serves}. Protein from ${esc(r.protein.toLowerCase())}.</p>
           <h3>${esc(r.name)}</h3><p class="rc-blurb">${esc(r.blurb)}</p></div>
-          ${matches > 1 ? '<button class="btn" id="another">Try another</button>' : ''}
+          <div class="rc-actions">
+            <button class="heart big" type="button" data-heart="${r.id}" aria-pressed="false" aria-label="Save ${esc(r.name)}">${HEART}<span class="hl">Save</span><span class="hc"></span></button>
+            <button class="btn" type="button" id="copy-recipe">Copy recipe</button>
+            ${matches > 1 ? '<button class="btn" id="another">Try another</button>' : ''}
+          </div>
         </div>
         <div class="rc-body">
           <div><h5>Ingredients</h5><ul>${r.ingredients.map(i => `<li>${esc(i.item)}</li>`).join('')}</ul></div>
           <div><h5>Where to get it</h5>${Object.entries(groups).map(([w, items]) => `<p class="rc-where"><b>${esc(whereLabels[w] || w)}</b>${items.map(esc).join(', ')}</p>`).join('')}</div>
           <div class="rc-steps"><h5>Method</h5><ol>${r.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>
         </div>`;
-      out.hidden = false; lastId = r.id;
+      out.hidden = false; lastId = r.id; paintHearts();
+      document.getElementById('copy-recipe').addEventListener('click', e => copyRecipe(r, e.currentTarget));
       const again = document.getElementById('another');
       if (again) again.addEventListener('click', suggest);
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -116,6 +130,52 @@ const favs = favourites.map(id => recipes.find(r => r.id === id)).filter(Boolean
     const cb = document.getElementById('picker');
     cb.querySelectorAll('.cb-door').forEach(d => d.addEventListener('click', () => cb.classList.add('open')));
     updateCount();
+
+    // ---------- Hearts: save a recipe to your own list, and see how many visitors saved it ----------
+    const KEY = 'hridal.kitchen.saved';
+    let saved = []; try { saved = JSON.parse(localStorage.getItem(KEY) || '[]').filter(id => recipes.some(r => r.id === id)); } catch (e) {}
+    let hearts = {}, shared = false;
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} };
+    function paintHearts() {
+      document.querySelectorAll('[data-heart]').forEach(b => {
+        const id = b.dataset.heart, on = saved.includes(id), n = hearts[id] || 0;
+        b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+        const name = (recipes.find(r => r.id === id) || {}).name || 'recipe';
+        b.setAttribute('aria-label', (on ? 'Saved: ' : 'Save ') + name + (shared && n ? `, saved by ${n} visitor${n === 1 ? '' : 's'}` : ''));
+        const hc = b.querySelector('.hc'); if (hc) hc.textContent = shared && n ? n : '';
+        const hl = b.querySelector('.hl'); if (hl) hl.textContent = on ? 'Saved' : 'Save';
+      });
+      const list = saved.map(id => recipes.find(r => r.id === id)).filter(Boolean);
+      document.getElementById('saved').hidden = !list.length;
+      document.getElementById('saved-list').innerHTML = list.map(r => `<button class="saved-chip" type="button" data-open="${r.id}"><span>${esc(r.name)}</span><em>${r.minutes} min</em></button>`).join('');
+      document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => show(recipes.find(r => r.id === b.dataset.open), 1));
+    }
+    document.addEventListener('click', async e => {
+      const b = e.target.closest && e.target.closest('[data-heart]'); if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      const id = b.dataset.heart, on = !saved.includes(id);
+      saved = on ? [...saved, id] : saved.filter(x => x !== id); keep();
+      if (shared) hearts[id] = Math.max(0, (hearts[id] || 0) + (on ? 1 : -1));
+      paintHearts();
+      if (on) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+      try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'heart', id, on }) })).json(); if (j.counts) { hearts = j.counts; paintHearts(); } } catch (err) {}
+    }, true);
+    fetch('/api/tally?kind=heart').then(r => r.json()).then(j => { shared = !!j.enabled; hearts = j.counts || {}; paintHearts(); }).catch(() => {});
+    paintHearts();
+
+    // ---------- Copy a recipe as plain text, ready to paste into notes or a message ----------
+    function recipeText(r) {
+      return [r.name, `${r.minutes} minutes, serves ${r.serves}`, '', 'Ingredients', ...r.ingredients.map(i => '- ' + i.item), '', 'Method', ...r.steps.map((s, i) => `${i + 1}. ${s}`), '', 'From hridal.com/kitchen'].join('\n');
+    }
+    async function copyRecipe(r, btn) {
+      const text = recipeText(r); let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+        const t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select();
+        try { ok = document.execCommand('copy'); } catch (e2) {} t.remove();
+      }
+      btn.textContent = ok ? 'Copied! Paste it anywhere' : 'Couldn’t copy, try again';
+      setTimeout(() => { btn.textContent = 'Copy recipe'; }, 2600);
+    }
   </script>
   <script>
     import { gsap } from 'gsap';

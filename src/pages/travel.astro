@@ -10,7 +10,7 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
     <section class="block stacked-full tool-page">
       <h2>Travel</h2>
       <div>
-        <p class="lead-small">Every city I've been to, on a globe that follows the real sun: the lit side is wherever it's daytime right now. Drag to spin it, scroll to zoom, and tap a light to look closer.</p>
+        <p class="lead-small">Every city I've been to, on a globe that follows the real sun: the lit side is wherever it's daytime right now. Drag to spin it, scroll to zoom, and tap a light to look closer. If you've been there too, you can add yourself.</p>
         <div class="travel-stats"><span><b>{places.length}</b> cities</span><span><b>{countries}</b> {countries === 1 ? 'country' : 'countries'}</span></div>
         <div class="globe-wrap">
           <div id="globe" aria-label="Interactive globe of cities visited"></div>
@@ -178,9 +178,37 @@ places.forEach((p, i) => (byCountry[p.country] ||= []).push({ p, i }));
         const p = places[i];
         ctl.autoRotate = false;
         globe.pointOfView({ lat: p.lat, lng: p.lng, altitude: 1.4 }, 1200);
-        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ', ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}`;
-        panel.hidden = false;
+        body.innerHTML = `<p class="eyebrow">${esc(p.country)}${p.when ? ', ' + esc(p.when) : ''}</p><h3>${esc(p.name)}</h3>${p.note ? `<p class="pp-note">${esc(p.note)}</p>` : ''}
+          <div class="pp-been" data-id="${pid(p)}"><p class="ppb-count"></p><button class="ppb-btn" type="button"></button></div>`;
+        panel.hidden = false; paintBeen();
       }
+
+      // "I've been here too": visitors add themselves to a city, and everyone sees the count.
+      const pid = (p: { name: string; country: string }) => (p.name + '-' + p.country).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const KEY = 'hridal.travel.been';
+      let mine: string[] = []; try { mine = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch {}
+      let beenCounts: Record<string, number> | null = null, store = true;
+      const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch {} };
+      fetch('/api/tally?kind=been').then(r => r.json()).then(j => { store = !!j.enabled; beenCounts = j.counts || {}; paintBeen(); }).catch(() => { store = false; paintBeen(); });
+      function paintBeen() {
+        const box = body.querySelector<HTMLElement>('.pp-been'); if (!box) return;
+        const id = box.dataset.id!, me = mine.includes(id), n = beenCounts?.[id] || 0;
+        const others = Math.max(0, n - (me ? 1 : 0));
+        box.querySelector('.ppb-count')!.textContent = !store ? '' : beenCounts === null ? '\u00a0' :
+          me ? (others ? `You and ${others} other visitor${others === 1 ? '' : 's'} have been here.` : 'You’re the first visitor to say you’ve been here.')
+             : n ? `${n} visitor${n === 1 ? ' has' : 's have'} been here too.` : 'No visitors have said they’ve been here yet.';
+        const btn = box.querySelector<HTMLButtonElement>('.ppb-btn')!;
+        btn.hidden = !store; btn.classList.toggle('on', me); btn.setAttribute('aria-pressed', String(me));
+        btn.innerHTML = me ? '<span aria-hidden="true">✓</span> I’ve been here' : 'I’ve been here too';
+        btn.onclick = async () => {
+          const on = !mine.includes(id);
+          mine = on ? [...mine, id] : mine.filter(x => x !== id); keep();
+          if (beenCounts) beenCounts[id] = Math.max(0, (beenCounts[id] || 0) + (on ? 1 : -1)); paintBeen(); paintChips();
+          try { const j = await (await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'been', id, on }) })).json(); if (j.counts) { beenCounts = j.counts; paintBeen(); } } catch {}
+        };
+      }
+      function paintChips() { document.querySelectorAll<HTMLButtonElement>('.place-chip').forEach(b => b.classList.toggle('been', mine.includes(pid(places[+b.dataset.i!])))); }
+      paintChips();
       document.getElementById('pp-close')!.onclick = () => { panel.hidden = true; ctl.autoRotate = true; };
       document.querySelectorAll<HTMLButtonElement>('.place-chip').forEach(b => b.onclick = () => open(+b.dataset.i!));
     } catch (err) {
