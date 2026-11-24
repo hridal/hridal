@@ -246,3 +246,120 @@ body .np-page .np-label { line-height: 54px !important; }
   body .letter .riddle-a { --sit: 1px; }
   body .np-page .topic { --sit-topic: 34px; }
 }
+
+/* =====================================================================
+   Playful layer (ideas adapted from 21st.dev components, guided by the Laws of UX)
+   ===================================================================== */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Eyebrow word flip ("Container Text Flip") */
+.eyebrow .flip { display: inline-flex; vertical-align: bottom; overflow: hidden; padding: 0 .35em; margin: 0 .1em; border-radius: 6px;
+  background: var(--pink); color: var(--accent); font-weight: 500; transition: width .3s; }
+.eyebrow .flip-in { display: inline-block; transition: transform .26s cubic-bezier(.2,.7,.2,1), opacity .26s; }
+.eyebrow .flip.out .flip-in { transform: translateY(-100%); opacity: 0; }
+.eyebrow .flip.in .flip-in { transform: translateY(100%); opacity: 0; transition: none; }
+
+/* Hand-drawn underline on key phrases (Von Restorff) */
+.tagline .mark { color: var(--ink); white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 7 C 20 3, 38 9, 58 5 S 96 3, 118 6' fill='none' stroke='%236c202d' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left 100% / 0% .45em;
+  padding-bottom: .12em; animation: mark-draw .9s 2.1s cubic-bezier(.65,0,.35,1) forwards; }
+@keyframes mark-draw { to { background-size: 100% .45em; } }
+
+/* Explore bento grid (chunking, common region, Hick's law) */
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.tile { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: 10px; min-height: 190px;
+  padding: 22px 24px; border-radius: 18px; border: 1px solid var(--line); background: #fffdfb; color: var(--ink); text-decoration: none;
+  transition: transform .3s cubic-bezier(.2,.7,.2,1), border-color .3s, box-shadow .3s; }
+a.tile:hover { transform: translateY(-3px); border-color: rgba(108,32,45,.35); box-shadow: 0 22px 40px -30px rgba(108,32,45,.5); }
+a.tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.b-exp { grid-column: span 4; } .b-proj { grid-column: span 2; }
+.b-ess, .b-life, .b-topic { grid-column: span 2; }
+.t-kicker { font-size: 13px; color: var(--muted); }
+.t-title { font-size: 21px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.t-foot { margin-top: auto; font-size: 13.5px; color: var(--muted); line-height: 1.45; }
+.t-quote { font-size: 22px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.t-quote::before { content: "\201C"; color: var(--accent); margin-right: 2px; }
+.t-quote::after { content: "\201D"; color: var(--accent); margin-left: 2px; }
+/* Experience logos with tooltips ("Animated Tooltip") */
+.t-logos { display: flex; gap: 10px; margin-top: 4px; }
+.t-logo { position: relative; width: 48px; height: 48px; border-radius: 12px; background: #fff; border: 1px solid var(--line); display: grid; place-items: center;
+  transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+.t-logo img { width: 36px; height: 36px; object-fit: contain; border-radius: 8px; }
+.b-exp:hover .t-logo { transform: translateY(-2px); }
+.b-exp:hover .t-logo:nth-child(2) { transition-delay: .04s; } .b-exp:hover .t-logo:nth-child(3) { transition-delay: .08s; } .b-exp:hover .t-logo:nth-child(4) { transition-delay: .12s; }
+.t-logo::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translate(-50%, 4px); white-space: nowrap;
+  font-size: 12px; color: #fff; background: var(--ink); padding: 5px 9px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 2; }
+.t-logo:hover::after { opacity: 1; transform: translate(-50%, 0); }
+/* Projects mini chart draws on hover */
+.t-art { width: 100%; height: 64px; }
+.ta-line { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 260; stroke-dashoffset: 0; }
+.ta-fill { fill: var(--accent); opacity: .08; } .ta-dot { fill: var(--accent); }
+.b-proj:hover .ta-line { animation: ta-draw 1s cubic-bezier(.65,0,.35,1); }
+@keyframes ta-draw { from { stroke-dashoffset: 260; } }
+/* My life globe spins on hover */
+.t-globe { width: 64px; height: 64px; fill: none; stroke: var(--ink); stroke-width: 1.4; }
+.t-globe .tg-spin { transform-origin: 40px 40px; transform-box: view-box; }
+.b-life:hover .tg-spin { animation: tg 2.4s linear infinite; }
+@keyframes tg { 50% { transform: scaleX(-1); } }
+.t-globe .tg-pin { fill: var(--accent); stroke: none; }
+/* Essay prompt tile on lined paper, in the same handwriting */
+.b-topic { background: #fffdf8 repeating-linear-gradient(transparent 0 33px, #f2d9d5 33px 34px); }
+.t-prompt { margin: 0; font-family: "Dancing Script Variable", "Dancing Script", cursive !important; font-size: 25px; font-weight: 600; line-height: 34px; color: #2a1a1d; }
+.t-prompt.pop { animation: rise .45s cubic-bezier(.2,.7,.2,1); }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+.t-actions { margin-top: auto; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.t-btn { font: inherit; font-size: 13.5px; background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+.t-btn:hover { border-color: var(--ink); }
+.t-link { font-size: 13.5px; color: var(--accent); }
+@media (max-width: 900px) {
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .b-exp { grid-column: 1 / -1; } .b-proj, .b-ess, .b-life, .b-topic { grid-column: span 1; }
+  .b-topic { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .bento { grid-template-columns: 1fr; } .tile { min-height: 0; }
+  .b-exp, .b-proj, .b-ess, .b-life, .b-topic { grid-column: 1 / -1; }
+  .t-logo::after { display: none; }
+}
+
+/* Squiggly underline on nav hover ("Squiggly Underline") */
+@media (hover: hover) and (min-width: 761px) {
+  #site-nav a:not([aria-current]):hover {
+    border-bottom-color: transparent;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q 4 0 8 3 T 16 3' fill='none' stroke='%236c202d' stroke-width='1.4'/%3E%3C/svg%3E") repeat-x 0 100% / 16px 6px;
+    animation: squig .6s linear infinite; color: var(--ink);
+  }
+}
+@keyframes squig { to { background-position-x: 16px; } }
+
+/* Sign-off: signature writes itself, then a big back-to-top (peak-end rule, Fitts's law) */
+.signoff { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 110px 0 -30px; position: relative; z-index: 1; }
+.so-thanks { margin: 0; font-size: 15px; color: var(--muted); }
+.so-sign { width: 220px; height: 76px; overflow: visible; }
+.so-sign text { font-family: "Dancing Script Variable", "Dancing Script", cursive; font-weight: 600; font-size: 64px;
+  fill: var(--accent); fill-opacity: 0; stroke: var(--accent); stroke-width: 1.1; stroke-dasharray: 900; stroke-dashoffset: 900; }
+.signoff.signed .so-sign text { animation: sign 2.2s cubic-bezier(.45,0,.2,1) forwards, sign-fill .6s 1.7s forwards; }
+@keyframes sign { to { stroke-dashoffset: 0; } }
+@keyframes sign-fill { to { fill-opacity: 1; } }
+.to-top { margin-top: 18px; font: inherit; font-size: 14px; color: var(--ink); background: #fffdfb; border: 1px solid var(--line); border-radius: 999px;
+  padding: 12px 22px; min-height: 44px; cursor: pointer; transition: border-color .2s, transform .2s; }
+.to-top:hover { border-color: var(--accent); transform: translateY(-2px); }
+.to-top span { color: var(--accent); }
+.footer-mark { margin-top: 40px !important; }
+
+/* Reading progress on essays (goal-gradient effect) */
+.read-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 300; pointer-events: none; }
+.read-progress i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tagline .mark { animation: none; background-size: 100% .45em; }
+  .signoff .so-sign text, .signoff.signed .so-sign text { animation: none; stroke-dashoffset: 0; fill-opacity: 1; }
+  .b-proj:hover .ta-line, .b-life:hover .tg-spin, #site-nav a:hover { animation: none !important; }
+  a.tile:hover { transform: none; }
+}
+/* Fixes: tooltip sits under the logo and is never clipped; tile text keeps its colours on hover */
+.b-exp { overflow: visible; }
+a.tile:hover, a.tile:hover .t-title, a.tile:hover .t-quote { color: var(--ink); }
+.t-logo::after { left: 0; bottom: auto; top: calc(100% + 8px); transform: translateY(-4px); }
+.t-logo:hover::after { transform: none; }
+.b-topic { background-position: 0 12px; }

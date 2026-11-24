@@ -2,6 +2,21 @@
 import Base from '../layouts/Base.astro';
 import { me } from '../data/me';
 import { riddles } from '../data/riddles';
+import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+import { places } from '../data/travel';
+import { topics } from '../data/essays';
+// Data for the Explore grid, worked out from the site's own content so it stays current.
+const exp = await getCollection('experience');
+const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => +b.data.date - +a.data.date);
+const latest = essays[0];
+const countries = new Set(places.map(p => p.country)).size;
+// Hand-drawn underlines on two phrases in the welcome text: one for the CV side, one for the creative side.
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const marks = ['Roland Berger and IBM', 'writing essays and sketching'];
+const taglineHtml = marks.reduce((h, m) => h.replace(esc(m), `<span class="mark">${esc(m)}</span>`), esc(me.tagline));
+// Words that rotate in the eyebrow above the name.
+const flips = ['work & writing', 'consulting', 'code', 'essays', 'sketches', 'ideas'];
 const icons: Record<string, string> = {
   pen: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>',
   music: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
@@ -14,7 +29,7 @@ const icons: Record<string, string> = {
 <Base>
   <section class="intro">
     <div class="hero-mesh" aria-hidden="true"><i></i><i></i><i></i></div>
-    <p class="eyebrow">the work &amp; writing of</p>
+    <p class="eyebrow">the <span class="flip" aria-hidden="true"><span class="flip-in">{flips[0]}</span></span><span class="sr">work &amp; writing</span> of</p>
     <div class="name-row name-under">
       <h1 class="full-name"><span class="first">{me.name}</span><span class="sur"><span class="sp">{' '}</span>{me.surname}</span><em class="dot">.</em></h1>
     </div>
@@ -28,7 +43,7 @@ const icons: Record<string, string> = {
           <ol class="mean">{me.meaning.map(m => <li>{m}</li>)}</ol>
           <p class="dict-foot">{me.etymology} {me.soundsLike.charAt(0).toUpperCase() + me.soundsLike.slice(1)}.</p>
         </div>
-        <p class="tagline">{me.tagline}</p>
+        <p class="tagline" set:html={taglineHtml} />
         <div class="actions"><a class="btn solid" href="/contact">Get in touch</a></div>
       </div>
       <aside class="profile" aria-label="At a glance">
@@ -74,6 +89,59 @@ const icons: Record<string, string> = {
       </div>
     ))}</div>
   </section>
+
+  <section class="block stacked-full explore" aria-labelledby="explore-h">
+    <div class="now-head"><h2 id="explore-h">Have a look around</h2></div>
+    <div class="bento">
+      <a class="tile b-exp spot" href="/experience">
+        <span class="t-kicker">Experience</span>
+        <span class="t-title">Consulting at Roland Berger, tech at IBM and engineering at Wood</span>
+        <span class="t-logos">
+          {[['roland-berger','Roland Berger','Junior Consultant Intern'],['ibm','IBM','Application Support Analyst Intern'],['wood','Wood Group','Engineering Consulting Intern'],['imperial','Imperial','AI Society, EDI rep and more']].map(([f,n,r]) => (
+            <span class="t-logo" data-tip={`${n}: ${r}`}><img src={`/logos/${f}.png`} alt={n} width="44" height="44" loading="lazy" /></span>
+          ))}
+        </span>
+        <span class="t-foot">{exp.filter(e => e.data.order <= 3).length} internships and {exp.filter(e => e.data.order > 3).length} leadership roles</span>
+      </a>
+      <a class="tile b-proj spot" href="/projects">
+        <span class="t-kicker">Projects</span>
+        <svg class="t-art" viewBox="0 0 200 80" aria-hidden="true"><path class="ta-fill" d="M6 70 C40 64 54 50 76 52 S112 30 134 32 S172 12 194 8 L194 78 L6 78Z"/><path class="ta-line" d="M6 70 C40 64 54 50 76 52 S112 30 134 32 S172 12 194 8"/><circle class="ta-dot" cx="194" cy="8" r="4"/></svg>
+        <span class="t-title">{projects.length} things I've built</span>
+        <span class="t-foot">{projects.map(p => p.title).join(', ')}</span>
+      </a>
+      <a class="tile b-ess spot" href={latest ? `/essays/${latest.id}` : '/essays'}>
+        <span class="t-kicker">Latest essay</span>
+        <span class="t-quote">{latest?.data.title}</span>
+        <span class="t-foot">{essays.length} essays so far</span>
+      </a>
+      <a class="tile b-life spot" href="/life">
+        <span class="t-kicker">My life</span>
+        <svg class="t-globe" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="30"/><g class="tg-spin"><ellipse cx="40" cy="40" rx="12" ry="30"/><path d="M10 40h60M14 26h52M14 54h52"/></g><circle class="tg-pin" cx="52" cy="30" r="3"/><circle class="tg-pin" cx="30" cy="46" r="3"/></svg>
+        <span class="t-title">{places.length} cities, {countries} countries</span>
+        <span class="t-foot">Plus my kitchen, my bookshelf and a study timer</span>
+      </a>
+      <div class="tile b-topic">
+        <span class="t-kicker">Fancy writing something?</span>
+        <p class="t-prompt" id="b-prompt" aria-live="polite">{topics[0]}</p>
+        <span class="t-actions"><button type="button" class="t-btn" id="b-shuffle">Another prompt</button><a class="t-link" id="b-write" href={`/essays/write?topic=${encodeURIComponent(topics[0])}`}>Write about this</a></span>
+      </div>
+    </div>
+  </section>
+  <script define:vars={{ topics, flips }}>
+    // Explore grid: shuffle the essay prompt.
+    (() => { const el = document.getElementById('b-prompt'), go = document.getElementById('b-write');
+      let last = 0; const pick = () => { let i; do { i = Math.floor(Math.random() * topics.length); } while (i === last && topics.length > 1); last = i;
+        el.textContent = topics[i]; go.href = '/essays/write?topic=' + encodeURIComponent(topics[i]); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+      document.getElementById('b-shuffle').addEventListener('click', pick); pick();
+    })();
+    // Eyebrow: rotate the word, unless the visitor prefers less motion.
+    (() => { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const box = document.querySelector('.eyebrow .flip'), inner = box && box.querySelector('.flip-in'); if (!inner) return;
+      let i = 0; setInterval(() => { if (document.hidden) return; i = (i + 1) % flips.length;
+        box.classList.add('out'); setTimeout(() => { inner.textContent = flips[i]; box.classList.remove('out'); box.classList.add('in'); requestAnimationFrame(() => requestAnimationFrame(() => box.classList.remove('in'))); }, 260);
+      }, 2600);
+    })();
+  </script>
 
   <section class="riddle-wrap" id="riddle">
     <div class="envelope" role="button" tabindex="0" aria-label="Open the envelope for a riddle">

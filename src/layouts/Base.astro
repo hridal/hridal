@@ -57,6 +57,11 @@ const jump = [
       </nav>
     </header>
     <main><slot /></main>
+    <div class="signoff" aria-label={`Thanks for stopping by, ${me.name}`}>
+      <p class="so-thanks">Thanks for stopping by,</p>
+      <svg class="so-sign" viewBox="0 0 260 90" aria-hidden="true"><text x="8" y="66">{me.name}</text></svg>
+      <button class="to-top" type="button" aria-label="Back to the top of the page"><span aria-hidden="true">↑</span> Back to top</button>
+    </div>
     <div class="footer-mark" aria-hidden="true">hridal.</div>
     <footer>
       <span>© {new Date().getFullYear()} {me.name} {me.surname}</span>

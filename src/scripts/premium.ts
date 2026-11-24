@@ -71,3 +71,22 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
   // Show the right shortcut on Windows and Linux.
   if (!/Mac|iPhone|iPad/.test(navigator.platform)) document.querySelectorAll('.k-btn kbd').forEach(k => { k.textContent = 'Ctrl K'; });
 })();
+
+// Sign-off: the signature writes itself when the footer comes into view (peak-end rule).
+(() => {
+  const so = document.querySelector<HTMLElement>('.signoff'); if (!so) return;
+  if (reduce || !('IntersectionObserver' in window)) { so.classList.add('signed'); }
+  else { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { so.classList.add('signed'); io.disconnect(); } }, { threshold: 0.6 }); io.observe(so); }
+  so.querySelector('.to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+})();
+
+// Essays: a thin progress bar showing how far through you are (goal-gradient effect).
+(() => {
+  const bar = document.querySelector<HTMLElement>('.read-progress i'); const art = document.querySelector<HTMLElement>('article');
+  if (!bar || !art) return;
+  let ticking = false;
+  const update = () => { ticking = false; const r = art.getBoundingClientRect(); const total = r.height - innerHeight;
+    const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1; bar.style.transform = `scaleX(${p.toFixed(4)})`; };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update); update();
+})();

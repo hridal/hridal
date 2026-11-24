@@ -4,6 +4,7 @@ const { title, date, summary, extra } = Astro.props;
 const d = new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 <Base title={title} description={summary}>
+  <div class="read-progress" aria-hidden="true"><i></i></div>
   <article>
     <header>
       <h1>{title}</h1>
