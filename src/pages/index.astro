@@ -26,6 +26,14 @@ const icons: Record<string, string> = {
   book: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 4 4.5v14c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-14c-4 0-6.5.5-8 2z"/><path d="M12 6.5v14"/></svg>',
   film: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 8h4M3 12h4M3 16h4M17 8h4M17 12h4M17 16h4"/></svg>',
 };
+import { doodles } from '../data/interact';
+const joinIn = [
+  { id: 'focus', label: 'Study with me', href: '/focus' },
+  { id: 'exercise', label: 'Exercise', href: '/exercise' },
+  { id: 'travel', label: 'Travel', href: '/travel' },
+  { id: 'kitchen', label: 'Kitchen', href: '/kitchen' },
+  { id: 'shelf', label: 'Shelf', href: '/shelf' },
+];
 ---
 <Base>
   <section class="intro">
@@ -146,8 +154,37 @@ const icons: Record<string, string> = {
 
   <section class="block stacked-full home-story" aria-labelledby="story-h">
     <div class="now-head"><h2 id="story-h">How this all started</h2></div>
-    <div class="story-body">{me.story.map(p => <p>{p}</p>)}</div>
+    <div class="story-grid">
+      <div class="story-body">{me.story.map(p => <p>{p}</p>)}</div>
+      <aside class="join-card spot" aria-labelledby="join-h">
+        <p class="t-kicker">Interact</p>
+        <h3 id="join-h" class="join-title">Come and join in</h3>
+        <div class="fan" role="list">{joinIn.map((j, i) => (
+          <a class="fan-card" role="listitem" href={j.href} style={`--i:${i - 2}`}>
+            <svg viewBox="0 0 120 80" aria-hidden="true" set:html={doodles[j.id]} />
+            <span>{j.label}</span>
+          </a>
+        ))}</div>
+        <p class="join-live" id="join-live" hidden><i class="rs-dot"></i><span></span></p>
+        <a class="join-link" href="/life">See everything you can do <span aria-hidden="true">→</span></a>
+      </aside>
+    </div>
   </section>
+  <script>
+    // If Hridal is studying or training right now, say so on the card (checked once, when it comes into view).
+    const card = document.querySelector('.join-card');
+    if (card) new IntersectionObserver((es, io) => { if (!es.some(e => e.isIntersecting)) return; io.disconnect();
+      Promise.all([fetch('/api/room').then(r => r.json()).catch(() => null), fetch('/api/exercise').then(r => r.json()).catch(() => null)]).then(([room, ex]) => {
+        const el = document.getElementById('join-live')!, t = el.querySelector('span')!;
+        let msg = '', href = '';
+        if (room?.host) { msg = room.host.paused ? 'I’m on a study break, back soon' : 'I’m studying right now, pull up a chair'; href = '/focus'; }
+        else if (ex?.live) { msg = ex.live.type === 'climb' ? 'I’m at the climbing wall right now' : 'I’m in the gym right now, send a wave'; href = '/exercise'; }
+        if (!msg) return;
+        t.textContent = msg; el.hidden = false; el.onclick = () => { location.href = href; }; el.setAttribute('role', 'link'); el.tabIndex = 0;
+        el.onkeydown = (e) => { if (e.key === 'Enter') location.href = href; };
+      });
+    }, { threshold: .3 }).observe(card);
+  </script>
 
   <section class="riddle-wrap" id="riddle">
     <div class="envelope" role="button" tabindex="0" aria-label="Open the envelope for a riddle">
