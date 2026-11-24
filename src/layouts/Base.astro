@@ -17,8 +17,8 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 // Everything the quick-jump menu (Cmd/Ctrl + K) can take you to.
 const essays = (await getCollection('essays')).filter(e => !e.data.draft).sort((a, b) => +b.data.date - +a.data.date);
 const jump = [
-  ...[['/', 'Home'], ...links, ['/life', 'Hang out'], ['/contact', 'Contact']].map(([href, label]) => ({ href, label, group: 'Pages' })),
-  ...lifeLinks.map(([href, label]) => ({ href, label, group: 'Hang out' })),
+  ...[['/', 'Home'], ...links, ['/life', 'Beyond work'], ['/contact', 'Contact']].map(([href, label]) => ({ href, label, group: 'Pages' })),
+  ...lifeLinks.map(([href, label]) => ({ href, label, group: 'Beyond work' })),
   ...projects.map(p => ({ href: p.href, label: p.title, group: 'Projects' })),
   ...essays.map(e => ({ href: `/essays/${e.id}`, label: e.data.title, group: 'Essays' })),
 ];
@@ -54,7 +54,7 @@ const jump = [
       <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><i class="mb-label">Menu</i><b class="mb-icon"><span></span><span></span><span></span></b></button>
       <nav id="site-nav">
         {links.map(([href, label]) => <a href={href} aria-current={here.startsWith(href) ? 'page' : undefined}>{label}</a>)}
-        <a href="/life" aria-current={['/life', ...lifeLinks.map(([h]) => h)].some(h => here.startsWith(h)) ? 'page' : undefined}>Hang out</a>
+        <a href="/life" aria-current={['/life', ...lifeLinks.map(([h]) => h)].some(h => here.startsWith(h)) ? 'page' : undefined}>Beyond work</a>
         <a href="/contact" aria-current={here.startsWith('/contact') ? 'page' : undefined}>Contact</a>
         <button class="k-btn" type="button" data-k-open aria-label="Search the site">Search <kbd>⌘K</kbd></button>
       </nav>
