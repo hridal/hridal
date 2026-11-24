@@ -32,7 +32,7 @@ export const me = {
   currentlyUpdated: 'November 2026',
   currently: [
     { label: 'Reading', icon: 'book', title: 'Brave New World', note: 'Aldous Huxley' },
-    { label: 'Writing', icon: 'pen', title: 'Create More Than You Consume', note: 'An essay on individuality and doomscrolling' },
+    { label: 'Writing', icon: 'pen', title: 'Create more than you consume', note: 'An essay on individuality and doomscrolling' },
     { label: 'Listening to', icon: 'music', title: 'Depeche Mode', note: 'plus a lot of rock and indie rock' },
     { label: 'Watching', icon: 'film', title: 'The Mentalist', note: 'On Netflix' },
     { label: 'Learning', icon: 'spark', title: 'AI safety', note: 'Fresh off an AI Safety and Practices course' },

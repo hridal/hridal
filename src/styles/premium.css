@@ -221,3 +221,28 @@ body .letter .riddle-a { font-size: 25px; font-weight: 600; line-height: 34px; }
 .pf-post-full .pp-img img { display: block; width: 100%; height: auto; border-radius: 0; background: #fff; }
 .pf-post-full .pp-stats { display: flex; gap: 14px; padding: 8px 12px 10px; font-size: 11px; color: #666; }
 .pf-post-full .pp-stats span { display: inline; font-size: 11px; color: #666; }
+
+/* ---------- Handwriting sits on the ruled lines (lines every 34px) ---------- */
+body .letter .riddle-q, body .letter .riddle-a { margin: 34px 0 0 !important; padding: 0 !important; line-height: 34px !important; position: relative; top: var(--sit, 0px); }
+body .letter .riddle-a { font-size: 27px; }
+body .letter .reveal { margin: 37px 0 3px !important; height: 28px; }
+body .letter .letter-top span { transform: translateY(var(--sit-title, 9px)); }
+body .np-page .topic {
+  font-family: "Dancing Script Variable", "Dancing Script", cursive !important;
+  font-weight: 600; font-size: clamp(27px, 2.8vw, 32px); line-height: 34px; padding-top: 0; position: relative; top: var(--sit-topic, 0px);
+}
+@media (max-width: 760px) {
+  body .letter .riddle-q, body .letter .riddle-a { font-size: 21px; }
+  body .np-page .topic { font-size: 24px; }
+}
+/* Measured offsets so each baseline lands on a ruled line */
+body .letter { --sit-title: 3px; }
+body .letter .riddle-q { --sit: 7px; }
+body .letter .riddle-a { --sit: -1px; }
+body .np-page .topic { --sit-topic: 31px; }
+body .np-page .np-label { line-height: 54px !important; }
+@media (max-width: 760px) {
+  body .letter .riddle-q { --sit: 9px; }
+  body .letter .riddle-a { --sit: 1px; }
+  body .np-page .topic { --sit-topic: 34px; }
+}

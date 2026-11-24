@@ -6,7 +6,7 @@ export const categories = [
 
 // The "Currently writing" card. Update whenever you start something new.
 export const currentlyWriting = {
-  title: 'Create More Than You Consume',
+  title: 'Create more than you consume',
   subtitle: 'Individuality in the age of the infinite scroll',
   note: 'Researching the neuroscience of doomscrolling and what our phones are doing to our attention.',
 };
