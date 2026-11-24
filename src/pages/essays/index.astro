@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import { me } from '../../data/me';
 import { categories, currentlyWriting, topics } from '../../data/essays';
 const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }).replace('Sept', 'Sep');
 const groups = categories.map(c => ({ ...c, items: essays.filter(e => e.data.category === c.id) }));
 const serious = groups.filter(g => g.id === 'philosophy' && g.items.length), casual = groups.filter(g => g.id !== 'philosophy');
 ---
@@ -135,7 +135,7 @@ const serious = groups.filter(g => g.id === 'philosophy' && g.items.length), cas
         const t = document.createElement('span'); t.className = 't'; t.textContent = e.title;
         const sub = document.createElement('span'); sub.className = 's'; sub.textContent = 'By ' + e.name + (e.topic ? ', on ' + e.topic : '');
         t.appendChild(sub);
-        const tm = document.createElement('time'); tm.textContent = new Date(+e.created).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+        const tm = document.createElement('time'); tm.textContent = new Date(+e.created).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }).replace('Sept', 'Sep');
         a.append(t, tm); li.appendChild(a); ul.appendChild(li);
       });
       document.getElementById('from-readers').hidden = false;

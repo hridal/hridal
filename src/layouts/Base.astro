@@ -58,7 +58,7 @@ const jump = [
     <main><slot /></main>
     <div class="footer-mark" aria-hidden="true">hridal.</div>
     <footer>
-      <span>© {new Date().getFullYear()} {me.name}</span>
+      <span>© {new Date().getFullYear()} {me.name} {me.surname}</span>
       <span>{me.links.map((l, i) => <>{i > 0 && ', '}<a href={l.href}>{l.label}</a></>)}</span>
     </footer>
   </div>

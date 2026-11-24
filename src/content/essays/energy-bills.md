@@ -1,5 +1,5 @@
 ---
-title: "Why Two Identical Flats Pay Different Electricity Bills"
+title: "Why two identical flats pay different electricity bills"
 date: "2026-09-29"
 category: "other"
 summary: "What I found after spending three evenings trying to pick a UK energy tariff."

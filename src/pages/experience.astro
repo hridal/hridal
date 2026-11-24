@@ -4,13 +4,19 @@ import Timeline from '../components/Timeline.astro';
 import { me } from '../data/me';
 import { getCollection } from 'astro:content';
 import { marked } from 'marked';
+import { existsSync } from 'node:fs';
+// Only show the CV button once public/cv.pdf has been added.
+const hasCv = existsSync(new URL('../../public/cv.pdf', import.meta.url));
 const logos = me.linkedin.logos;
 const logoFor = (org: string) => logos[org] ?? (/Imperial/.test(org) ? logos['Imperial'] : undefined);
 
-const work = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order).map(e => ({
-  when: e.data.period, big: e.data.org, small: e.data.role, logo: logoFor(e.data.org),
+const all = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order).map(e => ({
+  order: e.data.order, when: e.data.period, big: e.data.org, small: e.data.role, logo: logoFor(e.data.org),
   html: e.body?.trim() ? (marked.parse(e.body) as string) : '',
 }));
+// Internships (order 1-3) and university roles (order 4+) are listed separately so the dates read in order.
+const work = all.filter(e => e.order <= 3);
+const leadership = all.filter(e => e.order > 3);
 const education = me.education.map(e => {
   const [first, ...rest] = e.detail.split('. ');
   return { when: e.period, big: e.school, small: first.replace(/:.*/, ''), logo: logoFor(e.school),
@@ -18,10 +24,11 @@ const education = me.education.map(e => {
 });
 const projects = me.projects.map(p => {
   const m = p.title.match(/^(.*?)\s*\((.*)\)$/);
-  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: /Jewellness/.test(p.title) ? '/logos/jewellness.png' : logos['Imperial'], html: (p as any).body ? `<p>${(p as any).body}</p>` : '' };
+  return { when: p.period, big: m ? m[1] : p.title, small: m ? m[2] : 'Project', logo: /Jewellness/.test(p.title) ? '/logos/jewellness.png' : /Materials/.test(p.title) ? logos['Imperial'] : undefined, html: (p as any).body ? `<p>${(p as any).body}</p>` : '' };
 });
 const groups = [
-  { id: 'tl-work', title: 'Work & leadership', items: work },
+  { id: 'tl-work', title: 'Work', items: work },
+  { id: 'tl-lead', title: 'Leadership', items: leadership },
   { id: 'tl-edu', title: 'Education', items: education },
   { id: 'tl-proj', title: 'Projects', items: projects },
 ];
@@ -62,7 +69,7 @@ const groups = [
 
       <h4 id="skills">Skills</h4>
       <div class="skills">{me.skills.map(s => <div><span>{s.group}</span><div class="tags">{s.items.map(i => <em>{i}</em>)}</div></div>)}</div>
-      <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>
+      {hasCv && <div class="actions"><a class="btn solid" href="/cv.pdf" download>Download full CV (PDF)</a></div>}
     </div>
   </section>
   </div>
