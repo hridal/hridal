@@ -28,11 +28,11 @@ const icons: Record<string, string> = {
 };
 import { doodles } from '../data/interact';
 const joinIn = [
-  { id: 'focus', label: 'Study with me', href: '/focus' },
-  { id: 'exercise', label: 'Exercise', href: '/exercise' },
-  { id: 'travel', label: 'Travel', href: '/travel' },
-  { id: 'kitchen', label: 'Kitchen', href: '/kitchen' },
-  { id: 'shelf', label: 'Shelf', href: '/shelf' },
+  { id: 'focus', label: 'Study with me', hint: 'Pull up a chair', href: '/focus' },
+  { id: 'exercise', label: 'Exercise', hint: 'Send a wave', href: '/exercise' },
+  { id: 'travel', label: 'Travel', hint: 'Been there?', href: '/travel' },
+  { id: 'kitchen', label: 'Kitchen', hint: 'Save a recipe', href: '/kitchen' },
+  { id: 'shelf', label: 'Shelf', hint: 'Rate a book', href: '/shelf' },
 ];
 ---
 <Base>
@@ -159,12 +159,14 @@ const joinIn = [
       <aside class="join-card spot" aria-labelledby="join-h">
         <p class="t-kicker">Interact</p>
         <h3 id="join-h" class="join-title">Come and join in</h3>
-        <div class="fan" role="list">{joinIn.map((j, i) => (
-          <a class="fan-card" role="listitem" href={j.href} style={`--i:${i - 2}`}>
+        <ul class="jgrid">{joinIn.map((j) => (
+          <li><a class="jtile" href={j.href} data-id={j.id}>
             <svg viewBox="0 0 120 80" aria-hidden="true" set:html={doodles[j.id]} />
-            <span>{j.label}</span>
-          </a>
-        ))}</div>
+            <span class="jt-name">{j.label}</span>
+            <span class="jt-hint">{j.hint} <i aria-hidden="true">→</i></span>
+            <b class="jt-live" aria-hidden="true"></b>
+          </a></li>
+        ))}</ul>
         <p class="join-live" id="join-live" hidden><i class="rs-dot"></i><span></span></p>
         <a class="join-link" href="/life">See everything you can do <span aria-hidden="true">→</span></a>
       </aside>
@@ -180,6 +182,7 @@ const joinIn = [
         if (room?.host) { msg = room.host.paused ? 'I’m on a study break, back soon' : 'I’m studying right now, pull up a chair'; href = '/focus'; }
         else if (ex?.live) { msg = ex.live.type === 'climb' ? 'I’m at the climbing wall right now' : 'I’m in the gym right now, send a wave'; href = '/exercise'; }
         if (!msg) return;
+        document.querySelector(`.jtile[data-id="${href.slice(1)}"]`)?.classList.add('is-live');
         t.textContent = msg; el.hidden = false; el.onclick = () => { location.href = href; }; el.setAttribute('role', 'link'); el.tabIndex = 0;
         el.onkeydown = (e) => { if (e.key === 'Enter') location.href = href; };
       });
