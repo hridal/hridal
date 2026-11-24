@@ -634,3 +634,8 @@ button.gpill { cursor: pointer; } button.gpill i { font-style: normal; opacity: 
 .xt-pb.show { animation: pb-in .5s cubic-bezier(.2,1.4,.4,1); }
 @keyframes pb-in { from { transform: translateY(6px) scale(.97); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .xt-pb.show { animation: none; } }
+
+/* Homepage: how this all started */
+.home-story .story-body { max-width: 68ch; }
+.home-story .story-body p { font: 400 clamp(18px, 1.6vw, 20px)/1.7 var(--sans); color: var(--ink); margin: 0 0 18px; }
+.home-story .story-body p:last-child { margin-bottom: 0; }

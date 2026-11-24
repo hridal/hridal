@@ -144,6 +144,11 @@ const icons: Record<string, string> = {
     })();
   </script>
 
+  <section class="block stacked-full home-story" aria-labelledby="story-h">
+    <div class="now-head"><h2 id="story-h">How this all started</h2></div>
+    <div class="story-body">{me.story.map(p => <p>{p}</p>)}</div>
+  </section>
+
   <section class="riddle-wrap" id="riddle">
     <div class="envelope" role="button" tabindex="0" aria-label="Open the envelope for a riddle">
       <div class="env-back"></div>

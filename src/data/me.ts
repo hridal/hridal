@@ -16,6 +16,11 @@ export const me = {
     "At Imperial I'm on the AI Society's research team, and most recently I helped with operations and logistics throughout AI Week, which had speakers from Anthropic and Google DeepMind and finished with Imperial AI Hack, a hackathon with 350 participants. I was also elected EDI representative to support around 500 students in the Department of Materials. I'm interested in AI research and how it can be applied, and I like building things too, from a machine learning model that predicts the properties of materials to the start-up I'm working on now.",
     "I love writing essays, which I publish here on this site, and I'm really interested in web design, digital design and UX. I designed the branding and logo for Imperial AI Hack, and I'm always adding to this site. Away from all this, I play netball, go bouldering and draw in my sketchbook when I get the chance.",
   ],
+  // "How this all started" on the homepage: the story of why the site exists.
+  story: [
+    "I first built this site for myself, as a way to keep track of my own life and have it all in one place, from what I\u2019m reading and cooking to how much I\u2019m studying and everywhere I\u2019ve been.",
+    "Along the way I thought it would be a nice personal touch to make it more interactive, so that friends could pull up a chair while I study, add themselves to the places on my globe or save a recipe they liked. Somewhere in the middle of all that it turned into a portfolio as well, and now it\u2019s a bit of both, a record of what I\u2019m working on and a little corner of the internet that I get to share.",
+  ],
   // The "Currently" section on the homepage. Change these whenever you like.
   // The profile card beside the welcome text on the homepage.
   // Set `status` to '' to hide the line with the dot.
