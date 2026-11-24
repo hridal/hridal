@@ -72,39 +72,26 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
   if (!/Mac|iPhone|iPad/.test(navigator.platform)) document.querySelectorAll('.k-btn kbd').forEach(k => { k.textContent = 'Ctrl K'; });
 })();
 
-// Sign-off: a pen writes the signature on screen when the footer comes into view (peak-end rule).
-// The ink is revealed along a hand-traced pen path, one stroke after another, then the underline sweeps through.
+// Sign-off: the signature writes itself, line by line, when the footer comes into view (peak-end rule).
 (() => {
   const so = document.querySelector<HTMLElement>('.signoff'); if (!so) return;
   so.querySelector('.to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
-  const strokes = [...so.querySelectorAll<SVGPathElement>('.so-ps')];
-  const swoosh = so.querySelector<SVGPathElement>('.so-swoosh'); const pen = so.querySelector<SVGGElement>('.so-pen');
-  if (!strokes.length || !swoosh || !pen) return;
-  const Ls = strokes.map(p => p.getTotalLength()), total = Ls.reduce((a, b) => a + b, 0), Lw = swoosh.getTotalLength();
-  const finish = () => { so.classList.add('signed', 'done'); strokes.forEach(p => { p.style.strokeDashoffset = '0'; }); swoosh.style.strokeDashoffset = '0'; };
-  strokes.forEach((p, i) => { p.style.strokeDasharray = `${Ls[i]}`; p.style.strokeDashoffset = `${Ls[i]}`; });
-  swoosh.style.strokeDasharray = `${Lw}`; swoosh.style.strokeDashoffset = `${Lw}`;
-  if (reduce || !('IntersectionObserver' in window)) { finish(); return; }
-  const NAME_MS = 2600, SWOOSH_MS = 650;
-  const ease = (t: number) => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  const place = (pt: DOMPoint) => pen.setAttribute('transform', `translate(${pt.x.toFixed(2)} ${pt.y.toFixed(2)})`);
-  const run = () => {
-    so.classList.add('signed'); const t0 = performance.now();
-    const frame = (now: number) => {
-      const e = now - t0;
-      if (e < NAME_MS) {
-        let left = ease(e / NAME_MS) * total, pt: DOMPoint | null = null;
-        strokes.forEach((p, i) => { const l = Math.max(0, Math.min(Ls[i], left)); p.style.strokeDashoffset = `${Ls[i] - l}`; if (left > 0 && left <= Ls[i]) pt = p.getPointAtLength(l); left -= Ls[i]; });
-        if (pt) place(pt);
-      } else if (e < NAME_MS + SWOOSH_MS) {
-        strokes.forEach(p => { p.style.strokeDashoffset = '0'; });
-        const b = ease((e - NAME_MS) / SWOOSH_MS);
-        swoosh.style.strokeDashoffset = `${Lw * (1 - b)}`; place(swoosh.getPointAtLength(Lw * b));
-      } else { finish(); return; }
-      requestAnimationFrame(frame);
-    };
-    requestAnimationFrame(frame);
-  };
+  const lines = [...so.querySelectorAll<SVGPathElement>('.so-line')]; if (!lines.length) return;
+  const Ls = lines.map(p => p.getTotalLength()), total = Ls.reduce((a, b) => a + b, 0);
+  const show = (len: number) => { let left = len; lines.forEach((p, i) => { const l = Math.max(0, Math.min(Ls[i], left)); p.style.strokeDashoffset = `${Ls[i] - l}`; left -= Ls[i]; }); };
+  lines.forEach((p, i) => { p.style.strokeDasharray = `${Ls[i]}`; });
+  if (reduce || !('IntersectionObserver' in window)) { show(total); so.classList.add('signed'); return; }
+  show(0);
+  // Each line is written at pen speed, with a short pause where the pen lifts between lines.
+  const SPEED = 0.28, LIFT = 140; // units per ms, ms per lift
+  const plan: { start: number; end: number; from: number; len: number }[] = []; let t = 0, from = 0;
+  Ls.forEach(L => { const dur = L / SPEED; plan.push({ start: t, end: t + dur, from, len: L }); t += dur + LIFT; from += L; });
+  const ease = (x: number) => 1 - Math.pow(1 - x, 1.6);
+  const run = () => { so.classList.add('signed'); const t0 = performance.now();
+    const frame = (now: number) => { const e = now - t0; let len = 0;
+      for (const s of plan) { if (e >= s.end) len = s.from + s.len; else if (e > s.start) { len = s.from + s.len * ease((e - s.start) / (s.end - s.start)); break; } else break; }
+      show(len); if (e < t) requestAnimationFrame(frame); else show(total); };
+    requestAnimationFrame(frame); };
   const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); run(); } }, { threshold: 0.6 });
   io.observe(so);
 })();
