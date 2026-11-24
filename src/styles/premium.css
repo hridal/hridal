@@ -196,3 +196,18 @@ body section.block.stacked-full { display: block; }
 /* ---------- Kitchen, Travel, Focus: heading above, tool uses the full width ---------- */
 body section.block.tool-page > h2 { margin-bottom: 18px; }
 body section.block.tool-page > div { min-width: 0; }
+
+/* ---------- Riddle letter: handwritten in cursive ---------- */
+body .letter .letter-top span,
+body .letter .riddle-q,
+body .letter .riddle-a { font-family: "Dancing Script Variable", "Dancing Script", cursive !important; }
+body .letter .letter-top span { font-size: 26px; font-weight: 600; }
+body .letter .riddle-q { font-size: 27px; font-weight: 500; line-height: 34px; color: #2a1a1d; }
+body .letter .riddle-a { font-size: 25px; font-weight: 600; line-height: 34px; }
+@media (max-width: 760px) {
+  body .letter .riddle-q { font-size: 21px; }
+  body .letter .riddle-a { font-size: 20px; }
+  /* On phones the open letter grows to fit longer riddles instead of hiding the answer */
+  body .riddle-wrap.open .letter { height: auto !important; min-height: 300px; overflow: visible; }
+  body .riddle-wrap.open { padding-top: 440px; }
+}
