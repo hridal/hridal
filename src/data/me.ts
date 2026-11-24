@@ -66,10 +66,13 @@ export const me = {
     location: 'Reading, England, United Kingdom',
     connections: '500+ connections',
     followers: '1,012 followers',
-    photo: '/logos/avatar.png',
+    photo: '/logos/profile.jpg',
     current: { name: 'Imperial College London', logo: '/logos/imperial.png' },
     about: [
-      'I’m a third-year Materials Science and Engineering student at Imperial College London, with interests spanning consulting, technology and entrepreneurship. Alongside my degree, I’m taking an entrepreneurship module and working with a team of three to develop a startup, giving me the chance to put business ideas into practice.',
+      'I’m a third-year Materials Science and Engineering student at Imperial College London, with interests spanning consulting, technology and entrepreneurship. Alongside my degree, I’m taking an entrepreneurship module and to develop a startup, giving me the chance to put business ideas into practice.',
+      'Last summer, I interned at Roland Berger as a Junior Consultant, gaining exposure to strategy consulting and a range of business challenges. Previously, I worked at IBM as an Analyst supporting an NHS HR and payroll platform, where I gained experience working with clients and supporting a large-scale system in a high-stakes environment.',
+      'Outside my studies, I’m part of the AI Research Team at Imperial’s AI Society, helping secure projects with academics and companies and organising events. Previously, I was the External Relations Officer for Imperial’s Netball Club, one of the university’s largest female societies, where I developed experience in stakeholder engagement and building external partnerships.',
+      'I’m always happy to connect with people interested in consulting, technology and entrepreneurship. I enjoy exchanging ideas and hearing about what others are working on, so please feel free to reach out!',
     ],
     // Leave empty ('') to hide the post card, as on LinkedIn when there are no recent posts.
     latestPost: '',
