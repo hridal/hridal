@@ -623,3 +623,14 @@ button.gpill { cursor: pointer; } button.gpill i { font-style: normal; opacity: 
 }
 @media (prefers-reduced-motion: reduce) { .react.pop span, .grade.pop { animation: none; } }
 .xe-sets { max-width: 560px; } .xe-addset { display: inline-block; }
+.xr-list.can-del li { grid-template-columns: auto 1fr auto auto; grid-template-areas: "type title time x" "type line time x"; }
+.xr-del { grid-area: x; } .xr-del.sure { font: 600 12px var(--sans); color: #b3261e; border: 1px solid #e8b4b0; border-radius: 999px; padding: 5px 10px; }
+@media (max-width: 760px) { .xr-list.can-del li { grid-template-columns: 1fr auto auto; grid-template-areas: "type time x" "title title title" "line line line"; } }
+.xe-row { position: relative; }
+.xe-pb { position: absolute; right: -2px; top: -6px; font: 700 10px var(--sans); letter-spacing: .04em; background: #f6c445; color: #5a3e00; border-radius: 999px; padding: 2px 6px; box-shadow: 0 2px 6px -2px rgba(0,0,0,.25); pointer-events: none; }
+.gpill.pb { background: #fff4d1; color: #6b4a00; border-color: #f0cf6b; }
+.pbt { font-style: normal; font-weight: 700; font-size: 12px; color: #8a6200; }
+.xt-pb { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: #fff4d1; border: 1px solid #f0cf6b; color: #5a3e00; font: 600 15px var(--sans); }
+.xt-pb.show { animation: pb-in .5s cubic-bezier(.2,1.4,.4,1); }
+@keyframes pb-in { from { transform: translateY(6px) scale(.97); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .xt-pb.show { animation: none; } }

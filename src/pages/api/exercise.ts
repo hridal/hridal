@@ -20,10 +20,10 @@ function tidy(w: any) {
     startedAt: +w?.startedAt || Date.now(), endedAt: w?.endedAt ? +w.endedAt : undefined,
     exercises: (Array.isArray(w?.exercises) ? w.exercises : []).slice(0, 30).map((e: any) => ({
       name: txt(e?.name, 50),
-      sets: (Array.isArray(e?.sets) ? e.sets : []).slice(0, 20).map((s: any) => ({ reps: num(s?.reps, 1000), kg: num(s?.kg, 1000), done: !!s?.done })),
+      sets: (Array.isArray(e?.sets) ? e.sets : []).slice(0, 20).map((s: any) => ({ reps: num(s?.reps, 1000), kg: num(s?.kg, 1000), done: !!s?.done, ...(s?.pb ? { pb: true } : {}) })),
     })).filter((e: any) => e.name),
     climbs: (Array.isArray(w?.climbs) ? w.climbs : []).slice(0, 80).map((c: any) => ({
-      grade: GRADES.includes(c?.grade) ? c.grade : 'V0', result: RESULTS.includes(c?.result) ? c.result : 'sent', attempts: num(c?.attempts, 99),
+      grade: GRADES.includes(c?.grade) ? c.grade : 'V0', result: RESULTS.includes(c?.result) ? c.result : 'sent', attempts: num(c?.attempts, 99), ...(c?.pb ? { pb: true } : {}),
     })),
   };
 }
