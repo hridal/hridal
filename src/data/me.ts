@@ -74,8 +74,11 @@ export const me = {
       'Outside my studies, I’m part of the AI Research Team at Imperial’s AI Society, helping secure projects with academics and companies and organising events. Previously, I was the External Relations Officer for Imperial’s Netball Club, one of the university’s largest female societies, where I developed experience in stakeholder engagement and building external partnerships.',
       'I’m always happy to connect with people interested in consulting, technology and entrepreneurship. I enjoy exchanging ideas and hearing about what others are working on, so please feel free to reach out!',
     ],
-    // Leave empty ('') to hide the post card, as on LinkedIn when there are no recent posts.
-    latestPost: '',
+    // The post shown under Activity. Set latestPost to '' to hide it.
+    latestPost: 'I\u2019m excited to announce that I will be joining Roland Berger in their London office this summer as a Junior Consultant!',
+    postAge: '7mo',
+    postImage: '/logos/rb-post.png',
+    postStats: { reactions: 144, comments: 16, impressions: '8,830' },
     logos: { 'Roland Berger': '/logos/roland-berger.png', 'IBM': '/logos/ibm.png', 'Wood Group': '/logos/wood.png', 'Imperial': '/logos/imperial.png', 'Kendrick School': '/logos/kendrick.png' } as Record<string, string>,
   },
   email: 'hridal.gujrati@gmail.com',
