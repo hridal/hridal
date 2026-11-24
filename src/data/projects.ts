@@ -2,7 +2,7 @@
 // `art` picks the halftone illustration drawn on the card (see projects/index.astro).
 export const projects = [
   { href: '/projects/portfolio-dashboard', title: 'Portfolio risk dashboard', kind: 'Personal project, Oct 2026 to now', art: 'chart',
-    text: 'A dashboard I built before I started investing, to see how the portfolios I was considering behave in a crash, what fees and inflation really cost, and to keep a record of my decisions. It checks its own data and rebuilds itself every weekday.' },
+    text: 'A dashboard I built before I started investing, to see how the portfolios I was considering behave in a crash, what fees and inflation really cost, and to keep a record of my decisions. It now includes Market Watch, which follows US stocks and flags unusual moves, and it checks its own data and rebuilds itself every weekday.' },
   { href: '/projects/jewellness', title: 'Jewellness', kind: 'Start-up, Oct 2026 to now', art: 'bracelet',
     text: 'A start-up idea for fitness jewellery: a bracelet designed to track sleep, heart health and your cycle with every sensor hidden in the clasp. I came up with the idea, ran the customer interviews, worked out the design and built the market sizing and financial model.' },
   { href: '/projects/materials-ml', title: 'Materials property predictor', kind: 'Personal project, started Oct 2025', art: 'lattice',
