@@ -9,6 +9,7 @@ import '../styles/premium.css';
 import { getCollection } from 'astro:content';
 import { me } from '../data/me';
 import { projects } from '../data/projects';
+import Analytics from '@vercel/analytics/astro';
 const { title, description = me.tagline } = Astro.props;
 const links = [['/about','About'],['/experience','Experience'],['/projects','Projects'],['/essays','Essays']];
 const lifeLinks = [['/kitchen','Kitchen'],['/travel','Travel'],['/shelf','Shelf'],['/focus','Focus']];
@@ -42,6 +43,7 @@ const jump = [
   <meta property="og:url" content={new URL(Astro.url.pathname, 'https://hridal.com')} />
   <meta property="og:image" content="https://hridal.com/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <Analytics />
   <script is:inline>document.documentElement.classList.add('js'); setTimeout(function(){ document.documentElement.classList.add('motion-ready'); }, 2500);</script>
   <slot name="head" />
 </head>
