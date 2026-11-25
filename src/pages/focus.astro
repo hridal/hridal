@@ -61,8 +61,12 @@ import Base from '../layouts/Base.astro';
             <!-- Hridal's spot -->
             <g class="r-host">
               <path class="r-lamp" d="M330 236 h26 M343 236 V214 L360 182 M360 182 l-14 -10 l18 -14 l12 18 z"/>
-              <rect class="r-laptop" x="378" y="208" width="48" height="28" rx="2"/><path class="r-laptop-base" d="M370 236 h64"/>
-              <rect class="r-screen" x="382" y="212" width="40" height="20" rx="1"/>
+              <!-- the laptop faces Hridal, so we see the back of the lid; its screen light falls on her -->
+              <ellipse class="r-screenlight" cx="402" cy="206" rx="30" ry="16"/>
+              <rect class="r-laptop" x="378" y="208" width="48" height="28" rx="2.5"/>
+              <path class="r-lid-edge" d="M380.5 209.2 h43"/>
+              <circle class="r-logo" cx="402" cy="222" r="3.2"/>
+              <path class="r-laptop-base" d="M370 236 h64"/>
               <path class="r-mug" d="M440 222 h16 v12 a3 3 0 0 1 -3 3 h-10 a3 3 0 0 1 -3 -3 z M456 225 c6 0 6 8 0 8"/>
               <g class="r-steam"><path d="M445 218 c-3 -5 3 -7 0 -12"/><path d="M451 218 c-3 -5 3 -7 0 -12"/></g>
               <text class="r-tag" x="400" y="272">Hridal</text>
@@ -495,6 +499,11 @@ import Base from '../layouts/Base.astro';
 
     // ---------- drawing ----------
     const seatX = [118, 206, 294, 506, 594, 682];
+    // Turn a type of study into something you'd actually say: "revising", "doing coursework", "catching up on lectures".
+    const DOING = { revision: 'revising', revising: 'revising', reading: 'reading', coding: 'coding', 'just vibing': 'just vibing',
+      coursework: 'doing coursework', 'problem sheets': 'doing problem sheets', 'lecture catch-up': 'catching up on lectures',
+      'lab report': 'writing a lab report', 'lab reports': 'writing a lab report', 'essay writing': 'writing an essay', dissertation: 'on my dissertation' };
+    const doing = name => { const n = String(name || '').trim(); return DOING[n.toLowerCase()] || (n ? 'doing ' + n : 'studying'); };
     function person(x, color, label, you) {
       return `<g class="r-person${you ? ' you' : ''}" transform="translate(${x} 0)">
         <rect class="r-chair" x="-24" y="170" width="48" height="66" rx="10"/>
@@ -516,7 +525,9 @@ import Base from '../layouts/Base.astro';
       const company = n === 0 ? '' : n === 1 && mine ? 'You’re the only visitor here right now.' : `${n} ${n === 1 ? 'person' : 'people'} in the room${mine ? ', including you' : ''}.`;
       if (live) {
         $('rs-badge').textContent = h.paused ? 'Live, on a short break' : 'Live now';
-        $('rs-line').innerHTML = `I’m studying <b>${esc(h.task || h.cat || 'something')}</b>${h.task && h.cat && h.task !== h.cat ? ` <span class="rs-cat" style="--c:${h.color}">${esc(h.cat)}</span>` : ''}`;
+        $('rs-line').innerHTML = h.task && h.task !== h.cat
+          ? `I’m on <b>${esc(h.task)}</b>${h.cat ? ` <span class="rs-cat" style="--c:${h.color}">${esc(h.cat)}</span>` : ''}`
+          : `I’m <b>${esc(doing(h.cat))}</b>`;
       } else {
         $('rs-badge').textContent = 'Not studying right now';
         const l = data.last;
@@ -555,7 +566,7 @@ import Base from '../layouts/Base.astro';
 
     // ---------- seats ----------
     function showSeated(editing) { $('rb-seat').hidden = !!seat && !editing; $('rb-seated').hidden = !seat || !!editing;
-      $('rb-act').textContent = myTask || (act === 'Just vibing' ? 'just vibing' : act.toLowerCase());
+      $('rb-act').textContent = myTask ? 'on ' + myTask : doing(act);
       $('rb-seat').querySelector('[type=submit]').textContent = seat ? 'Update' : 'Sit down';
       document.querySelectorAll('#rb-acts .chip').forEach(b => b.classList.toggle('on', b.dataset.act === act)); }
     $('rb-name').value = myName; $('rb-task').value = myTask;
