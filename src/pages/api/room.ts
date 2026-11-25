@@ -2,19 +2,14 @@
 // Hridal's own timer (once she has signed in) tells the room when she is
 // studying and what on. Visitors can take a seat; seats disappear a minute or so after they leave.
 import type { APIRoute } from 'astro';
-import { redis, storeReady, json, isAdmin } from '../../lib/store';
+import { redis, storeReady, json, isAdmin, clean, visible } from '../../lib/store';
 
 export const prerender = false;
 
-const ACTS = ['Revising', 'Coding', 'Writing', 'Reading', 'Working', 'Just vibing'];
+const ACTS = ['Revising', 'Coursework', 'Problem sheets', 'Lecture catch-up', 'Lab report', 'Essay writing', 'Reading', 'Coding', 'Just vibing'];
+const OLD: Record<string, string> = { Working: 'Coursework', Writing: 'Essay writing' };   // older labels, renamed for uni
 const SEAT_TTL = 75_000;   // a seat is freed this long after its last heartbeat
 const HOST_TTL = 150;      // seconds the live status lasts without a heartbeat from Hridal's timer
-const clean = (s: unknown, max: number) => String(s ?? '').replace(/[\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
-// Visitors' names and tasks are shown to everyone, so keep them short, link-free and polite.
-const BLOCK = /(fuck|shit|cunt|bitch|nigg|fag|retard|whore|slut|dick|cock|pussy|wank|twat|rape|nazi|porn|sex|kill ?yourself|kys)/i;
-const LINKY = /(https?:|www\.|\.(com|net|org|io|co|uk|ly|gg|xyz|me)\b|@\w)/i;
-const visible = (s: unknown, max: number) => { const t = clean(s, max); return !t || BLOCK.test(t.replace(/[^a-z ]/gi, '')) || LINKY.test(t) ? '' : t; };
-
 async function state() {
   const now = Date.now();
   const [, ids, host, days, last] = await redis([
@@ -25,8 +20,8 @@ async function state() {
     ['GET', 'room:last'],
   ]);
   let acts: (string | null)[] = [];
-  const who = (raw: string | null | undefined) => { if (!raw) return { act: 'Working', name: '', task: '', since: now };
-    try { const o = JSON.parse(raw); return { act: o.act || 'Working', name: o.name || '', task: o.task || '', since: +o.since || now }; } catch { return { act: raw, name: '', task: '', since: now }; } };
+  const who = (raw: string | null | undefined) => { if (!raw) return { act: 'Revising', name: '', task: '', since: now };
+    try { const o = JSON.parse(raw); return { act: OLD[o.act] || o.act || 'Revising', name: o.name || '', task: o.task || '', since: +o.since || now }; } catch { return { act: raw, name: '', task: '', since: now }; } };
   if (ids?.length) [acts] = await redis([['HMGET', 'room:acts', ...ids]]);
   else await redis([['DEL', 'room:acts']]);
   const week: Record<string, number> = {};
@@ -56,7 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
       if (!/^[a-z0-9]{8,16}$/.test(id)) return json({ error: 'Bad seat.' }, 400);
       if (action === 'leave') await redis([['ZREM', 'room:people', id], ['HDEL', 'room:acts', id]]);
       else {
-        const act = ACTS.includes(b?.act) ? b.act : 'Working';
+        const act = ACTS.includes(b?.act) ? b.act : OLD[b?.act] || 'Revising';
         const name = visible(b?.name, 20), task = visible(b?.task, 50);
         const [count, mine, prev] = await redis([['ZCARD', 'room:people'], ['ZSCORE', 'room:people', id], ['HGET', 'room:acts', id]]);
         if (!mine && count >= 40) return json({ error: 'The room is full right now.' }, 429);

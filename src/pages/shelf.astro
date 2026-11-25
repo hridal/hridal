@@ -15,10 +15,10 @@ const all = [...bookItems, ...filmItems];
     <section class="block">
       <div class="side">
         <h2>Shelf</h2>
-        <nav class="toc" aria-label="On this page"><a href="#books">Books</a><a href="#films">Films and series</a></nav>
+        <nav class="toc" aria-label="On this page"><a href="#books">Books</a><a href="#films">Films and series</a><a href="#recs">Recommendations</a></nav>
       </div>
       <div>
-        <p class="lead-small">My favourite reads of 2026 and what I have been watching. Pick one to read what I thought and add your own rating.</p>
+        <p class="lead-small">My favourite reads of 2026 and what I have been watching. Pick one to read what I thought and add your own rating, or recommend me something to read or watch next.</p>
 
         <h4 id="books">Books</h4>
         <div class="bookcase">
@@ -77,6 +77,39 @@ const all = [...bookItems, ...filmItems];
             </article>
           ))}
         </div>
+
+        <h4 id="recs">Recommend me something</h4>
+        <div class="recs">
+          <form class="rec-slip" id="rec-form" novalidate>
+            <div class="rs-top">
+              <p class="rs-stamp" aria-hidden="true">Request slip</p>
+              <div class="rec-kind" role="radiogroup" aria-label="Book or film">
+                <label><input type="radio" name="kind" value="book" checked /><span>Book</span></label>
+                <label><input type="radio" name="kind" value="film" /><span>Film or series</span></label>
+              </div>
+            </div>
+            <label class="rf"><span>Title</span><input name="title" maxlength="90" required placeholder="What should I read next?" autocomplete="off" /></label>
+            <label class="rf"><span id="rf-by-l">Author</span><input name="by" maxlength="60" placeholder="Optional" autocomplete="off" /></label>
+            <label class="rf rf-wide"><span>Why I'd like it</span><textarea name="why" maxlength="240" rows="2" placeholder="Optional, a line or two"></textarea></label>
+            <label class="rf"><span>Your name</span><input name="name" maxlength="30" placeholder="Optional" autocomplete="nickname" /></label>
+            <div class="rs-send"><button class="btn solid" type="submit">Send it to me</button><p class="rs-msg" id="rec-msg" aria-live="polite"></p></div>
+          </form>
+          <div class="rec-board">
+            <p class="rb-title">Recommended by visitors</p>
+            <ul class="rec-list" id="rec-list"><li class="rec-empty">Nothing here yet. Yours could be the first.</li></ul>
+            <ul class="rec-list rec-mine" id="rec-mine" hidden></ul>
+          </div>
+        </div>
+        <div class="rec-admin" id="rec-admin" hidden>
+          <p class="rb-title">Waiting for you <span id="rec-wait-n"></span></p>
+          <ul class="rec-list" id="rec-wait"></ul>
+        </div>
+        <p class="rec-host"><button class="link-btn" type="button" id="rec-open">Hridal? Sign in</button></p>
+        <form class="host-form" id="rec-signin" hidden>
+          <input type="password" id="rec-pass" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+          <button class="btn small" type="submit">Sign in</button>
+          <span class="host-msg" id="rec-smsg"></span>
+        </form>
       </div>
     </section>
   </div>
@@ -121,5 +154,75 @@ const all = [...bookItems, ...filmItems];
       });
     });
     fetch('/api/ratings').then(r => r.json()).then(j => { if (j.enabled) shared = j.ratings; }).catch(() => {}).finally(() => details.forEach(d => setAvg(d)));
+  </script>
+  <script>
+    // Recommendations: visitors send a slip; it waits privately until Hridal chooses to show it.
+    (() => {
+      const $ = (id: string) => document.getElementById(id) as any;
+      const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]);
+      const MINE = 'hridal.shelf.sent';
+      const sent = (): any[] => { try { return JSON.parse(localStorage.getItem(MINE) || '[]'); } catch { return []; } };
+      let admin = false, data: any = null;
+      const form = $('rec-form') as HTMLFormElement;
+      form.querySelectorAll<HTMLInputElement>('input[name=kind]').forEach(r => r.onchange = () => {
+        const film = r.value === 'film' && r.checked; if (!r.checked) return;
+        $('rf-by-l').textContent = film ? 'Director or year' : 'Author';
+        (form.elements.namedItem('title') as HTMLInputElement).placeholder = film ? 'What should I watch next?' : 'What should I read next?';
+      });
+      const card = (r: any, extra = '') => `<li class="rec-card" data-kind="${r.kind}">
+          <span class="rc-kind">${r.kind === 'film' ? 'Watch' : 'Read'}</span>
+          <p class="rc-title">${esc(r.title)}${r.by ? ` <span>${esc(r.by)}</span>` : ''}</p>
+          ${r.why ? `<p class="rc-why">${esc(r.why)}</p>` : ''}
+          <p class="rc-from">${r.name ? 'From ' + esc(r.name) : 'From a visitor'}</p>${extra}</li>`;
+      function paint() {
+        const shown = data?.shown || [];
+        const shownIds = new Set(shown.map((r: any) => r.id));
+        const mine = sent().filter(r => !shownIds.has(r.id)).slice(0, 5);
+        $('rec-list').hidden = !shown.length && !!mine.length && !admin;
+        $('rec-list').innerHTML = shown.length ? shown.map((r: any) => card(r, admin ? `<div class="rc-acts"><button data-hide="${r.id}">Take down</button><button data-rm="${r.id}">Delete</button></div>` : '')).join('')
+          : '<li class="rec-empty">Nothing here yet. Yours could be the first.</li>';
+        $('rec-mine').hidden = !mine.length || admin;
+        $('rec-mine').innerHTML = mine.map(r => card(r, '<p class="rc-wait">Sent. Waiting for Hridal to see it.</p>')).join('');
+        $('rec-admin').hidden = !admin;
+        if (admin) {
+          const w = data?.waiting || [];
+          $('rec-wait-n').textContent = w.length ? `(${w.length})` : '';
+          $('rec-wait').innerHTML = w.length ? w.map((r: any) => card(r, `<div class="rc-acts"><button class="on" data-show="${r.id}">Show on page</button><button data-rm="${r.id}">Delete</button></div>`)).join('') : '<li class="rec-empty">All caught up.</li>';
+        }
+        document.querySelectorAll<HTMLButtonElement>('[data-show],[data-hide],[data-rm]').forEach(b => b.onclick = async () => {
+          const action = b.dataset.show ? 'show' : b.dataset.hide ? 'hide' : 'remove', id = b.dataset.show || b.dataset.hide || b.dataset.rm;
+          b.disabled = true;
+          const r = await fetch('/api/recs', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, id }) });
+          if (r.status === 401) { admin = false; hostUI(); } else { const j = await r.json(); if (j.enabled) data = j; }
+          paint();
+        });
+      }
+      const load = () => fetch('/api/recs', { credentials: 'same-origin' }).then(r => r.json()).then(j => { if (j.enabled) { data = j; admin = !!j.admin; } else $('rec-form').classList.add('off'); hostUI(); paint(); }).catch(() => paint());
+      form.onsubmit = async e => {
+        e.preventDefault();
+        const f = new FormData(form), msg = $('rec-msg'), btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+        const body = { action: 'suggest', kind: f.get('kind'), title: f.get('title'), by: f.get('by'), why: f.get('why'), name: f.get('name'), vid: (window as any).hridalVid?.() };
+        if (String(body.title || '').trim().length < 2) { msg.textContent = 'Add a title first.'; (form.elements.namedItem('title') as HTMLInputElement).focus(); return; }
+        btn.disabled = true; msg.textContent = 'Sending…';
+        try {
+          const r = await fetch('/api/recs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json();
+          if (r.ok && j.rec) {
+            const list = sent(); list.unshift(j.rec); try { localStorage.setItem(MINE, JSON.stringify(list.slice(0, 20))); } catch {}
+            ['title', 'by', 'why'].forEach(n => (form.elements.namedItem(n) as HTMLInputElement).value = '');
+            msg.textContent = 'Thank you! It’s on its way to me.'; form.classList.remove('sent'); void form.offsetWidth; form.classList.add('sent');
+            if (admin) load(); else paint();
+          } else msg.textContent = j.error || 'That didn’t send. Try again in a moment.';
+        } catch { msg.textContent = 'That didn’t send. Try again in a moment.'; }
+        btn.disabled = false;
+      };
+      function hostUI() { $('rec-open').hidden = admin; $('rec-open').textContent = 'Hridal? Sign in'; $('rec-signin').hidden = true; }
+      $('rec-open').onclick = () => { $('rec-signin').hidden = false; $('rec-open').hidden = true; $('rec-pass').focus(); };
+      $('rec-signin').onsubmit = async (e: Event) => {
+        e.preventDefault(); $('rec-smsg').textContent = 'Checking…';
+        const r = await (window as any).hridalAuth.login($('rec-pass').value); $('rec-pass').value = '';
+        if (r.ok) { $('rec-smsg').textContent = ''; load(); } else $('rec-smsg').textContent = r.error || 'Couldn’t sign in.';
+      };
+      load();
+    })();
   </script>
 </Base>

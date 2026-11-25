@@ -6,7 +6,7 @@ import Base from '../layouts/Base.astro';
     <section class="block stacked-full tool-page">
       <h2>Study with me</h2>
       <div>
-        <p class="lead-small">When I'm studying, the lamp in this room is on and you can see what I'm working on. Pull up a chair, pick what you're doing, and work alongside me and anyone else who's here. Below the room there's a desk of your own, with a timer, calendar and to-do list that save privately in your browser.</p>
+        <p class="lead-small">When I'm studying, the lamp in this room is on and you can see what I'm working on. Pull up a chair, pick what you're doing, and study alongside me and anyone else who's here. Below the room there's a desk of your own, with a timer, calendar and to-do list that save privately in your browser.</p>
 
         <!-- The room -->
         <div class="room" id="room" data-live="false" data-tod="day">
@@ -72,8 +72,8 @@ import Base from '../layouts/Base.astro';
 
           <div class="room-bar">
             <form class="rb-seat" id="rb-seat">
-              <p class="rb-q">Take a seat. What are you working on?</p>
-              <div class="chips" id="rb-acts">{['Revising', 'Coding', 'Writing', 'Reading', 'Working', 'Just vibing'].map(a => <button class="chip" type="button" data-act={a}>{a}</button>)}</div>
+              <p class="rb-q">Take a seat. What are you studying?</p>
+              <div class="chips" id="rb-acts">{['Revising', 'Coursework', 'Problem sheets', 'Lecture catch-up', 'Lab report', 'Essay writing', 'Reading', 'Coding', 'Just vibing'].map(a => <button class="chip" type="button" data-act={a}>{a}</button>)}</div>
               <div class="rb-fields">
                 <input id="rb-name" maxlength="20" placeholder="Your name (optional)" aria-label="Your name, optional" autocomplete="given-name" />
                 <input id="rb-task" maxlength="50" placeholder="What exactly? (optional)" aria-label="What you're working on, optional" />
@@ -118,15 +118,20 @@ import Base from '../layouts/Base.astro';
         <div class="f-grid">
           <!-- Timer -->
           <div class="f-card timer-card">
-            <p class="eyebrow">What are you working on?</p>
+            <p class="eyebrow">What are you studying?</p>
             <div class="cat-row">
-              <select id="cat-select" aria-label="Type of work"></select>
-              <button class="btn ghost small" id="cat-add-toggle">+ New type</button>
+              <select id="cat-select" aria-label="Type of study"></select>
+              <button class="btn ghost small" id="cat-add-toggle" aria-expanded="false" aria-controls="cat-manage">Edit types</button>
             </div>
-            <form class="cat-new" id="cat-new" hidden>
-              <input id="cat-name" placeholder="e.g. Theory & Simulation, Essay, Applications" maxlength="40" />
-              <button class="btn solid small" type="submit">Add</button>
-            </form>
+            <div class="cat-manage" id="cat-manage" hidden>
+              <p class="cm-head">Your types of study <span>Rename, recolour or remove them, or add your own.</span></p>
+              <ul class="cm-list" id="cat-list"></ul>
+              <form class="cat-new" id="cat-new">
+                <input id="cat-name" placeholder="Add a type, e.g. Dissertation, Group project" maxlength="40" aria-label="New type of study" />
+                <button class="btn solid small" type="submit">Add</button>
+              </form>
+              <p class="cm-msg" id="cm-msg" aria-live="polite"></p>
+            </div>
 
             <div class="clock" id="clock">00:00:00</div>
             <div class="seg" id="targets" role="group" aria-label="Session length">
@@ -192,7 +197,7 @@ import Base from '../layouts/Base.astro';
           <form class="todo-form" id="todo-form">
             <input id="todo-text" placeholder="What needs doing?" required maxlength="120" />
             <input id="todo-date" type="date" aria-label="Due date" />
-            <select id="todo-cat" aria-label="Type of work"></select>
+            <select id="todo-cat" aria-label="Type of study"></select>
             <button class="btn solid small" type="submit">Add</button>
           </form>
           <p class="sub">Your list sorts itself by deadline, and anything with a date shows up on the calendar.</p>
@@ -210,7 +215,13 @@ import Base from '../layouts/Base.astro';
     const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} if (vault) vault.touch(k, v); };
     const palette = ['#6c202d', '#c06c7a', '#a9845f', '#7d8a6a', '#5f6f8a', '#9a5a8a', '#d19a6a', '#4f7a7a'];
 
-    let cats = load(K.cats, [{ id: 'study', name: 'Study', color: palette[0] }, { id: 'work', name: 'Work', color: palette[1] }, { id: 'reading', name: 'Reading', color: palette[2] }]);
+    // Types of study. Older saves had Study / Work / Reading; those are renamed and the uni ones added.
+    const DEFAULT_CATS = [{ id: 'study', name: 'Revision' }, { id: 'work', name: 'Coursework' }, { id: 'sheets', name: 'Problem sheets' }, { id: 'lectures', name: 'Lecture catch-up' }, { id: 'labs', name: 'Lab reports' }, { id: 'reading', name: 'Reading' }].map((c, i) => ({ ...c, color: palette[i % palette.length] }));
+    let cats = load(K.cats, DEFAULT_CATS);
+    const RENAME = { study: ['Study', 'Revision'], work: ['Work', 'Coursework'] };
+    let catsChanged = false;
+    cats.forEach(c => { const r = RENAME[c.id]; if (r && c.name === r[0]) { c.name = r[1]; catsChanged = true; } });
+    if (!load('hridal.focus.uniCats', false)) { DEFAULT_CATS.forEach(d => { if (!cats.some(c => c.id === d.id)) { cats.push({ ...d, color: palette[cats.length % palette.length] }); catsChanged = true; } }); save('hridal.focus.uniCats', true); }
     let sessions = load(K.sessions, []);
     let todos = load(K.todos, []);
     let run = load(K.run, null); // { cat, startedAt, accumulated, paused, target }
@@ -227,6 +238,7 @@ import Base from '../layouts/Base.astro';
       onState: (s) => { const el = document.getElementById('vault-note'); if (!el) return; el.dataset.s = s;
       el.textContent = s === 'saving' ? 'Saving to your account…' : s === 'saved' ? 'Saved to your account, so it’s on every device you sign in on.' : s === 'error' ? 'Couldn’t reach your account just now. It’s safe on this device and will try again.' : ''; },
     });
+    if (catsChanged) save(K.cats, cats);
     let viewMonth = new Date(); viewMonth.setDate(1);
     let chimed = false;
 
@@ -239,18 +251,44 @@ import Base from '../layouts/Base.astro';
 
     /* ---------- categories ---------- */
     function renderCats() {
-      const opts = cats.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+      const live = cats.filter(c => !c.hidden);
+      const opts = live.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
       $('cat-select').innerHTML = opts;
       $('todo-cat').innerHTML = '<option value="">No type</option>' + opts;
       if (run) $('cat-select').value = run.cat;
+      renderManage();
     }
-    $('cat-add-toggle').onclick = () => { $('cat-new').hidden = !$('cat-new').hidden; if (!$('cat-new').hidden) $('cat-name').focus(); };
+    // Managing types: rename (type and press Enter or click away), tap the dot to change colour, × to remove.
+    // A removed type that's already in your history is only hidden, so past sessions keep their name.
+    function renderManage() {
+      const live = cats.filter(c => !c.hidden);
+      $('cat-list').innerHTML = live.map(c => `<li>
+        <button type="button" class="cm-dot" data-col="${c.id}" style="--c:${c.color}" aria-label="Change colour of ${esc(c.name)}"></button>
+        <input data-ren="${c.id}" value="${esc(c.name)}" maxlength="40" aria-label="Name" />
+        <button type="button" class="x" data-rm="${c.id}" aria-label="Remove ${esc(c.name)}" ${live.length < 2 ? 'disabled' : ''}>×</button></li>`).join('');
+      $('cat-list').querySelectorAll('[data-col]').forEach(b => b.onclick = () => { const c = cats.find(x => x.id === b.dataset.col); c.color = palette[(palette.indexOf(c.color) + 1) % palette.length]; save(K.cats, cats); renderCats(); renderAll(); });
+      $('cat-list').querySelectorAll('[data-ren]').forEach(inp => {
+        const commit = () => { const c = cats.find(x => x.id === inp.dataset.ren), v = inp.value.trim(); if (!c) return; if (!v) { inp.value = c.name; return; } if (v !== c.name) { c.name = v; save(K.cats, cats); renderCats(); renderAll(); cmMsg('Renamed.'); } };
+        inp.onchange = commit; inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } };
+      });
+      $('cat-list').querySelectorAll('[data-rm]').forEach(b => b.onclick = () => {
+        const id = b.dataset.rm;
+        if (run && run.cat === id) { cmMsg('That one’s on the timer right now. Finish first, then remove it.'); return; }
+        const used = sessions.some(x => x.cat === id) || todos.some(x => x.cat === id);
+        if (used) cats.find(x => x.id === id).hidden = true; else cats = cats.filter(x => x.id !== id);
+        save(K.cats, cats); renderCats(); renderAll(); cmMsg(used ? 'Removed. Past sessions keep their name.' : 'Removed.');
+      });
+    }
+    let cmTimer = 0; const cmMsg = t => { $('cm-msg').textContent = t; clearTimeout(cmTimer); cmTimer = setTimeout(() => $('cm-msg').textContent = '', 3000); };
+    $('cat-add-toggle').onclick = () => { const open = $('cat-manage').hidden; $('cat-manage').hidden = !open; $('cat-add-toggle').setAttribute('aria-expanded', String(open)); $('cat-add-toggle').textContent = open ? 'Done' : 'Edit types'; };
     $('cat-new').onsubmit = e => {
       e.preventDefault();
       const name = $('cat-name').value.trim(); if (!name) return;
-      const id = 'c' + Date.now();
-      cats.push({ id, name, color: palette[cats.length % palette.length] });
-      save(K.cats, cats); renderCats(); $('cat-select').value = id; $('cat-name').value = ''; $('cat-new').hidden = true;
+      const same = cats.find(c => c.name.toLowerCase() === name.toLowerCase());
+      if (same && !same.hidden) { cmMsg('You already have that one.'); return; }
+      const id = same ? same.id : 'c' + Date.now();
+      if (same) same.hidden = false; else cats.push({ id, name, color: palette[cats.length % palette.length] });
+      save(K.cats, cats); renderCats(); if (!run) $('cat-select').value = id; $('cat-name').value = ''; cmMsg('Added.');
     };
 
     /* ---------- timer ---------- */
@@ -279,7 +317,7 @@ import Base from '../layouts/Base.astro';
       $('cat-select').disabled = !!run;
       document.querySelectorAll('#targets .chip').forEach(b => b.classList.toggle('on', +b.dataset.min === target));
       placePill();
-      if (run) $('t-status').textContent = run.paused ? 'Paused.' : `Working on ${run.note ? run.note + ' (' + catOf(run.cat).name + ')' : catOf(run.cat).name}…`;
+      if (run) $('t-status').textContent = run.paused ? 'Paused.' : `${run.note ? run.note + ' (' + catOf(run.cat).name + ')' : catOf(run.cat).name} in progress…`;
       else if (!$('t-status').dataset.keep) $('t-status').textContent = '';
     }
     $('start').onclick = () => {
@@ -295,7 +333,7 @@ import Base from '../layouts/Base.astro';
       if (mins >= 1) {
         sessions.push(Object.assign({ id: Date.now(), cat: run.cat, end: new Date().toISOString(), minutes: Math.round(mins * 10) / 10 }, run.note ? { note: run.note } : {}));
         save(K.sessions, sessions);
-        $('t-status').textContent = `Saved ${fmtMin(mins)} of ${catOf(run.cat).name}. Nice work.`;
+        $('t-status').textContent = `Saved ${fmtMin(mins)} of ${catOf(run.cat).name}. Nice one.`;
       } else $('t-status').textContent = 'Sessions under a minute aren’t saved.';
       $('t-status').dataset.keep = '1';
       run = null; save(K.run, null); syncButtons(); tick(); renderAll();
@@ -344,7 +382,7 @@ import Base from '../layouts/Base.astro';
       const by = {}; ss.forEach(s => by[s.cat] = (by[s.cat] || 0) + s.minutes);
       const nice = new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
       $('day-panel').innerHTML = `<h4>${nice}</h4>
-        <div class="dp-cols"><div><h5>Work done</h5>${Object.keys(by).length ? Object.entries(by).map(([c, m]) => `<p><i class="sw" style="background:${catOf(c).color}"></i>${esc(catOf(c).name)} <b>${fmtMin(m)}</b></p>`).join('') : '<p class="sub">Nothing logged.</p>'}${ss.filter(x => x.note).map(x => `<p class="sub dp-note">${esc(x.note)}, ${fmtMin(x.minutes)}</p>`).join('')}</div>
+        <div class="dp-cols"><div><h5>Studied</h5>${Object.keys(by).length ? Object.entries(by).map(([c, m]) => `<p><i class="sw" style="background:${catOf(c).color}"></i>${esc(catOf(c).name)} <b>${fmtMin(m)}</b></p>`).join('') : '<p class="sub">Nothing logged.</p>'}${ss.filter(x => x.note).map(x => `<p class="sub dp-note">${esc(x.note)}, ${fmtMin(x.minutes)}</p>`).join('')}</div>
         <div><h5>Due</h5>${tt.length ? tt.map(t => `<p class="${t.done ? 'done' : ''}">${esc(t.text)}</p>`).join('') : '<p class="sub">Nothing due.</p>'}</div></div>`;
       $('day-panel').hidden = false;
     }
@@ -358,18 +396,36 @@ import Base from '../layouts/Base.astro';
       const today = new Date(todayKey() + 'T00:00'), d = new Date(t.date + 'T00:00'), diff = Math.round((d - today) / 864e5);
       return diff < 0 ? 'Overdue' : diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : diff <= 7 ? 'This week' : 'Later';
     }
+    let editing = null;   // id of the to-do being edited
     function renderTodos() {
       const order = ['Overdue', 'Today', 'Tomorrow', 'This week', 'Later', 'Whenever', 'Done'];
       const sorted = [...todos].sort((a, b) => (a.date || '9999') < (b.date || '9999') ? -1 : (a.date || '9999') > (b.date || '9999') ? 1 : a.id - b.id);
       const groups = {}; sorted.forEach(t => (groups[bucket(t)] = groups[bucket(t)] || []).push(t));
       $('todo-list').innerHTML = todos.length ? order.filter(g => groups[g]).map(g => `
-        <div class="todo-group ${g === 'Overdue' ? 'urgent' : ''}"><h5>${g}</h5>${groups[g].map(t => `
+        <div class="todo-group ${g === 'Overdue' ? 'urgent' : ''}"><h5>${g}</h5>${groups[g].map(t => t.id == editing ? `
+          <form class="todo todo-edit" data-edit="${t.id}">
+            <input name="text" value="${esc(t.text)}" maxlength="120" required aria-label="To-do" />
+            <input name="date" type="date" value="${t.date || ''}" aria-label="Due date" />
+            <select name="cat" aria-label="Type of study"><option value="">No type</option>${cats.map(c => `<option value="${c.id}" ${c.id === t.cat ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+            <span class="te-btns"><button type="button" class="te-cancel">Cancel</button><button type="submit" class="te-save">Save</button></span>
+          </form>` : `
           <div class="todo ${t.done ? 'done' : ''}">
             <label><input type="checkbox" data-done="${t.id}" ${t.done ? 'checked' : ''}/> <span>${esc(t.text)}</span></label>
             ${t.cat ? `<em style="border-color:${catOf(t.cat).color}">${esc(catOf(t.cat).name)}</em>` : ''}
             ${t.date ? `<time>${new Date(t.date + 'T12:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}</time>` : ''}
+            <button class="x ed" data-ed="${t.id}" aria-label="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z M13.5 6.5l4 4"/></svg></button>
             <button class="x" data-del="${t.id}" aria-label="Delete">×</button>
           </div>`).join('')}</div>`).join('') : '<p class="sub">Nothing on your list yet.</p>';
+      $('todo-list').querySelectorAll('[data-ed]').forEach(b => b.onclick = () => { editing = b.dataset.ed; renderTodos(); const f = $('todo-list').querySelector('.todo-edit input'); if (f) { f.focus(); f.setSelectionRange(f.value.length, f.value.length); } });
+      const ef = $('todo-list').querySelector('.todo-edit');
+      if (ef) {
+        const close = () => { editing = null; renderTodos(); };
+        ef.onsubmit = e => { e.preventDefault(); const t = todos.find(x => x.id == ef.dataset.edit), text = ef.elements.text.value.trim();
+          if (t && text) { t.text = text; t.date = ef.elements.date.value || ''; t.cat = ef.elements.cat.value; save(K.todos, todos); }
+          editing = null; renderAll(); };
+        ef.querySelector('.te-cancel').onclick = close;
+        ef.onkeydown = e => { if (e.key === 'Escape') close(); };
+      }
       $('todo-list').querySelectorAll('[data-done]').forEach(c => c.onchange = () => { const t = todos.find(x => x.id == c.dataset.done); t.done = c.checked; save(K.todos, todos); renderAll(); });
       $('todo-list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { todos = todos.filter(x => x.id != b.dataset.del); save(K.todos, todos); renderAll(); });
     }
@@ -389,6 +445,7 @@ import Base from '../layouts/Base.astro';
       start(catName, note) {
         if (run) { if (note) { run.note = note; save(K.run, run); syncButtons(); } return false; }
         let c = cats.find(x => x.name.toLowerCase() === catName.toLowerCase());
+        if (c && c.hidden) { c.hidden = false; save(K.cats, cats); renderCats(); }
         if (!c) { c = { id: 'c' + Date.now(), name: catName, color: palette[cats.length % palette.length] }; cats.push(c); save(K.cats, cats); renderCats(); }
         run = { cat: c.id, startedAt: Date.now(), accumulated: 0, paused: false, target, note: note || '' }; chimed = false;
         $('cat-select').value = c.id; save(K.run, run); syncButtons(); tick(); emit('change'); return true;
@@ -407,7 +464,7 @@ import Base from '../layouts/Base.astro';
     const room = $('room'); if (!room) return;
     const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }, set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let data = null, offset = 0, seat = null, seatedAt = 0, act = store.get('hridal.room.act', 'Working'), key = ''; // key: truthy once Hridal is signed in
+    let data = null, offset = 0, seat = null, seatedAt = 0, act = ({ Working: 'Coursework', Writing: 'Essay writing' })[store.get('hridal.room.act', 'Revising')] || store.get('hridal.room.act', 'Revising'), key = ''; // key: truthy once Hridal is signed in
     let myName = store.get('hridal.room.name', ''), myTask = '', logged = false;
     const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} } };
     // Stay in your seat if you reload or move between pages in the same tab.
@@ -463,7 +520,7 @@ import Base from '../layouts/Base.astro';
       } else {
         $('rs-badge').textContent = 'Not studying right now';
         const l = data.last;
-        $('rs-line').innerHTML = l ? `Last session: <b>${esc(l.task || l.cat)}</b> for ${mins(l.minutes)}, ${ago(l.end)}.` : 'The lamp is off, but you’re welcome to sit and work.';
+        $('rs-line').innerHTML = l ? `Last session: <b>${esc(l.task || l.cat)}</b> for ${mins(l.minutes)}, ${ago(l.end)}.` : 'The lamp is off, but you’re welcome to sit and study.';
       }
       $('rs-sub').dataset.company = company;
       renderWho(list); renderWeek(); tick();

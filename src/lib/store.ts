@@ -47,3 +47,10 @@ export async function isAdmin(req: Request) {
   const [v] = await redis([['GET', 'sess:' + t]]);
   return v === '1';
 }
+
+// Text visitors type that everyone can see: kept short, link-free and polite.
+export const clean = (s: unknown, max: number) => String(s ?? '').replace(/[\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+const BLOCK = /(fuck|shit|cunt|bitch|nigg|fag|retard|whore|slut|dick|cock|pussy|wank|twat|rape|nazi|porn|sex|kill ?yourself|kys)/i;
+const LINKY = /(https?:|www\.|\.(com|net|org|io|co|uk|ly|gg|xyz|me)\b|@\w)/i;
+export const visible = (s: unknown, max: number) => { const t = clean(s, max); return !t || BLOCK.test(t.replace(/[^a-z ]/gi, '')) || LINKY.test(t) ? '' : t; };
+export const rude = (s: unknown) => { const t = clean(s, 400); return !!t && (BLOCK.test(t.replace(/[^a-z ]/gi, '')) || LINKY.test(t)); };
