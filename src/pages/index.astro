@@ -103,7 +103,6 @@ const joinIn = [
     <div class="now-head"><h2 id="explore-h">Have a look around</h2></div>
     <div class="bento">
       <a class="tile b-exp spot" href="/experience">
-        <span class="t-kicker">Experience</span>
         <span class="t-title">Consulting at Roland Berger, tech at IBM and engineering at Wood</span>
         <span class="t-logos">
           {[['roland-berger','Roland Berger','Junior Consultant (Intern)'],['ibm','IBM','Application Support Analyst Intern'],['wood','Wood Group','Engineering Consulting Intern'],['imperial','Imperial','AI Society, EDI rep and more']].map(([f,n,r]) => (
@@ -113,18 +112,15 @@ const joinIn = [
         <span class="t-foot">{exp.filter(e => e.data.order <= 3).length} internships and {exp.filter(e => e.data.order > 3).length} leadership roles</span>
       </a>
       <a class="tile b-proj spot" href="/projects">
-        <span class="t-kicker">Projects</span>
         <svg class="t-art" viewBox="0 0 200 80" aria-hidden="true"><path class="ta-fill" d="M6 70 C40 64 54 50 76 52 S112 30 134 32 S172 12 194 8 L194 78 L6 78Z"/><path class="ta-line" d="M6 70 C40 64 54 50 76 52 S112 30 134 32 S172 12 194 8"/><circle class="ta-dot" cx="194" cy="8" r="4"/></svg>
         <span class="t-title">{projects.length} things I've built</span>
         <span class="t-foot">{projects.map(p => p.title).join(', ')}</span>
       </a>
       <a class="tile b-ess spot" href={latest ? `/essays/${latest.id}` : '/essays'}>
-        <span class="t-kicker">Latest essay</span>
         <span class="t-quote">{latest?.data.title}</span>
         <span class="t-foot">{essays.length} essays so far</span>
       </a>
       <a class="tile b-life spot" href="/life">
-        <span class="t-kicker">Interact</span>
         <svg class="t-globe" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="30"/><g class="tg-spin"><ellipse cx="40" cy="40" rx="12" ry="30"/><path d="M10 40h60M14 26h52M14 54h52"/></g><circle class="tg-pin" cx="52" cy="30" r="3"/><circle class="tg-pin" cx="30" cy="46" r="3"/></svg>
         <span class="t-title">{places.length} cities, {countries} countries</span>
         <span class="t-foot">Plus my kitchen, bookshelf, a room to study with me and my training</span>
@@ -155,12 +151,10 @@ const joinIn = [
   <section class="block stacked-full home-story" aria-labelledby="story-h">
     <div class="story-grid">
       <div class="story-body">
-        <p class="t-kicker story-kicker">Backstory</p>
         <h2 id="story-h" class="story-title">The story behind <span>hridal.com</span></h2>
         <div class="story-text">{me.story.map(p => <p>{p}</p>)}</div>
       </div>
       <aside class="join-card spot" aria-labelledby="join-h">
-        <p class="t-kicker">Interact</p>
         <h3 id="join-h" class="join-title">Come and join in</h3>
         <div class="orbit" aria-label="Things you can join in with">
           <i class="orb-glow" aria-hidden="true"></i>
