@@ -441,9 +441,7 @@ body .signoff .so-sign { width: min(300px, 100%); height: auto; aspect-ratio: 30
 .r-laptop { fill: #8d8b89; } .r-laptop-base { fill: #b9b7b4; }
 .r-logo { fill: #a5a3a0; transition: fill .4s; }
 .r-arms path { fill: none; stroke: #5a1925; stroke-width: 7.5; stroke-linecap: round; opacity: 0; transition: opacity .4s; }
-.r-spill { stroke: #e8f0ff; stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity .4s; }
 .room[data-live="true"] .r-arms path { opacity: 1; }
-.room[data-live="true"] .r-spill { opacity: .9; }
 .r-mug { fill: #fff; stroke: #6c202d; stroke-width: 2; } .r-steam { fill: none; stroke: #b9aea3; stroke-width: 1.6; stroke-linecap: round; opacity: 0; }
 .r-glow { opacity: 0; transition: opacity .8s; }
 .r-tag { font: 600 13px var(--sans); fill: var(--muted); text-anchor: middle; letter-spacing: .04em; }
